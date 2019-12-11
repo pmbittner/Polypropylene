@@ -15,6 +15,7 @@ include(cmake/PaxArchitectureDetection.cmake)
 include(cmake/PaxFlagsDefinition.cmake)
 set(CMAKE_CXX_STANDARD ${PAX_CXX_STANDARD})
 message("CMAKE_CXX_STANDARD is ${CMAKE_CXX_STANDARD}")
+include(cmake/Prepend.cmake)
 
 if (${CMAKE_BUILD_TYPE} MATCHES Release)
     add_definitions(-DPAX_BUILD_TYPE_RELEASE)

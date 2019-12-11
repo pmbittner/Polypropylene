@@ -5,7 +5,7 @@
 #ifndef PROTEUS_PIZZA_H
 #define PROTEUS_PIZZA_H
 
-#include <proteus/property/PropertyContainer.h>
+#include <polypropylene/property/PropertyContainer.h>
 
 namespace Proteus::Examples {
     class Pizza : public PAX::PropertyContainer<Pizza> {

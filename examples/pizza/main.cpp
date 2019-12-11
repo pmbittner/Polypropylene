@@ -5,8 +5,8 @@
 #include "Pizza.h"
 #include "toppings/Mozzarella.h"
 
-#include "proteus/json/JsonLoader.h"
-#include "proteus/property/construction/json/JsonPropertyContainerPrefabLoader.h"
+#include "polypropylene/json/JsonLoader.h"
+#include "polypropylene/property/construction/json/JsonPropertyContainerPrefabLoader.h"
 #include "toppings/Champignon.h"
 #include "toppings/TomatoSauce.h"
 
