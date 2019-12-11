@@ -1,0 +1,24 @@
+//
+// Created by Bittner on 06.12.2019.
+//
+
+#include "Pizza.h"
+#include "Topping.h"
+#include "BakedEvent.h"
+
+namespace Proteus::Examples {
+    void Pizza::yummy() {
+        std::string message = "Pizza:\n";
+        for (Topping * t : get<Topping>()) {
+            message += "  " + t->yummy() + "\n";
+        }
+
+        PAX_LOG(PAX::Log::Level::Info, message);
+    }
+
+    void Pizza::bake() {
+        PAX_LOG(PAX::Log::Level::Info, "Pizza gets baked... ~~~~");
+        BakedEvent bakedEvent;
+        getEventService().fire(bakedEvent);
+    }
+}

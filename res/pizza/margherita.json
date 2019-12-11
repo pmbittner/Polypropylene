@@ -1,0 +1,8 @@
+{
+  "Properties": {
+    "Proteus::Examples::Mozzarella": {},
+    "Proteus::Examples::TomatoSauce": {
+      "scoville": "${spicyness}"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "Inherits": [
+    "margherita.json"
+  ],
+  "Properties": {
+    "Proteus::Examples::Champignon": {}
+  }
+}

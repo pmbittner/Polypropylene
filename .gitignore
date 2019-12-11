@@ -1,0 +1,21 @@
+# Binaries
+!bin/
+bin/*
+!bin/core.example.paxconfig
+
+# libraries
+lib/*
+
+# Project data
+.idea
+vs
+
+# Generated code
+*.generated.cpp
+
+# Python temp files
+__pycache__
+
+# Build
+build
+cmake-build-*
