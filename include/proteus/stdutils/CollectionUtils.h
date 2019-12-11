@@ -2,8 +2,8 @@
 // Created by Paul on 28.05.2017.
 //
 
-#ifndef PAXENGINE3_STDUTILS_H
-#define PAXENGINE3_STDUTILS_H
+#ifndef POLYPROPYLENE_STDUTILS_H
+#define POLYPROPYLENE_STDUTILS_H
 
 #include <vector>
 #include <algorithm>
@@ -39,4 +39,4 @@ namespace PAX {
     }
 }
 
-#endif //PAXENGINE3_STDUTILS_H
+#endif //POLYPROPYLENE_STDUTILS_H

@@ -2,8 +2,8 @@
 // Created by paul on 06.01.19.
 //
 
-#ifndef PAXENGINE3_PROPERTYFACTORY_H
-#define PAXENGINE3_PROPERTYFACTORY_H
+#ifndef POLYPROPYLENE_PROPERTYFACTORY_H
+#define POLYPROPYLENE_PROPERTYFACTORY_H
 
 #include <string>
 #include <unordered_map>

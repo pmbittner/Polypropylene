@@ -2,8 +2,8 @@
 // Created by Paul on 02.06.2017.
 //
 
-#ifndef PAXENGINE3_ERRORS_H
-#define PAXENGINE3_ERRORS_H
+#ifndef POLYPROPYLENE_ERRORS_H
+#define POLYPROPYLENE_ERRORS_H
 
 #include <sstream>
 #include <stdexcept>
@@ -27,4 +27,4 @@ if (value == nullptr) { \
 #define PAX_NOT_IMPLEMENTED() PAX_LOG(PAX::Log::Level::Warn, "not implemented")
 #define PAX_NOT_IMPLEMENTED_EXCEPTION() PAX_THROW_RUNTIME_ERROR("not implemented")
 
-#endif //PAXENGINE3_ERRORS_H
+#endif //POLYPROPYLENE_ERRORS_H

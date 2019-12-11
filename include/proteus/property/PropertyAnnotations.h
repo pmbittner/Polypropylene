@@ -2,8 +2,8 @@
 // Created by paul on 30.12.18.
 //
 
-#ifndef PAXENGINE3_PROPERTYANNOTATIONS_H
-#define PAXENGINE3_PROPERTYANNOTATIONS_H
+#ifndef POLYPROPYLENE_PROPERTYANNOTATIONS_H
+#define POLYPROPYLENE_PROPERTYANNOTATIONS_H
 
 #include "PropertyDependencies.h"
 #include "event/PropertyAttachedEvent.h"
@@ -93,4 +93,4 @@ private:
         Container::GetPropertyAllocator().free(paxtypeid(Type), object); \
     })
 
-#endif //PAXENGINE3_PROPERTYANNOTATIONS_H
+#endif //POLYPROPYLENE_PROPERTYANNOTATIONS_H

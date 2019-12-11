@@ -2,8 +2,8 @@
 // Created by Paul on 20.12.2017.
 //
 
-#ifndef PAXENGINE3_TUPLEPRINTER_H
-#define PAXENGINE3_TUPLEPRINTER_H
+#ifndef POLYPROPYLENE_TUPLEPRINTER_H
+#define POLYPROPYLENE_TUPLEPRINTER_H
 
 #include <cstdlib>
 #include <ostream>
@@ -30,4 +30,4 @@ namespace PAX {
     }
 }
 
-#endif //PAXENGINE3_TUPLEPRINTER_H
+#endif //POLYPROPYLENE_TUPLEPRINTER_H

@@ -2,8 +2,8 @@
 // Created by Paul on 23.03.2019.
 //
 
-#ifndef PAXENGINE3_PROPERTYSYSTEM_H
-#define PAXENGINE3_PROPERTYSYSTEM_H
+#ifndef POLYPROPYLENE_PROPERTYSYSTEM_H
+#define POLYPROPYLENE_PROPERTYSYSTEM_H
 
 #include "PropertyContainerManager.h"
 
@@ -93,4 +93,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_PROPERTYSYSTEM_H
+#endif //POLYPROPYLENE_PROPERTYSYSTEM_H

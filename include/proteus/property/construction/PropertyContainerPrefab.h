@@ -2,8 +2,8 @@
 // Created by paul on 06.01.19.
 //
 
-#ifndef PAXENGINE3_PROPERTYCONTAINERPREFAB_H
-#define PAXENGINE3_PROPERTYCONTAINERPREFAB_H
+#ifndef POLYPROPYLENE_PROPERTYCONTAINERPREFAB_H
+#define POLYPROPYLENE_PROPERTYCONTAINERPREFAB_H
 
 #include "proteus/StringVariables.h"
 #include "proteus/property/construction/PropertyFactory.h"
@@ -28,4 +28,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_PROPERTYCONTAINERPREFAB_H
+#endif //POLYPROPYLENE_PROPERTYCONTAINERPREFAB_H

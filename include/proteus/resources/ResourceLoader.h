@@ -2,8 +2,8 @@
 // Created by Paul on 03.10.2017.
 //
 
-#ifndef PAXENGINE3_RESOURCELOADER_H
-#define PAXENGINE3_RESOURCELOADER_H
+#ifndef POLYPROPYLENE_RESOURCELOADER_H
+#define POLYPROPYLENE_RESOURCELOADER_H
 
 #include <memory>
 #include <map>
@@ -40,4 +40,4 @@ namespace PAX {
 
 #include "Resources.h"
 
-#endif //PAXENGINE3_RESOURCELOADER_H
+#endif //POLYPROPYLENE_RESOURCELOADER_H

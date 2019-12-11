@@ -2,8 +2,8 @@
 // Created by paul on 22.09.18.
 //
 
-#ifndef PAXENGINE3_PROPERTY_H
-#define PAXENGINE3_PROPERTY_H
+#ifndef POLYPROPYLENE_PROPERTY_H
+#define POLYPROPYLENE_PROPERTY_H
 
 #include "../reflection/TypeHandle.h"
 #include "../macros/Definitions.h"
@@ -76,4 +76,4 @@ namespace PAX {
 
 #include "PropertyAnnotations.h"
 
-#endif //PAXENGINE3_PROPERTY_H
+#endif //POLYPROPYLENE_PROPERTY_H

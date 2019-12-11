@@ -2,8 +2,8 @@
 // Created by Bittner on 10/01/2019.
 //
 
-#ifndef PAXENGINE3_CONTENTPROVIDER_H
-#define PAXENGINE3_CONTENTPROVIDER_H
+#ifndef POLYPROPYLENE_CONTENTPROVIDER_H
+#define POLYPROPYLENE_CONTENTPROVIDER_H
 
 #include <string>
 #include <sstream>
@@ -133,4 +133,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_CONTENTPROVIDER_H
+#endif //POLYPROPYLENE_CONTENTPROVIDER_H

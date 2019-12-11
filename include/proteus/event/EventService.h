@@ -2,8 +2,8 @@
 // Created by Paul on 08.05.2017.
 //
 
-#ifndef PAXENGINE3_EVENTSERVICE_H
-#define PAXENGINE3_EVENTSERVICE_H
+#ifndef POLYPROPYLENE_EVENTSERVICE_H
+#define POLYPROPYLENE_EVENTSERVICE_H
 
 #include "Delegate.h"
 #include <proteus/reflection/TypeMap.h>
@@ -91,4 +91,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_EVENTSERVICE_H
+#endif //POLYPROPYLENE_EVENTSERVICE_H

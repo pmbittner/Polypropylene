@@ -2,8 +2,8 @@
 // Created by Paul on 03.10.2017.
 //
 
-#ifndef PAXENGINE3_SIGNATURE_H
-#define PAXENGINE3_SIGNATURE_H
+#ifndef POLYPROPYLENE_SIGNATURE_H
+#define POLYPROPYLENE_SIGNATURE_H
 
 #include <tuple>
 #include <string>
@@ -61,4 +61,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_SIGNATURE_H
+#endif //POLYPROPYLENE_SIGNATURE_H

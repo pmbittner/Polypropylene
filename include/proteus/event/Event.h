@@ -2,8 +2,8 @@
 // Created by Paul on 08.05.2017.
 //
 
-#ifndef PAXENGINE3_EVENT_H
-#define PAXENGINE3_EVENT_H
+#ifndef POLYPROPYLENE_EVENT_H
+#define POLYPROPYLENE_EVENT_H
 
 namespace PAX {
     struct Event {
@@ -18,4 +18,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_EVENT_H
+#endif //POLYPROPYLENE_EVENT_H

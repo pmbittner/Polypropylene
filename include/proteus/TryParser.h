@@ -2,8 +2,8 @@
 // Created by Bittner on 08.08.2019.
 //
 
-#ifndef PAXENGINE3_TRYPARSER_H
-#define PAXENGINE3_TRYPARSER_H
+#ifndef POLYPROPYLENE_TRYPARSER_H
+#define POLYPROPYLENE_TRYPARSER_H
 
 #include "macros/Definitions.h"
 
@@ -17,4 +17,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_TRYPARSER_H
+#endif //POLYPROPYLENE_TRYPARSER_H

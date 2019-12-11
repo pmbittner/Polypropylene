@@ -2,8 +2,8 @@
 // Created by Bittner on 06.03.2019.
 //
 
-#ifndef PAXENGINE3_TYPES_H
-#define PAXENGINE3_TYPES_H
+#ifndef POLYPROPYLENE_TYPES_H
+#define POLYPROPYLENE_TYPES_H
 
 #include <map>
 #include "log/Log.h"
@@ -36,4 +36,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_TYPES_H
+#endif //POLYPROPYLENE_TYPES_H

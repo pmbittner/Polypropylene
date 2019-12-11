@@ -2,8 +2,8 @@
 // Created by Bittner on 03.04.2019.
 //
 
-#ifndef PAXENGINE3_LOG_H
-#define PAXENGINE3_LOG_H
+#ifndef POLYPROPYLENE_LOG_H
+#define POLYPROPYLENE_LOG_H
 
 #include "../macros/OSDetection.h"
 #include "../macros/Definitions.h"
@@ -68,4 +68,4 @@ namespace PAX {
 
 std::ostream& operator<<(std::ostream& os, const ::PAX::Log::Level & level);
 
-#endif //PAXENGINE3_LOG_H
+#endif //POLYPROPYLENE_LOG_H

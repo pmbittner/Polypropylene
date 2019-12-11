@@ -2,8 +2,8 @@
 // Created by Paul on 06.01.2018.
 //
 
-#ifndef PAXENGINE3_PATH_H
-#define PAXENGINE3_PATH_H
+#ifndef POLYPROPYLENE_PATH_H
+#define POLYPROPYLENE_PATH_H
 
 #include <string>
 #include <proteus/StringUtils.h>
@@ -83,4 +83,4 @@ namespace PAX {
 
 std::ostream& operator<<(std::ostream& os, const PAX::Path & p);
 
-#endif //PAXENGINE3_PATH_H
+#endif //POLYPROPYLENE_PATH_H

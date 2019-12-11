@@ -2,8 +2,8 @@
 // Created by Paul on 29.04.2017.
 //
 
-#ifndef PAXENGINE3_MAININCLUDES_H
-#define PAXENGINE3_MAININCLUDES_H
+#ifndef POLYPROPYLENE_MAININCLUDES_H
+#define POLYPROPYLENE_MAININCLUDES_H
 
 #include "macros/CompilerDetection.h"
 #include "macros/OSDetection.h"
@@ -11,4 +11,4 @@
 
 #include "property/PropertyContainer.h"
 
-#endif //PAXENGINE3_MAININCLUDES_H
+#endif //POLYPROPYLENE_MAININCLUDES_H

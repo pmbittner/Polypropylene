@@ -2,8 +2,8 @@
 // Created by Bittner on 14/08/2019.
 //
 
-#ifndef PAXENGINE3_POOLALLOCATOR_H
-#define PAXENGINE3_POOLALLOCATOR_H
+#ifndef POLYPROPYLENE_POOLALLOCATOR_H
+#define POLYPROPYLENE_POOLALLOCATOR_H
 
 #include "../Allocator.h"
 #include <proteus/log/Errors.h>
@@ -138,4 +138,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_POOLALLOCATOR_H
+#endif //POLYPROPYLENE_POOLALLOCATOR_H

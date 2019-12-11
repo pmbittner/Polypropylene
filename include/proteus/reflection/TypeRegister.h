@@ -2,8 +2,8 @@
 // Created by paul on 07.01.19.
 //
 
-#ifndef PAXENGINE3_TYPEREGISTER_H
-#define PAXENGINE3_TYPEREGISTER_H
+#ifndef POLYPROPYLENE_TYPEREGISTER_H
+#define POLYPROPYLENE_TYPEREGISTER_H
 
 #include "TypeMap.h"
 
@@ -25,4 +25,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_TYPEREGISTER_H
+#endif //POLYPROPYLENE_TYPEREGISTER_H

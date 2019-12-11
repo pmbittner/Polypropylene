@@ -2,8 +2,8 @@
 // Created by Paul on 23.09.2017.
 //
 
-#ifndef PAXENGINE3_TYPEMAP_H
-#define PAXENGINE3_TYPEMAP_H
+#ifndef POLYPROPYLENE_TYPEMAP_H
+#define POLYPROPYLENE_TYPEMAP_H
 
 #include <typeindex>
 #include <map>
@@ -89,4 +89,4 @@ namespace PAX {
 #endif
 }
 
-#endif //PAXENGINE3_TYPEMAP_H
+#endif //POLYPROPYLENE_TYPEMAP_H

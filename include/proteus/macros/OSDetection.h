@@ -2,8 +2,8 @@
 // Created by Paul on 28.04.2017.
 //
 
-#ifndef PAXENGINE3_OSDEFINES_H
-#define PAXENGINE3_OSDEFINES_H
+#ifndef POLYPROPYLENE_OSDEFINES_H
+#define POLYPROPYLENE_OSDEFINES_H
 
 #if defined (__linux__) || defined(linux) || defined(LINUX)
 #define PAX_OS_LINUX
@@ -23,4 +23,4 @@
 #error "No or multiple operating systems declared!"
 #endif
 
-#endif //PAXENGINE3_OSDEFINES_H
+#endif //POLYPROPYLENE_OSDEFINES_H

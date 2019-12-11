@@ -2,8 +2,8 @@
 // Created by Paul on 03.10.2017.
 //
 
-#ifndef PAXENGINE3_RESOURCEHANDLE_H
-#define PAXENGINE3_RESOURCEHANDLE_H
+#ifndef POLYPROPYLENE_RESOURCEHANDLE_H
+#define POLYPROPYLENE_RESOURCEHANDLE_H
 
 #include <memory>
 #include <string>
@@ -53,4 +53,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_RESOURCEHANDLE_H
+#endif //POLYPROPYLENE_RESOURCEHANDLE_H

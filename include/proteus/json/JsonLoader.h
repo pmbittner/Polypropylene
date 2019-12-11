@@ -2,8 +2,8 @@
 // Created by Bittner on 01/03/2019.
 //
 
-#ifndef PAXENGINE3_JSONLOADER_H
-#define PAXENGINE3_JSONLOADER_H
+#ifndef POLYPROPYLENE_JSONLOADER_H
+#define POLYPROPYLENE_JSONLOADER_H
 
 #include <proteus/resources/ResourceLoader.h>
 #include "JsonFwd.h"
@@ -19,4 +19,4 @@ namespace PAX {
     }
 }
 
-#endif //PAXENGINE3_JSONLOADER_H
+#endif //POLYPROPYLENE_JSONLOADER_H

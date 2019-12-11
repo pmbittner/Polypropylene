@@ -2,8 +2,8 @@
 // Created by Paul on 02.03.2019.
 //
 
-#ifndef PAXENGINE3_JSONPROPERTYCONTENT_H
-#define PAXENGINE3_JSONPROPERTYCONTENT_H
+#ifndef POLYPROPYLENE_JSONPROPERTYCONTENT_H
+#define POLYPROPYLENE_JSONPROPERTYCONTENT_H
 
 #include <proteus/property/construction/ContentProvider.h>
 #include <proteus/json/Json.h>
@@ -27,4 +27,4 @@ namespace PAX {
     }
 }
 
-#endif //PAXENGINE3_JSONPROPERTYCONTENT_H
+#endif //POLYPROPYLENE_JSONPROPERTYCONTENT_H

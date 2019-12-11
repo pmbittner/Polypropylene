@@ -2,8 +2,8 @@
 // Created by Paul on 16.07.2017.
 //
 
-#ifndef PAXENGINE3_DEPENDENCY_H
-#define PAXENGINE3_DEPENDENCY_H
+#ifndef POLYPROPYLENE_DEPENDENCY_H
+#define POLYPROPYLENE_DEPENDENCY_H
 
 namespace PAX {
     template<class T>
@@ -16,4 +16,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_DEPENDENCY_H
+#endif //POLYPROPYLENE_DEPENDENCY_H

@@ -2,8 +2,8 @@
 // Created by paul on 07.01.19.
 //
 
-#ifndef PAXENGINE3_GENERICFACTORY_H
-#define PAXENGINE3_GENERICFACTORY_H
+#ifndef POLYPROPYLENE_GENERICFACTORY_H
+#define POLYPROPYLENE_GENERICFACTORY_H
 
 #include <memory>
 
@@ -23,4 +23,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_GENERICFACTORY_H
+#endif //POLYPROPYLENE_GENERICFACTORY_H

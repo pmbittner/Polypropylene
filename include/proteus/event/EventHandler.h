@@ -2,8 +2,8 @@
 // Created by Paul on 31.05.2017.
 //
 
-#ifndef PAXENGINE3_EVENTHANDLER_H
-#define PAXENGINE3_EVENTHANDLER_H
+#ifndef POLYPROPYLENE_EVENTHANDLER_H
+#define POLYPROPYLENE_EVENTHANDLER_H
 
 #include <vector>
 #include "Delegate.h"
@@ -53,4 +53,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_EVENTHANDLER_H
+#endif //POLYPROPYLENE_EVENTHANDLER_H

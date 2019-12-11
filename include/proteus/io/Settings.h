@@ -2,8 +2,8 @@
 // Created by paul on 02.12.18.
 //
 
-#ifndef PAXENGINE3_SETTINGS_H
-#define PAXENGINE3_SETTINGS_H
+#ifndef POLYPROPYLENE_SETTINGS_H
+#define POLYPROPYLENE_SETTINGS_H
 
 #include <map>
 #include <vector>
@@ -122,4 +122,4 @@ namespace PAX {
     template<> PAX_NODISCARD std::vector<std::string> Settings::getTypeVector<std::string>(const std::string &varName) const;
 }
 
-#endif //PAXENGINE3_SETTINGS_H
+#endif //POLYPROPYLENE_SETTINGS_H

@@ -2,8 +2,8 @@
 // Created by Bittner on 01/03/2019.
 //
 
-#ifndef PAXENGINE3_JSONUTIL_H
-#define PAXENGINE3_JSONUTIL_H
+#ifndef POLYPROPYLENE_JSONUTIL_H
+#define POLYPROPYLENE_JSONUTIL_H
 
 #include "JsonFwd.h"
 
@@ -20,4 +20,4 @@ namespace PAX {
     nlohmann::json StringToJson(const std::string & s);
 }
 
-#endif //PAXENGINE3_JSONUTIL_H
+#endif //POLYPROPYLENE_JSONUTIL_H

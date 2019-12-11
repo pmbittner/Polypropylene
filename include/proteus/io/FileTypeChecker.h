@@ -2,8 +2,8 @@
 // Created by Paul on 04.11.2017.
 //
 
-#ifndef PAXENGINE3_FORMATCHECKER_H
-#define PAXENGINE3_FORMATCHECKER_H
+#ifndef POLYPROPYLENE_FORMATCHECKER_H
+#define POLYPROPYLENE_FORMATCHECKER_H
 
 #include <string>
 #include <algorithm>
@@ -39,4 +39,4 @@ namespace PAX {
     }
 }
 
-#endif //PAXENGINE3_FORMATCHECKER_H
+#endif //POLYPROPYLENE_FORMATCHECKER_H

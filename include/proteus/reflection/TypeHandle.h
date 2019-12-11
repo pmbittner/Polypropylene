@@ -2,8 +2,8 @@
 // Created by Paul on 14.01.2018.
 //
 
-#ifndef PAXENGINE3_TYPEINFO_H
-#define PAXENGINE3_TYPEINFO_H
+#ifndef POLYPROPYLENE_TYPEINFO_H
+#define POLYPROPYLENE_TYPEINFO_H
 
 #include <typeindex>
 
@@ -14,4 +14,4 @@ namespace PAX {
 #define paxtypeid(T) typeid(T)
 #define paxtypeof(T) PAX::TypeHandle(paxtypeid(T))
 
-#endif //PAXENGINE3_TYPEINFO_H
+#endif //POLYPROPYLENE_TYPEINFO_H

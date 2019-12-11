@@ -2,8 +2,8 @@
 // Created by paul on 22.09.18.
 //
 
-#ifndef PAXENGINE3_PROPERTYCONTAINER_H
-#define PAXENGINE3_PROPERTYCONTAINER_H
+#ifndef POLYPROPYLENE_PROPERTYCONTAINER_H
+#define POLYPROPYLENE_PROPERTYCONTAINER_H
 
 #include <vector>
 #include <iostream>
@@ -308,4 +308,4 @@ namespace PAX {
 
 #undef PAX_GENERATE_PropertyContainerFunctionTemplateHeader
 
-#endif //PAXENGINE3_PROPERTYCONTAINER_H
+#endif //POLYPROPYLENE_PROPERTYCONTAINER_H

@@ -2,8 +2,8 @@
 // Created by Paul on 31.05.2017.
 //
 
-#ifndef PAXENGINE3_DELEGATE_H
-#define PAXENGINE3_DELEGATE_H
+#ifndef POLYPROPYLENE_DELEGATE_H
+#define POLYPROPYLENE_DELEGATE_H
 
 namespace PAX {
     template<typename... Args>
@@ -28,4 +28,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_DELEGATE_H
+#endif //POLYPROPYLENE_DELEGATE_H

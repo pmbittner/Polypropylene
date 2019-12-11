@@ -2,8 +2,8 @@
 // Created by Paul on 18.09.2017.
 //
 
-#ifndef PAXENGINE3_RESOURCES_H
-#define PAXENGINE3_RESOURCES_H
+#ifndef POLYPROPYLENE_RESOURCES_H
+#define POLYPROPYLENE_RESOURCES_H
 
 #include <unordered_set>
 #include <unordered_map>
@@ -222,4 +222,4 @@ namespace PAX {
     }
 }
 
-#endif //PAXENGINE3_RESOURCES_H
+#endif //POLYPROPYLENE_RESOURCES_H

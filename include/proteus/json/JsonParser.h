@@ -2,8 +2,8 @@
 // Created by Bittner on 21/05/2019.
 //
 
-#ifndef PAXENGINE3_JSONPARSER_H
-#define PAXENGINE3_JSONPARSER_H
+#ifndef POLYPROPYLENE_JSONPARSER_H
+#define POLYPROPYLENE_JSONPARSER_H
 
 #include "JsonUtil.h"
 #include "../TryParser.h"
@@ -32,4 +32,4 @@ namespace PAX {
             };
 }
 
-#endif //PAXENGINE3_JSONPARSER_H
+#endif //POLYPROPYLENE_JSONPARSER_H
