@@ -41,8 +41,8 @@ During development several issues arose that were not addressed by existing ECS 
 **Opposed to existing Entity-Component Systems**, Polypropylene offers the following features:
 
 - **Polymorphism Awareness**: Properties added to an entity are identified by each of their polymorphic types.
-Thus, any property can be retrieved from an entity not only by its direct type but also by any of its super types.
-**No runtime type checks**, such as `dynamic_cast`, are necessary for property insertion, deletion, and retrieval!
+A property can be retrieved from an entity not only by its direct type but also by any of its super types.
+**No runtime type checks**, such as `dynamic_cast`, are necessary for property insertion, deletion, and retrieval.
 Those operations have constant runtime (i.e. O(1)) as they depend on the length of the inheritance chain only.
 As reflection is unavailable in C++, the parent property type has to be specified explicitly via `PAX_PROPERTY_DERIVES`.
 
@@ -220,6 +220,11 @@ Such additional constraints could be implemented by using techniques from softwa
 We have to see if that would pay off.
 
 - Support other File Formats Than Just JSON
+
+
+## Feedback
+I welcome any constructive critism or questions.
+Feel free to open issues or comments here on GitHub.
 
 
 ## Naming Conventions and "Where does the name come from?"
