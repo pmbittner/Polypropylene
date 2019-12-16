@@ -4,6 +4,7 @@ project(Polypropylene)
 ### DEFINITIONS #########################################
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 option(POLYPROPYLENE_WITH_EXAMPLES "Build examples" ON)
+option(POLYPROPYLENE_WITH_JSON "Enable entity prefab loading from json files" ON)
 
 ### DETECT COMPILER #####################################
 include(cmake/PaxCompilerDetection.cmake)
@@ -24,6 +25,11 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
     add_definitions(-DPAX_BUILD_TYPE_DEBUG)
     message("BUILD TYPE is Debug")
 endif(${CMAKE_BUILD_TYPE} MATCHES Release)
+
+if (POLYPROPYLENE_WITH_JSON)
+    add_definitions(-DPAX_WITH_JSON)
+    message("Building with: Json deserialisation (POLYPROPYLENE_WITH_JSON)")
+endif(POLYPROPYLENE_WITH_JSON)
 
 ### SOURCE FILES ########################################
 

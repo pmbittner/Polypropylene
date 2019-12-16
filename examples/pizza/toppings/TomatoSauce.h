@@ -17,6 +17,8 @@ namespace Proteus::Examples {
 
     public:
         std::string yummy() override;
+
+        void setSpicyness(float scoville);
     };
 }
 

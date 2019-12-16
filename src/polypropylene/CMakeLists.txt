@@ -13,10 +13,6 @@ set(HEADERS_FOR_CLION
         io/Path.h
         io/Settings.h
 
-        json/JsonLoader.h
-        json/JsonParser.h
-        json/JsonUtil.h
-
         log/Errors.h
         log/Log.h
 
@@ -38,9 +34,6 @@ set(HEADERS_FOR_CLION
         property/construction/PropertyFactory.h
         property/construction/ContentProvider.h
         property/construction/EntityPrefab.h
-        property/construction/json/JsonEntityPrefab.h
-        property/construction/json/JsonEntityPrefabLoader.h
-        property/construction/json/JsonPropertyContent.h
 
         reflection/TemplateTypeToString.h
         reflection/TypeHandle.h
@@ -60,8 +53,6 @@ set(HEADERS_FOR_CLION
         TryParser.h
         json/JsonFwd.h)
 
-PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})
-
 set(SOURCE_FILES
         StringUtils.cpp
         io/Path.cpp
@@ -69,8 +60,6 @@ set(SOURCE_FILES
         io/Settings.cpp
         reflection/TypeRegister.cpp
         property/construction/ContentProvider.cpp
-        json/JsonLoader.cpp
-        property/construction/json/JsonPropertyContent.cpp
         event/EventService.cpp
         StringVariables.cpp
         resources/ResourceLoader.cpp
@@ -79,7 +68,25 @@ set(SOURCE_FILES
         resources/Resources.cpp
         log/Log.cpp
         property/construction/EntityPrefab.cpp
-        json/JsonUtil.cpp
         event/Event.cpp)
+
+if (POLYPROPYLENE_WITH_JSON)
+    set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}
+            json/JsonLoader.h
+            json/JsonParser.h
+            json/JsonUtil.h
+
+            property/construction/json/JsonEntityPrefab.h
+            property/construction/json/JsonEntityPrefabLoader.h
+            property/construction/json/JsonPropertyContent.h
+            )
+
+    set(SOURCE_FILES ${SOURCE_FILES}
+            json/JsonUtil.cpp
+            json/JsonLoader.cpp
+            property/construction/json/JsonPropertyContent.cpp)
+endif(POLYPROPYLENE_WITH_JSON)
+
+PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})
 
 add_library(polypropylene ${HEADERS_FOR_CLION} ${SOURCE_FILES})

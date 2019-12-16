@@ -5,6 +5,8 @@
 #ifndef POLYPROPYLENE_JSONLOADER_H
 #define POLYPROPYLENE_JSONLOADER_H
 
+#ifdef PAX_WITH_JSON
+
 #include <polypropylene/resources/ResourceLoader.h>
 #include "JsonFwd.h"
 
@@ -18,5 +20,7 @@ namespace PAX {
         };
     }
 }
+
+#endif // PAX_WITH_JSON
 
 #endif //POLYPROPYLENE_JSONLOADER_H

@@ -1,7 +1,8 @@
 Before publish:
-- Rename PropertyContainer to Entity
 - Example with Manager and View (and Systems thereby?)
 - Integrate Systems?
+- rename proteus to pax in examples
+- entity allocation?
 
 General:
 - refine error message on prefab loading when dependencies are not met

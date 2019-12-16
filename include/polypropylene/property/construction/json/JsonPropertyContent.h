@@ -5,6 +5,8 @@
 #ifndef POLYPROPYLENE_JSONPROPERTYCONTENT_H
 #define POLYPROPYLENE_JSONPROPERTYCONTENT_H
 
+#ifdef PAX_WITH_JSON
+
 #include <polypropylene/property/construction/ContentProvider.h>
 #include <polypropylene/json/Json.h>
 
@@ -26,5 +28,7 @@ namespace PAX {
         };
     }
 }
+
+#endif // PAX_WITH_JSON
 
 #endif //POLYPROPYLENE_JSONPROPERTYCONTENT_H

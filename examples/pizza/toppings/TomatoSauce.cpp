@@ -22,4 +22,8 @@ namespace Proteus::Examples {
     std::string TomatoSauce::yummy() {
         return std::to_string(scoville) + " scoville tomato sauce";
     }
+
+    void TomatoSauce::setSpicyness(float scoville) {
+        this->scoville = scoville;
+    }
 }

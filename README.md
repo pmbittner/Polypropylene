@@ -179,18 +179,17 @@ Event services may optionally be linked such that events can be exchanged betwee
                It provides several levels of severity for messages, such as `Info`, `Debug`, or `Error`.
 - **Path** data type for platform agnostic path specification, simplification, and navigation
 - Parser for simple but powerful `config files` (regular language)
-- Inclusion of the [`nlohmann::json` library](https://github.com/nlohmann/json) for loading json files
+- Inclusion of the [nlohmann::json library][1] for loading json files
 
 
 #### Customisations for Compile Time Minimisation
 To obtain reflection information, we frequently use templates and macros.
 We made certain features, such as loading from json files, optional such that you do not have to compile code that you do not need.
-To exclude certain features, you can specify the following flags before include `Polyprolyene.h` to disable the corresponding functionality:
+The following cmake options allow compile time customisation.
+By default, all options are activated (set to ON):
 
-- TODO:
-- Make
-- Variability
-- Flags
+- `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][1] for loading `EntityPrefabs` from json files.
+- `POLYPROPYLENE_WITH_EXAMPLES`: Specifies if examples should be built or not.
 
 
 ## Code Examples
@@ -235,3 +234,5 @@ As this is a rather long name, we kept our short and memorisable inter-project n
 
 ## Are You Hungry For Pizza Now?
 At least we are ...
+
+[1]: https://github.com/nlohmann/json

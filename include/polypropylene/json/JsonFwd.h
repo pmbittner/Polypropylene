@@ -1,6 +1,10 @@
 #ifndef INCLUDE_NLOHMANN_JSON_FWD_HPP_
 #define INCLUDE_NLOHMANN_JSON_FWD_HPP_
 
+#ifndef PAX_WITH_JSON
+#error "Feature PAX_WITH_JSON disabled but JsonFwd.h is included"
+#endif
+
 #include <cstdint> // int64_t, uint64_t
 #include <map> // map
 #include <memory> // allocator

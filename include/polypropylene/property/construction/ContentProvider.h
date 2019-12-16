@@ -18,8 +18,10 @@
 #include "polypropylene/reflection/TypeHandle.h"
 
 // FIXME: Remove these includes.
+#ifdef PAX_WITH_JSON
 #include "polypropylene/json/Json.h"
 #include "polypropylene/json/JsonParser.h"
+#endif
 
 namespace PAX {
     namespace Internal {
@@ -37,8 +39,12 @@ namespace PAX {
 
             template<typename T>
             T get(const std::string & name, const VariableRegister & variables) {
+#ifdef PAX_WITH_JSON
                 // FIXME: This is a hack! We should not refer to Json here but the subclass should!
                 return Json::tryParse<T>(StringToJson(getValue(name, variables)));
+#else
+                return T();
+#endif
             }
 
             template<typename T>
@@ -47,8 +53,10 @@ namespace PAX {
                 std::vector<T> values;
 
                 for (size_t i = 0; i < str_values.size(); ++i) {
+#ifdef PAX_WITH_JSON
                     // FIXME: This is a hack! We should not refer to Json here but the subclass should!
                     values.push_back(Json::tryParse<T>(StringToJson(str_values[i])));
+#endif
                 }
 
                 return values;

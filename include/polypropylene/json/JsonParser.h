@@ -5,6 +5,8 @@
 #ifndef POLYPROPYLENE_JSONPARSER_H
 #define POLYPROPYLENE_JSONPARSER_H
 
+#ifdef PAX_WITH_JSON
+
 #include "JsonUtil.h"
 #include "../TryParser.h"
 
@@ -31,5 +33,9 @@ namespace PAX {
                 PAX_NODISCARD static type tryParse(const nlohmann::json & j); \
             };
 }
+
+#else // !PAX_WITH_JSON
+#define PAX_SPECIALIZE_JSONTRYPARSE_HEADER(type)
+#endif // PAX_WITH_JSON
 
 #endif //POLYPROPYLENE_JSONPARSER_H

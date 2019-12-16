@@ -5,6 +5,8 @@
 #ifndef POLYPROPYLENE_JSONENTITYPREFABLOADER_H
 #define POLYPROPYLENE_JSONENTITYPREFABLOADER_H
 
+#ifdef PAX_WITH_JSON
+
 #include <polypropylene/resources/ResourceLoader.h>
 #include <polypropylene/io/Path.h>
 #include <polypropylene/io/FileTypeChecker.h>
@@ -45,5 +47,7 @@ namespace PAX {
         };
     }
 }
+
+#endif // PAX_WITH_JSON
 
 #endif //POLYPROPYLENE_JSONENTITYPREFABLOADER_H

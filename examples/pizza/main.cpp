@@ -4,11 +4,15 @@
 
 #include "Pizza.h"
 #include "toppings/Mozzarella.h"
-
-#include "polypropylene/json/JsonLoader.h"
-#include "polypropylene/property/construction/json/JsonEntityPrefabLoader.h"
 #include "toppings/Champignon.h"
 #include "toppings/TomatoSauce.h"
+
+#include "polypropylene/property/construction/EntityPrefab.h"
+
+#ifdef PAX_WITH_JSON
+#include "polypropylene/json/JsonLoader.h"
+#include "polypropylene/property/construction/json/JsonEntityPrefabLoader.h"
+#endif
 
 void registerPropertyTypes() {
     using namespace PAX;
@@ -26,25 +30,38 @@ int main(int argc, char** argv) {
     registerPropertyTypes();
 
     // Todo: Find a way to prebuild this
+#ifdef PAX_WITH_JSON
     Resources resources;
     Json::JsonLoader jsonLoader;
     Json::JsonEntityPrefabLoader<Pizza> prefabLoader(resources);
     Json::JsonEntityPrefab<Pizza>::initialize(resources);
     resources.registerLoader(&jsonLoader);
     resources.registerLoader(&prefabLoader);
-
+#endif
 
     /// EXAMPLE
-    using PizzaPrefab = EntityPrefab<Pizza>;
-    std::shared_ptr<PizzaPrefab> prefab = resources.loadOrGet<PizzaPrefab>(Path("res/pizza/funghi.json"));
-
     std::cout << "How spicy do you like you pizza (in scoville)?\n";
+#ifdef PAX_WITH_JSON
     std::string spicyness;
     std::cin >> spicyness;
 
-    Pizza * pizzaFunghi = prefab->create({{"spicyness", spicyness}});
-    pizzaFunghi->yummy();
+    using PizzaPrefab = EntityPrefab<Pizza>;
+    std::shared_ptr<PizzaPrefab> prefab = resources.loadOrGet<PizzaPrefab>(Path("res/pizza/funghi.json"));
 
+    Pizza * pizzaFunghi = prefab->create({{"spicyness", spicyness}});
+#else
+    float spicyness;
+    std::cin >> spicyness;
+
+    Pizza * pizzaFunghi = new Pizza();
+    pizzaFunghi->add(new TomatoSauce());
+    pizzaFunghi->add(new Mozzarella());
+    pizzaFunghi->add(new Champignon());
+
+    pizzaFunghi->get<TomatoSauce>()->setSpicyness(spicyness);
+#endif
+
+    pizzaFunghi->yummy();
     pizzaFunghi->bake();
 
     std::vector<Cheese*> cheeses = pizzaFunghi->get<Cheese>();
