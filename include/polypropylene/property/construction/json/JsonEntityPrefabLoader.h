@@ -2,20 +2,20 @@
 // Created by Bittner on 01/03/2019.
 //
 
-#ifndef POLYPROPYLENE_JSONPROPERTYCONTAINERPREFABLOADER_H
-#define POLYPROPYLENE_JSONPROPERTYCONTAINERPREFABLOADER_H
+#ifndef POLYPROPYLENE_JSONENTITYPREFABLOADER_H
+#define POLYPROPYLENE_JSONENTITYPREFABLOADER_H
 
 #include <polypropylene/resources/ResourceLoader.h>
 #include <polypropylene/io/Path.h>
 #include <polypropylene/io/FileTypeChecker.h>
 #include <polypropylene/resources/Resources.h>
 
-#include "JsonPropertyContainerPrefab.h"
+#include "JsonEntityPrefab.h"
 
 namespace PAX {
     namespace Json {
-        template<typename C>
-        class JsonPropertyContainerPrefabLoader : public ResourceLoader<PropertyContainerPrefab<C>, Path> {
+        template<typename EntityType>
+        class JsonEntityPrefabLoader : public ResourceLoader<EntityPrefab<EntityType>, Path> {
             Resources &resources;
 
         public:
@@ -24,21 +24,21 @@ namespace PAX {
              * to load JSON files.
              * The <polypropylene/json/JsonLoader.h> can be used therefore.
              */
-            explicit JsonPropertyContainerPrefabLoader(Resources &resources) : resources(resources) {}
+            explicit JsonEntityPrefabLoader(Resources &resources) : resources(resources) {}
 
-            bool canLoad(Path path) const override {
+            PAX_NODISCARD bool canLoad(Path path) const override {
                 return Util::FileTypeChecker({"json"}).check(path);
             }
 
-            std::shared_ptr<PropertyContainerPrefab<C>> load(Path path) override {
+            std::shared_ptr<EntityPrefab<EntityType>> load(Path path) override {
                 std::shared_ptr<nlohmann::json> j = resources.loadOrGet<nlohmann::json>(path);
                 if (j) {
-                    return std::make_shared<JsonPropertyContainerPrefab<C>>(j, path);
+                    return std::make_shared<JsonEntityPrefab<EntityType>>(j, path);
                 }
                 return nullptr;
             }
 
-            std::shared_ptr<PropertyContainerPrefab<C>>
+            std::shared_ptr<EntityPrefab<EntityType>>
             loadToOrGetFromResources(Resources &resources, const VariableHierarchy &parameters) override {
                 PAX_NOT_IMPLEMENTED_EXCEPTION();
             }
@@ -46,4 +46,4 @@ namespace PAX {
     }
 }
 
-#endif //POLYPROPYLENE_JSONPROPERTYCONTAINERPREFABLOADER_H
+#endif //POLYPROPYLENE_JSONENTITYPREFABLOADER_H

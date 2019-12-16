@@ -8,19 +8,20 @@
 #include "../Dependency.h"
 
 namespace PAX {
+    template<class C>
     class Entity;
 
-    template<class Container, class... Properties>
-    class PropertyDependencies : public Dependency<Container> {
+    template<class EntityType, class... Properties>
+    class PropertyDependencies : public Dependency<EntityType> {
     public:
-        virtual bool met(const Container &container) const override {
-            return container.template has<Properties...>();
+        virtual bool met(const EntityType & entity) const override {
+            return entity.template has<Properties...>();
         }
     };
 
     // PropertyContainer::has always needs arguments (see implementation of met)
-    template<class Container>
-    class PropertyDependencies<Container> : public Dependency<Container> {
+    template<class EntityType>
+    class PropertyDependencies<EntityType> : public Dependency<EntityType> {
 
     };
 }

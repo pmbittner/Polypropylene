@@ -12,7 +12,7 @@
 
 #define PAX_PROPERTY_REGISTER_AS(PropertyType, Name) \
 PAX_CONSTEXPR_IF (!PropertyType::IsAbstract()) { \
-    PropertyFactoryRegister<PropertyType::Container>::registerFactory<PropertyType>(Name); \
+    PropertyFactoryRegister<PropertyType::EntityType>::registerFactory<PropertyType>(Name); \
 }
 
 #define PAX_PROPERTY_REGISTER(PropertyType) PAX_PROPERTY_REGISTER_AS(PropertyType, #PropertyType)

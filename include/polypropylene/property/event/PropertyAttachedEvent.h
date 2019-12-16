@@ -5,15 +5,15 @@
 #ifndef POLYPROPYLENE_PROPERTYADDEDEVENT_H
 #define POLYPROPYLENE_PROPERTYADDEDEVENT_H
 
-#include "PropertyContainerEvent.h"
+#include "EntityEvent.h"
 
 namespace PAX {
-    template <typename C, class Prop>
-    struct PropertyAttachedEvent : public PropertyContainerEvent<C> {
+    template <typename EntityType, class Prop>
+    struct PropertyAttachedEvent : public EntityEvent<EntityType> {
         Prop * property;
 
-        PropertyAttachedEvent(Prop* prop, PropertyContainer<C>* container)
-                : PropertyContainerEvent<C>(container), property(prop) {}
+        PropertyAttachedEvent(Prop * prop, EntityType * entity)
+                : EntityEvent<EntityType>(entity), property(prop) {}
     };
 }
 

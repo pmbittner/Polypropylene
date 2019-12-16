@@ -9,6 +9,6 @@
 #include "macros/OSDetection.h"
 #include "macros/Definitions.h"
 
-#include "property/PropertyContainer.h"
+#include "polypropylene/property/Entity.h"
 
 #endif //POLYPROPYLENE_MAININCLUDES_H

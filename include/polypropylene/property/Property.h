@@ -11,37 +11,37 @@
 
 namespace PAX {
     template<class C>
-    class PropertyContainer;
+    class Entity;
     class ContentProvider;
 
-    template<class C>
+    template<class E>
     class Property {
-        friend class PropertyContainer<C>;
-        friend class IPropertyFactory<C>;
+        friend class Entity<E>;
+        friend class IPropertyFactory<E>;
 
     public:
-        using Container = C;
+        using EntityType = E;
         static constexpr bool IsMultiple() { return true; }
 
     private:
         bool active = false;
-        C* owner = nullptr;
+        EntityType* owner = nullptr;
 
     protected:
-        virtual bool PAX_INTERNAL(addTo)(Container & container) PAX_NON_CONST {
-            if (container.PAX_INTERNAL(addAsMultiple)(paxtypeid(Property<C>), this)) {
-                ::PAX::PropertyAttachedEvent<Container, Property<C>> event(this, &container);
-                container.getEventService()(event);
+        virtual bool PAX_INTERNAL(addTo)(E & entity) PAX_NON_CONST {
+            if (entity.PAX_INTERNAL(addAsMultiple)(paxtypeid(Property<E>), this)) {
+                ::PAX::PropertyAttachedEvent<E, Property<E>> event(this, &entity);
+                entity.getEventService()(event);
                 return true;
             }
 
             return false;
         }
 
-        virtual bool PAX_INTERNAL(removeFrom)(Container & container) PAX_NON_CONST {
-            if (container.PAX_INTERNAL(removeAsMultiple)(paxtypeid(Property<C>), this)) {
-                ::PAX::PropertyDetachedEvent<Container, Property<C>> event(this, &container);
-                container.getEventService()(event);
+        virtual bool PAX_INTERNAL(removeFrom)(E & entity) PAX_NON_CONST {
+            if (entity.PAX_INTERNAL(removeAsMultiple)(paxtypeid(Property<E>), this)) {
+                ::PAX::PropertyDetachedEvent<E, Property<E>> event(this, &entity);
+                entity.getEventService()(event);
                 return true;
             }
 
@@ -51,8 +51,8 @@ namespace PAX {
         virtual void activated() {}
         virtual void deactivated() {}
 
-        virtual void attached(C &) {}
-        virtual void detached(C &) {}
+        virtual void attached(E &) {}
+        virtual void detached(E &) {}
 
         virtual void initializeFromProvider(ContentProvider & provider) = 0;
 
@@ -60,11 +60,11 @@ namespace PAX {
         Property() : owner(nullptr) {}
         virtual ~Property() = default;
 
-        C* getOwner() const { return owner; }
+        E * getOwner() const { return owner; }
 
         PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
         PAX_NODISCARD virtual bool isMultiple() const { return IsMultiple(); }
-        virtual bool areDependenciesMetFor(const C&) const { return true; }
+        virtual bool areDependenciesMetFor(const E&) const { return true; }
 
         bool isActive() { return active; }
     };

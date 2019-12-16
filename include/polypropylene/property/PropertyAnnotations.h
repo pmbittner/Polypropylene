@@ -15,15 +15,15 @@
 
 // TODO: Find a way to make add and remove methods in PropertyContainer private.
 #define PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE(Type, methodName, asMultiple, asSingle, EventType) \
-bool Type::methodName(Container& c) { \
-    if (Super::methodName(c)) { \
+bool Type::methodName(EntityType & e) { \
+    if (Super::methodName(e)) { \
         PAX_CONSTEXPR_IF (This::IsMultiple()) { \
-            if (!c.asMultiple(paxtypeid(This), this)) return false; \
+            if (!e.asMultiple(paxtypeid(This), this)) return false; \
         } else { \
-            if (!c.asSingle(paxtypeid(This), this)) return false; \
+            if (!e.asSingle(paxtypeid(This), this)) return false; \
         } \
-        EventType<Container, This> event(this, &c); \
-        c.getEventService()(event); \
+        EventType<EntityType, This> event(this, &e); \
+        e.getEventService()(event); \
         return true; \
     } \
     return false; \
@@ -40,13 +40,13 @@ public: \
     static constexpr bool IsAbstract() { return IfConcrete(false &&) true; } \
 protected: \
     using This = Typename; \
-    bool PAX_INTERNAL(addTo)(Container& c) override; \
-    bool PAX_INTERNAL(removeFrom)(Container& c) override; \
-    void initializeFromProvider(::PAX::ContentProvider&) override; \
+    bool PAX_INTERNAL(addTo)(EntityType & e) override; \
+    bool PAX_INTERNAL(removeFrom)(EntityType & e) override; \
+    void initializeFromProvider(::PAX::ContentProvider & contentProvider) override; \
 private: \
 IfConcrete( \
 public: \
-    static This * createFromProvider(::PAX::ContentProvider&); \
+    static This * createFromProvider(::PAX::ContentProvider & contentProvider); \
     static void* operator new(std::size_t sz); \
     static void operator delete(void * object); \
 private: \
@@ -70,9 +70,9 @@ private:
 
 #define PAX_PROPERTY_DEPENDS_ON(...) \
 protected: \
-    virtual bool areDependenciesMetFor(const Container& container) const override { \
-        static ::PAX::PropertyDependencies<Container, __VA_ARGS__> dependencies; \
-        return Super::areDependenciesMetFor(container) && dependencies.met(container); \
+    virtual bool areDependenciesMetFor(const EntityType & entity) const override { \
+        static ::PAX::PropertyDependencies<EntityType, __VA_ARGS__> dependencies; \
+        return Super::areDependenciesMetFor(entity) && dependencies.met(entity); \
     } \
 private:
 
@@ -87,10 +87,10 @@ private:
     } IfConcrete( \
 /*    ::PAX::PropertyFactory<Type, Type::Container> Type::__ByNameFactory(#Type);*/ \
     void* Type::operator new(std::size_t sz) { \
-        return Container::GetPropertyAllocator().allocate<Type>(); \
+        return EntityType::GetPropertyAllocator().allocate<Type>(); \
     } \
     void Type::operator delete(void * object) { \
-        Container::GetPropertyAllocator().free(paxtypeid(Type), object); \
+        EntityType::GetPropertyAllocator().free(paxtypeid(Type), object); \
     })
 
 #endif //POLYPROPYLENE_PROPERTYANNOTATIONS_H

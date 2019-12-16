@@ -6,7 +6,7 @@
 #include "toppings/Mozzarella.h"
 
 #include "polypropylene/json/JsonLoader.h"
-#include "polypropylene/property/construction/json/JsonPropertyContainerPrefabLoader.h"
+#include "polypropylene/property/construction/json/JsonEntityPrefabLoader.h"
 #include "toppings/Champignon.h"
 #include "toppings/TomatoSauce.h"
 
@@ -28,14 +28,14 @@ int main(int argc, char** argv) {
     // Todo: Find a way to prebuild this
     Resources resources;
     Json::JsonLoader jsonLoader;
-    Json::JsonPropertyContainerPrefabLoader<Pizza> prefabLoader(resources);
-    Json::JsonPropertyContainerPrefab<Pizza>::initialize(resources);
+    Json::JsonEntityPrefabLoader<Pizza> prefabLoader(resources);
+    Json::JsonEntityPrefab<Pizza>::initialize(resources);
     resources.registerLoader(&jsonLoader);
     resources.registerLoader(&prefabLoader);
 
 
     /// EXAMPLE
-    using PizzaPrefab = PropertyContainerPrefab<Pizza>;
+    using PizzaPrefab = EntityPrefab<Pizza>;
     std::shared_ptr<PizzaPrefab> prefab = resources.loadOrGet<PizzaPrefab>(Path("res/pizza/funghi.json"));
 
     std::cout << "How spicy do you like you pizza (in scoville)?\n";

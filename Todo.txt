@@ -1,10 +1,9 @@
 Before publish:
 - Rename PropertyContainer to Entity
-- Rename Proteus to PAX
--
+- Example with Manager and View (and Systems thereby?)
+- Integrate Systems?
 
-
+General:
 - refine error message on prefab loading when dependencies are not met
-- in propertyannotations some things could possibly be pushed to the source file
 - dependency resolving upon remove
 - type system as built-in the engine

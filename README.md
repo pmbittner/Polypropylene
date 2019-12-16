@@ -83,7 +83,7 @@ Properties can emit and receive events similar to the publisher-subscriber desig
 The event service is also used for `PropertyAdded-` and `PropertyRemovedEvents`.
 Event services may optionally be linked such that events can be exchanged between entities or even throughout the whole program.
     ```
-    class Pizza : public PAX::PropertyContainer<Pizza> {
+    class Pizza : public PAX::Entity<Pizza> {
     public:
         void bake() {
             getEventService().fire(BakedEvent());
@@ -139,7 +139,8 @@ Event services may optionally be linked such that events can be exchanged betwee
     A prefab represents the kind of entity described in the json file.
     It allows instantiating arbitrary amounts of the corresponding entity:
     ```
-    std::shared_ptr<Prefab<Pizza>> prefab = resources.loadOrGet<PizzaPrefab>(Path("res/pizza/funghi.json"));
+    using PizzaPrefab = EntityPrefab<Pizza>;
+    std::shared_ptr<PizzaPrefab> prefab = resources.loadOrGet<PizzaPrefab>(Path("res/pizza/funghi.json"));
     Pizza * pizzaFunghi = prefab->create({});
     ```
     To customise the individual instances created by a prefab, custom parameters may be specified.

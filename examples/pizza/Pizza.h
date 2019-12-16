@@ -5,10 +5,10 @@
 #ifndef PROTEUS_PIZZA_H
 #define PROTEUS_PIZZA_H
 
-#include <polypropylene/property/PropertyContainer.h>
+#include <polypropylene/property/Entity.h>
 
 namespace Proteus::Examples {
-    class Pizza : public PAX::PropertyContainer<Pizza> {
+    class Pizza : public PAX::Entity<Pizza> {
     public:
         void yummy();
         void bake();

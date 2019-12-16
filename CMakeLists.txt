@@ -3,7 +3,7 @@ project(Polypropylene)
 
 ### DEFINITIONS #########################################
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-option(PROTEUS_WITH_EXAMPLES "Build examples" ON)
+option(POLYPROPYLENE_WITH_EXAMPLES "Build examples" ON)
 
 ### DETECT COMPILER #####################################
 include(cmake/PaxCompilerDetection.cmake)
@@ -32,6 +32,6 @@ add_subdirectory(src)
 
 ### EXAMPLES ############################################
 
-if (PROTEUS_WITH_EXAMPLES)
+if (POLYPROPYLENE_WITH_EXAMPLES)
     add_subdirectory(examples)
-endif(PROTEUS_WITH_EXAMPLES)
+endif(POLYPROPYLENE_WITH_EXAMPLES)

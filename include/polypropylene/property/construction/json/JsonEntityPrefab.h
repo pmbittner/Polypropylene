@@ -2,10 +2,10 @@
 // Created by Bittner on 01/03/2019.
 //
 
-#ifndef POLYPROPYLENE_JSONPROPERTYCONTAINERPREFAB_H
-#define POLYPROPYLENE_JSONPROPERTYCONTAINERPREFAB_H
+#ifndef POLYPROPYLENE_JSONENTITYPREFAB_H
+#define POLYPROPYLENE_JSONENTITYPREFAB_H
 
-#include <polypropylene/property/construction/PropertyContainerPrefab.h>
+#include <polypropylene/property/construction/EntityPrefab.h>
 #include <polypropylene/json/JsonUtil.h>
 #include <polypropylene/io/Path.h>
 
@@ -16,39 +16,39 @@
 
 namespace PAX {
     namespace Json {
-        template<typename C>
-        class JsonPropertyContainerPrefab;
+        template<typename EntityType>
+        class JsonEntityPrefab;
 
-        template<typename C>
-        using JsonPropertyContainerPrefabElementParser = JsonElementParser<C &, JsonPropertyContainerPrefab<C> &, const VariableRegister &>;
+        template<typename EntityType>
+        using JsonEntityPrefabElementParser = JsonElementParser<EntityType &, JsonEntityPrefab<EntityType> &, const VariableRegister &>;
 
-        template<typename C>
-        class LambdaJsonPropertyContainerPrefabElementParser : public JsonPropertyContainerPrefabElementParser<C> {
+        template<typename EntityType>
+        class LambdaJsonEntityPrefabElementParser : public JsonEntityPrefabElementParser<EntityType> {
         public:
-            using Callback = std::function<void(nlohmann::json &, C &, JsonPropertyContainerPrefab<C> &, const VariableRegister &)>;
+            using Callback = std::function<void(nlohmann::json &, EntityType &, JsonEntityPrefab<EntityType> &, const VariableRegister &)>;
 
         private:
             Callback callback;
 
         public:
-            explicit LambdaJsonPropertyContainerPrefabElementParser(const Callback & function)
-                    : JsonPropertyContainerPrefabElementParser<C>(), callback(function) {}
+            explicit LambdaJsonEntityPrefabElementParser(const Callback & function)
+                    : JsonEntityPrefabElementParser<EntityType>(), callback(function) {}
 
-            ~LambdaJsonPropertyContainerPrefabElementParser() override = default;
+            ~LambdaJsonEntityPrefabElementParser() override = default;
 
-            void parse(nlohmann::json &j, C &c, JsonPropertyContainerPrefab<C> &prefab, const VariableRegister & variableRegister) override {
+            void parse(nlohmann::json &j, EntityType &c, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) override {
                 callback(j, c, prefab, variableRegister);
             }
         };
 
-        template<typename C>
-        class JsonProperyContainerPrefabElementParserRegister {
-            std::map<std::string, JsonPropertyContainerPrefabElementParser<C> *> parsers;
+        template<typename EntityType>
+        class JsonEntityPrefabElementParserRegister {
+            std::map<std::string, JsonEntityPrefabElementParser<EntityType> *> parsers;
 
         public:
-            JsonProperyContainerPrefabElementParserRegister() = default;
+            JsonEntityPrefabElementParserRegister() = default;
 
-            bool registerParser(const std::string &name, JsonPropertyContainerPrefabElementParser<C> *parser) {
+            bool registerParser(const std::string &name, JsonEntityPrefabElementParser<EntityType> *parser) {
                 const auto &it = parsers.find(name);
                 if (it == parsers.end()) {
                     parsers[name] = parser;
@@ -59,8 +59,8 @@ namespace PAX {
             }
 
             bool registerParser(const std::string &name,
-                                const typename LambdaJsonPropertyContainerPrefabElementParser<C>::Callback &lambda) {
-                return registerParser(name, new LambdaJsonPropertyContainerPrefabElementParser<C>(lambda));
+                                const typename LambdaJsonEntityPrefabElementParser<EntityType>::Callback &lambda) {
+                return registerParser(name, new LambdaJsonEntityPrefabElementParser<EntityType>(lambda));
             }
 
             bool unregisterParser(const std::string &name) {
@@ -73,24 +73,24 @@ namespace PAX {
                 return false;
             }
 
-            const std::map<std::string, JsonPropertyContainerPrefabElementParser<C> *> & getRegister() {
+            const std::map<std::string, JsonEntityPrefabElementParser<EntityType> *> & getRegister() {
                 return parsers;
             }
         };
 
-        template<typename C>
-        class JsonPropertyContainerPrefab : public PropertyContainerPrefab<C> {
+        template<typename EntityType>
+        class JsonEntityPrefab : public EntityPrefab<EntityType> {
             using json = nlohmann::json;
 
             std::shared_ptr<json> rootNode;
             Path path;
 
-            void parse(json &parent, const std::string &childname, C &c, const VariableRegister & variableRegister) {
+            void parse(json &parent, const std::string &childname, EntityType & e, const VariableRegister & variableRegister) {
                 const auto &parserRegister = Parsers.getRegister();
                 const auto &it = parserRegister.find(childname);
                 if (it != parserRegister.end()) {
                     if (parent.count(childname) > 0) {
-                        it->second->parse(parent[childname], c, *this, variableRegister);
+                        it->second->parse(parent[childname], e, *this, variableRegister);
                     }
                 } else {
                     PAX_LOG(Log::Level::Warn, "ignoring element " << childname << " because no parser is registered for it!");
@@ -98,12 +98,12 @@ namespace PAX {
             }
 
         public:
-            static JsonProperyContainerPrefabElementParserRegister<C> Parsers;
+            static JsonEntityPrefabElementParserRegister<EntityType> Parsers;
 
-            explicit JsonPropertyContainerPrefab(const std::shared_ptr<json> &file, const Path &path)
-                    : PropertyContainerPrefab<C>(), rootNode(file), path(path) {}
+            explicit JsonEntityPrefab(const std::shared_ptr<json> &file, const Path &path)
+                    : EntityPrefab<EntityType>(), rootNode(file), path(path) {}
 
-            virtual ~JsonPropertyContainerPrefab() = default;
+            virtual ~JsonEntityPrefab() = default;
 
             Path resolvePath(const std::string & str) {
                 Path p = Path(VariableResolver::resolveVariables(str, Prefab::PreDefinedVariables));
@@ -118,56 +118,56 @@ namespace PAX {
             static void initialize(Resources &resources) {
                 Parsers.registerParser(
                         "Inherits",
-                        [&resources](json &node, C &c, JsonPropertyContainerPrefab<C> &prefab, const VariableRegister & variableRegister) {
+                        [&resources](json &node, EntityType &e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
                             for (auto &el : node.items()) {
                                 Path parentPath = prefab.path.getDirectory() + el.value();
-                                std::shared_ptr<PropertyContainerPrefab<C>> parentPrefab;
+                                std::shared_ptr<EntityPrefab<EntityType>> parentPrefab;
 
                                 const auto &it = prefab.parentPrefabs.find(parentPath);
                                 if (it != prefab.parentPrefabs.end()) {
                                     parentPrefab = it->second;
                                 } else {
-                                    parentPrefab = resources.loadOrGet<PropertyContainerPrefab<C>>(
+                                    parentPrefab = resources.loadOrGet<EntityPrefab<EntityType>>(
                                             parentPath);
                                     prefab.parentPrefabs[parentPath] = parentPrefab;
                                 }
 
-                                parentPrefab->addMyContentTo(c, variableRegister);
+                                parentPrefab->addMyContentTo(e, variableRegister);
                             }
                         });
 
                 Parsers.registerParser(
                         "Properties",
-                        [&resources](json &node, C &c, JsonPropertyContainerPrefab<C> &prefab, const VariableRegister & variableRegister) {
-                            std::vector<Property<C> *> props;
+                        [&resources](json &node, EntityType & e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
+                            std::vector<Property<EntityType> *> props;
 
                             ContentProvider contentProvider(resources,
                                                             variableRegister);
 
                             for (auto &el : node.items()) {
                                 const std::string propTypeName = el.key();
-                                IPropertyFactory<C> *propertyFactory = PropertyFactoryRegister<C>::getFactoryFor(
+                                IPropertyFactory<EntityType> *propertyFactory = PropertyFactoryRegister<EntityType>::getFactoryFor(
                                         propTypeName);
 
                                 if (propertyFactory) {
                                     JsonPropertyContent content(el.value());
                                     contentProvider.setContent(&content);
 
-                                    // If the container already has properties of the given type we wont create a new one,
+                                    // If the entity already has properties of the given type we won't create a new one
                                     // but instead overwrite the old ones with the newer settings.
                                     const PAX::TypeHandle &propType = propertyFactory->getPropertyType();
                                     bool isPropMultiple = propertyFactory->isPropertyMultiple();
 
-                                    if (c.has(propType, isPropMultiple)) {
+                                    if (e.has(propType, isPropMultiple)) {
                                         // Get the corresponding property/ies
                                         if (isPropMultiple) {
-                                            const std::vector<Property<C> *> &existingProperties = c.getMultiple(
+                                            const std::vector<Property<EntityType> *> &existingProperties = e.getMultiple(
                                                     propType);
-                                            for (Property<C> *existingProperty : existingProperties) {
+                                            for (Property<EntityType> *existingProperty : existingProperties) {
                                                 propertyFactory->reinit(existingProperty, contentProvider);
                                             }
                                         } else {
-                                            propertyFactory->reinit(c.getSingle(propType), contentProvider);
+                                            propertyFactory->reinit(e.getSingle(propType), contentProvider);
                                         }
                                     } else {
                                         props.emplace_back(propertyFactory->create(contentProvider));
@@ -182,8 +182,8 @@ namespace PAX {
                                 size_t numOfPropsToAdd = props.size();
 
                                 for (auto it = props.begin(); it != props.end(); ++it) {
-                                    if ((*it)->areDependenciesMetFor(c)) {
-                                        c.add(*it);
+                                    if ((*it)->areDependenciesMetFor(e)) {
+                                        e.add(*it);
                                         props.erase(it);
                                         break;
                                     }
@@ -200,23 +200,23 @@ namespace PAX {
                         });
             }
 
-            C * create(const VariableRegister & variableRegister) override {
-                C * c = nullptr;
+            EntityType * create(const VariableRegister & variableRegister) override {
+                EntityType * e = nullptr;
 
                 // TODO: Agree on global Allocator for PropertyContainers!!!
-                c = new C();
+                e = new EntityType();
 
-                addMyContentTo(*c, variableRegister);
-                return c;
+                addMyContentTo(*e, variableRegister);
+                return e;
             }
 
-            void addMyContentTo(C &c, const VariableRegister & variableRegister) override {
+            void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {
                 // Compose given variables with the predefined ones.
                 // Therefore, copy the given VariableRegister, such that duplicates
                 // are override with the custom variables.
                 VariableRegister composedVariableRegister = variableRegister;
-                composedVariableRegister.insert(PropertyContainerPrefab<C>::PreDefinedVariables.begin(),
-                                                PropertyContainerPrefab<C>::PreDefinedVariables.end());
+                composedVariableRegister.insert(EntityPrefab<EntityType>::PreDefinedVariables.begin(),
+                                                EntityPrefab<EntityType>::PreDefinedVariables.end());
 
                 std::vector<std::string> parseOrder = {
                         "Inherits",
@@ -225,13 +225,13 @@ namespace PAX {
 
                 for (const std::string & name : parseOrder) {
                     if (rootNode->count(name) > 0) {
-                        parse(*rootNode.get(), name, c, composedVariableRegister);
+                        parse(*rootNode.get(), name, e, composedVariableRegister);
                     }
                 }
 
                 for (auto &el : rootNode->items()) {
                     if (!Util::vectorContains(parseOrder, el.key())) {
-                        parse(*rootNode.get(), el.key(), c, composedVariableRegister);
+                        parse(*rootNode.get(), el.key(), e, composedVariableRegister);
                     }
                 }
             }
@@ -241,9 +241,9 @@ namespace PAX {
             }
         };
 
-        template<typename C>
-        JsonProperyContainerPrefabElementParserRegister<C> JsonPropertyContainerPrefab<C>::Parsers;
+        template<typename EntityType>
+        JsonEntityPrefabElementParserRegister<EntityType> JsonEntityPrefab<EntityType>::Parsers;
     }
 }
 
-#endif //POLYPROPYLENE_JSONPROPERTYCONTAINERPREFAB_H
+#endif //POLYPROPYLENE_JSONENTITYPREFAB_H

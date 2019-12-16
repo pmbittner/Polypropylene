@@ -31,15 +31,15 @@ set(HEADERS_FOR_CLION
 
         property/Property.h
         property/PropertyAnnotations.h
-        property/PropertyContainer.h
-        property/PropertyContainerManager.h
-        property/PropertyContainerManagerView.h
+        property/Entity.h
+        property/EntityManager.h
+        property/EntityManagerView.h
         property/PropertyDependencies.h
         property/construction/PropertyFactory.h
         property/construction/ContentProvider.h
-        property/construction/PropertyContainerPrefab.h
-        property/construction/json/JsonPropertyContainerPrefab.h
-        property/construction/json/JsonPropertyContainerPrefabLoader.h
+        property/construction/EntityPrefab.h
+        property/construction/json/JsonEntityPrefab.h
+        property/construction/json/JsonEntityPrefabLoader.h
         property/construction/json/JsonPropertyContent.h
 
         reflection/TemplateTypeToString.h
@@ -65,7 +65,7 @@ PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})
 set(SOURCE_FILES
         StringUtils.cpp
         io/Path.cpp
-        property/PropertyContainer.cpp
+        property/Entity.cpp
         io/Settings.cpp
         reflection/TypeRegister.cpp
         property/construction/ContentProvider.cpp
@@ -78,7 +78,8 @@ set(SOURCE_FILES
         Signature.cpp
         resources/Resources.cpp
         log/Log.cpp
-        property/construction/PropertyContainerPrefab.cpp
-        json/JsonUtil.cpp event/Event.cpp)
+        property/construction/EntityPrefab.cpp
+        json/JsonUtil.cpp
+        event/Event.cpp)
 
-add_library(proteus ${HEADERS_FOR_CLION} ${SOURCE_FILES})
+add_library(polypropylene ${HEADERS_FOR_CLION} ${SOURCE_FILES})
