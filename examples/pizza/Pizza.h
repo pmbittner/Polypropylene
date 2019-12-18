@@ -7,7 +7,7 @@
 
 #include <polypropylene/property/Entity.h>
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     class Pizza : public PAX::Entity<Pizza> {
     public:
         void yummy();

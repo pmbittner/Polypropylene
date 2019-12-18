@@ -7,7 +7,7 @@
 
 #include "../Topping.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     class TomatoSauce : public Topping {
         PAX_PROPERTY(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
         PAX_PROPERTY_DERIVES(Topping)

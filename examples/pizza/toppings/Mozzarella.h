@@ -7,7 +7,7 @@
 
 #include "Cheese.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     class Mozzarella : public Cheese {
         PAX_PROPERTY(Mozzarella, PAX_PROPERTY_IS_CONCRETE)
         PAX_PROPERTY_DERIVES(Cheese)

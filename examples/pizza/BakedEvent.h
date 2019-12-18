@@ -7,7 +7,7 @@
 
 #include "polypropylene/event/Event.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     struct BakedEvent : public ::PAX::Event {
 
     };

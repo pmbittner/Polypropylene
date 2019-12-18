@@ -4,14 +4,14 @@
 
 #include "TomatoSauce.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     PAX_PROPERTY_SOURCE(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
 
-    Proteus::Examples::TomatoSauce::This * TomatoSauce::createFromProvider(::PAX::ContentProvider & ) {
+    TomatoSauce::This * TomatoSauce::createFromProvider(PAX::ContentProvider & ) {
         return new TomatoSauce();
     }
 
-    void Proteus::Examples::TomatoSauce::initializeFromProvider(PAX::ContentProvider & c) {
+    void TomatoSauce::initializeFromProvider(PAX::ContentProvider & c) {
         if (std::optional<int> scov = c.get<int>("scoville")) {
             scoville = scov.value();
         }

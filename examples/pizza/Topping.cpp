@@ -4,7 +4,7 @@
 
 #include "Topping.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     PAX_PROPERTY_SOURCE(Topping, PAX_PROPERTY_IS_ABSTRACT)
 
     void Topping::initializeFromProvider(PAX::ContentProvider &) {}

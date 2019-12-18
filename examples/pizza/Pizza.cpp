@@ -6,7 +6,7 @@
 #include "Topping.h"
 #include "BakedEvent.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     void Pizza::yummy() {
         std::string message = "Pizza:\n";
         for (Topping * t : get<Topping>()) {

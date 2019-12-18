@@ -4,10 +4,10 @@
 
 #include "Champignon.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     PAX_PROPERTY_SOURCE(Champignon, PAX_PROPERTY_IS_CONCRETE)
 
-    Proteus::Examples::Champignon::This * Champignon::createFromProvider(::PAX::ContentProvider & ) {
+    Champignon::This * Champignon::createFromProvider(PAX::ContentProvider & ) {
         return new Champignon();
     }
 

@@ -9,7 +9,7 @@
 #include "TomatoSauce.h"
 #include "../BakedEvent.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     class Cheese : public Topping {
         PAX_PROPERTY(Cheese, PAX_PROPERTY_IS_ABSTRACT)
         PAX_PROPERTY_DERIVES(Topping)

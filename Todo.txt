@@ -8,3 +8,4 @@ General:
 - refine error message on prefab loading when dependencies are not met
 - dependency resolving upon remove
 - type system as built-in the engine
+- make ResourceLoaderT::loadToOrGetFromResources more intuitive

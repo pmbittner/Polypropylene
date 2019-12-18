@@ -11,9 +11,11 @@
 #include "ContentProvider.h"
 
 #define PAX_PROPERTY_REGISTER_AS(PropertyType, Name) \
-PAX_CONSTEXPR_IF (!PropertyType::IsAbstract()) { \
-    PropertyFactoryRegister<PropertyType::EntityType>::registerFactory<PropertyType>(Name); \
-}
+do { \
+    PAX_CONSTEXPR_IF (!PropertyType::IsAbstract()) { \
+        ::PAX::PropertyFactoryRegister<PropertyType::EntityType>::registerFactory<PropertyType>(Name); \
+    } \
+} while(0)
 
 #define PAX_PROPERTY_REGISTER(PropertyType) PAX_PROPERTY_REGISTER_AS(PropertyType, #PropertyType)
 

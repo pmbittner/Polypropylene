@@ -1,7 +1,7 @@
 {
   "Properties": {
-    "Proteus::Examples::Mozzarella": {},
-    "Proteus::Examples::TomatoSauce": {
+    "PAX::Examples::Mozzarella": {},
+    "PAX::Examples::TomatoSauce": {
       "scoville": "${spicyness}"
     }
   }

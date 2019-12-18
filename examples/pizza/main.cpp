@@ -14,17 +14,32 @@
 #include "polypropylene/property/construction/json/JsonEntityPrefabLoader.h"
 #endif
 
+/**
+ * Each type of property has to be registered before it can be used in prefabs.
+ * A property is registered by exactly that name given to PAX_PROPERTY_REGISTER.
+ * For instance,
+ * \code{.cpp}
+ *     PAX_PROPERTY_REGISTER(PAX::Examples::Mozzarella)
+ * \endcode
+ * registers Mozzarella as "PAX::Examples::Mozzarella",
+ * whereas
+ * \code{.cpp}
+ *     using namespace PAX::Examples;
+ *     PAX_PROPERTY_REGISTER(Mozzarella)
+ * \endcode
+ * registers Mozzarella as "Mozzarella".
+ * The registered name is used for identifiying property types upon deserialisation, e.g., in json files.
+ * Custom names can be specified with PAX_PROPERTY_REGISTER_AS(propertyType, strName)
+ */
 void registerPropertyTypes() {
-    using namespace PAX;
-    PAX_PROPERTY_REGISTER(Proteus::Examples::Mozzarella)
-    PAX_PROPERTY_REGISTER(Proteus::Examples::Champignon)
-    PAX_PROPERTY_REGISTER(Proteus::Examples::TomatoSauce)
+    PAX_PROPERTY_REGISTER(PAX::Examples::Mozzarella);
+    PAX_PROPERTY_REGISTER(PAX::Examples::Champignon);
+    PAX_PROPERTY_REGISTER(PAX::Examples::TomatoSauce);
 }
 
 int main(int argc, char** argv) {
     using namespace PAX;
-    using namespace Proteus;
-    using namespace Proteus::Examples;
+    using namespace PAX::Examples;
 
     /// INITIAL SETUP
     registerPropertyTypes();
@@ -69,43 +84,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
-
-/*
-
-struct Printable {
-    char* (*print)(void) = NULL;
-    void (*ficken)(int, int) = NULL;
-};
-
-struct MoesGeileKlasse {
-    char geilheit = 9001;
-};
-
-/// Printable impl for Moe
-MoesGeileKlasse * __Printable_Moe;
-
-char * _MoesGeileKlasse_Printable_print() {
-    return &__Printable_Moe->geilheit;
-}
-
-void _MoesGeileKlasse_Printable_ficken(int a, int b) {
-
-}
-
-Printable * getPrintableMoe() {
-    Printable * p = new Printable;
-    p->print = &_MoesGeileKlasse_Printable_print;
-    p->ficken = &_MoesGeileKlasse_Printable_ficken;
-    return p;
-}
-
-float mainsss() {
-    MoesGeileKlasse moe;
-    __Printable_Moe = &moe;
-    Printable * moePrintImpl = getPrintableMoe();
-    printf(moePrintImpl->print);
-    moePrintImpl->ficken(1, 2);
-    __Printable_Moe = NULL;
-}
-//*/

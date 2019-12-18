@@ -4,10 +4,10 @@
 
 #include "Mozzarella.h"
 
-namespace Proteus::Examples {
+namespace PAX::Examples {
     PAX_PROPERTY_SOURCE(Mozzarella, PAX_PROPERTY_IS_CONCRETE)
 
-    Proteus::Examples::Mozzarella * Mozzarella::createFromProvider(::PAX::ContentProvider & ) {
+    Mozzarella * Mozzarella::createFromProvider(::PAX::ContentProvider & ) {
         return new Mozzarella();
     }
 
