@@ -9,6 +9,9 @@
 #include "../macros/Definitions.h"
 #include "construction/PropertyFactory.h"
 
+#include "event/PropertyAttachedEvent.h"
+#include "event/PropertyDetachedEvent.h"
+
 namespace PAX {
     template<class C>
     class Entity;
