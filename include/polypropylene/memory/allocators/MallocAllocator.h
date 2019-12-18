@@ -9,6 +9,10 @@
 #include <cstdlib>
 
 namespace PAX {
+    /**
+     * Allocator that simply mallocs or frees single elements.
+     * @tparam ElementSize
+     */
     template<size_t ElementSize>
     class MallocAllocator : public Allocator<ElementSize> {
     public:

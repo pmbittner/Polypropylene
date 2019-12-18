@@ -1,11 +1,10 @@
 Before publish:
 - Example with Manager and View (and Systems thereby?)
 - Integrate Systems?
-- rename proteus to pax in examples
-- entity allocation?
 
 General:
 - refine error message on prefab loading when dependencies are not met
 - dependency resolving upon remove
 - type system as built-in the engine
 - make ResourceLoaderT::loadToOrGetFromResources more intuitive
+- entity allocation
