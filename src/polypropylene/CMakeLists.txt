@@ -6,9 +6,6 @@ set(HEADERS_FOR_CLION
         event/EventHandler.h
         event/EventService.h
 
-        genericfactory/GenericFactory.h
-        genericfactory/GenericFactoryService.h
-
         io/FileTypeChecker.h
         io/Path.h
         io/Settings.h
