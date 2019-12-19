@@ -2,8 +2,8 @@
 // Created by Paul on 13.08.2019.
 //
 
-#ifndef PAXENGINE3_PROPERTYOWNINGSYSTEM_H
-#define PAXENGINE3_PROPERTYOWNINGSYSTEM_H
+#ifndef POLYPROPYLENE_PROPERTYOWNINGSYSTEM_H
+#define POLYPROPYLENE_PROPERTYOWNINGSYSTEM_H
 
 #include <polypropylene/memory/AllocationService.h>
 #include "System.h"
@@ -73,4 +73,4 @@ namespace PAX {
     };
 }
 
-#endif //PAXENGINE3_PROPERTYOWNINGSYSTEM_H
+#endif //POLYPROPYLENE_PROPERTYOWNINGSYSTEM_H
