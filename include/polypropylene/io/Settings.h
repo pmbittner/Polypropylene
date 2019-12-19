@@ -88,7 +88,7 @@ namespace PAX {
             std::vector<T> tuple(stringTuple.size());
 
             for (unsigned int i = 0; i < stringTuple.size(); ++i) {
-                tuple[i] = Util::String::tryParse<T>(stringTuple[i]);
+                tuple[i] = String::tryParse<T>(stringTuple[i]);
             }
 
             return tuple;

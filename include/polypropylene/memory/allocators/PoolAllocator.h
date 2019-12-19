@@ -7,6 +7,7 @@
 
 #include "../Allocator.h"
 #include <polypropylene/log/Errors.h>
+#include <cstring>
 
 namespace PAX {
     /// A PoolAllocator of fixed capacity.
