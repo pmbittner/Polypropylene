@@ -14,4 +14,5 @@ namespace PAX::Examples {
         void bake();
     };
 }
+
 #endif //PROTEUS_PIZZA_H
