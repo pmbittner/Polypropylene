@@ -102,7 +102,7 @@ namespace PAX {
         void activate() {
             if (active) return;
             active = true;
-            auto props = getAll();
+            auto props = getAllProperties();
             for (Property<Derived> * p : props) {
                 p->active = true;
                 p->activated();
@@ -116,7 +116,7 @@ namespace PAX {
         void deactivate() {
             if (!active) return;
             active = false;
-            auto props = getAll();
+            auto props = getAllProperties();
             for (Property<Derived> * p : props) {
                 p->active = false;
                 p->deactivated();
