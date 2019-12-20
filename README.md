@@ -174,7 +174,6 @@ Event services may optionally be linked such that events can be exchanged betwee
                Upon logging, timestamp, severity, and the function containing the log statement are printed.
                It provides several levels of severity for messages, such as `Info`, `Debug`, or `Error`.
 - **Path** data type for platform agnostic path specification, simplification, and navigation
-- Parser for simple but powerful `config files` (regular language)
 - Inclusion of the [nlohmann::json library][1] for loading json files
 
 

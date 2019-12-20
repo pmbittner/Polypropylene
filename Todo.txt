@@ -1,10 +1,10 @@
 Before publish:
 - Example with Manager and View (and Systems thereby?)
 - Recheck project structure
-
-After publish:;
+- move and rename contentprovider and propertycontent
 
 General:
+- Logo
 - refine error message on prefab loading when dependencies are not met
 - dependency resolving upon remove
 - type system as built-in the engine

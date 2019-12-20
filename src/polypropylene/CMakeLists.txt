@@ -8,7 +8,6 @@ set(HEADERS_FOR_CLION
 
         io/FileTypeChecker.h
         io/Path.h
-        io/Settings.h
 
         log/Errors.h
         log/Log.h
@@ -64,7 +63,6 @@ set(SOURCE_FILES
         event/EventService.cpp
 
         io/Path.cpp
-        io/Settings.cpp
 
         property/Entity.cpp
         property/construction/ContentProvider.cpp
@@ -73,6 +71,8 @@ set(SOURCE_FILES
         resources/Resources.cpp
         resources/ResourceLoader.cpp
         resources/ResourceHandle.cpp
+
+        system/System.cpp
 
         log/Log.cpp
 
@@ -93,7 +93,8 @@ if (POLYPROPYLENE_WITH_JSON)
     set(SOURCE_FILES ${SOURCE_FILES}
             json/JsonUtil.cpp
             json/JsonLoader.cpp
-            property/construction/json/JsonPropertyContent.cpp system/System.cpp json/JsonParser.cpp)
+            json/JsonParser.cpp
+            property/construction/json/JsonPropertyContent.cpp)
 endif(POLYPROPYLENE_WITH_JSON)
 
 PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})
