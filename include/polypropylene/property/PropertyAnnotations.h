@@ -11,10 +11,30 @@
 
 /// Generators
 
-//#define ENABLE_PROPERTY_CREATE_BY_NAME
+//#define PAX_OVERWRITE_NEW_AND_DELETE_FOR_PROPERTIES
+
+#ifdef PAX_OVERWRITE_NEW_AND_DELETE_FOR_PROPERTIES
+    #define _PAX_GENERATE_PROPERTY_NEW_AND_DELETE_HEADER_ \
+    public: \
+        static void* operator new(std::size_t sz); \
+        static void operator delete(void * object); \
+    private:
+
+    #define _PAX_GENERATE_PROPERTY_NEW_AND_DELETE_SOURCE_ \
+    void* Type::operator new(std::size_t sz) { \
+        return EntityType::GetPropertyAllocator().allocate<Type>(); \
+    } \
+    void Type::operator delete(void * object) { \
+        EntityType::GetPropertyAllocator().free(paxtypeid(Type), object); \
+    }
+
+#else
+    #define _PAX_GENERATE_PROPERTY_NEW_AND_DELETE_HEADER_
+    #define _PAX_GENERATE_PROPERTY_NEW_AND_DELETE_SOURCE_
+#endif
 
 // TODO: Find a way to make add and remove methods in PropertyContainer private.
-#define PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE(Type, methodName, asMultiple, asSingle, EventType) \
+#define _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(Type, methodName, asMultiple, asSingle, EventType) \
 bool Type::methodName(EntityType & e) { \
     if (Super::methodName(e)) { \
         PAX_CONSTEXPR_IF (This::IsMultiple()) { \
@@ -36,21 +56,15 @@ bool Type::methodName(EntityType & e) { \
 /// Mandatory
 #define PAX_PROPERTY(Typename, IfConcrete) \
 public: \
+    friend class PropertyFactory<Typename, EntityType>; \
     const ::PAX::TypeHandle& getClassType() const override; \
     static constexpr bool IsAbstract() { return IfConcrete(false &&) true; } \
 protected: \
     using This = Typename; \
     bool PAX_INTERNAL(addTo)(EntityType & e) override; \
     bool PAX_INTERNAL(removeFrom)(EntityType & e) override; \
-    void initializeFromProvider(::PAX::ContentProvider & contentProvider) override; \
 private: \
-IfConcrete( \
-public: \
-    static This * createFromProvider(::PAX::ContentProvider & contentProvider); \
-    static void* operator new(std::size_t sz); \
-    static void operator delete(void * object); \
-private: \
-)
+IfConcrete(_PAX_GENERATE_PROPERTY_NEW_AND_DELETE_HEADER_)
 
 #define PAX_PROPERTY_DERIVES(Parent) \
 public: \
@@ -79,18 +93,11 @@ private:
 ///// SOURCE
 
 #define PAX_PROPERTY_SOURCE(Type, IfConcrete) \
-    PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE(Type, PAX_INTERNAL(addTo), PAX_INTERNAL(addAsMultiple), PAX_INTERNAL(addAsSingle), ::PAX::PropertyAttachedEvent) \
-    PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE(Type, PAX_INTERNAL(removeFrom), PAX_INTERNAL(removeAsMultiple), PAX_INTERNAL(removeAsSingle), ::PAX::PropertyDetachedEvent) \
+    _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(Type, PAX_INTERNAL(addTo), PAX_INTERNAL(addAsMultiple), PAX_INTERNAL(addAsSingle), ::PAX::PropertyAttachedEvent) \
+    _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(Type, PAX_INTERNAL(removeFrom), PAX_INTERNAL(removeAsMultiple), PAX_INTERNAL(removeAsSingle), ::PAX::PropertyDetachedEvent) \
     const ::PAX::TypeHandle& Type::getClassType() const { \
         static PAX::TypeHandle myType = typeid(This); \
         return myType; \
-    } IfConcrete( \
-/*    ::PAX::PropertyFactory<Type, Type::Container> Type::__ByNameFactory(#Type);*/ \
-    void* Type::operator new(std::size_t sz) { \
-        return EntityType::GetPropertyAllocator().allocate<Type>(); \
-    } \
-    void Type::operator delete(void * object) { \
-        EntityType::GetPropertyAllocator().free(paxtypeid(Type), object); \
-    })
+    } IfConcrete(_PAX_GENERATE_PROPERTY_NEW_AND_DELETE_SOURCE_)
 
 #endif //POLYPROPYLENE_PROPERTYANNOTATIONS_H

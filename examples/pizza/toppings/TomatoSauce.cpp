@@ -2,21 +2,16 @@
 // Created by Bittner on 06.12.2019.
 //
 
+#include <polypropylene/reflection/ClassMetadata.h>
 #include "TomatoSauce.h"
 
 namespace PAX::Examples {
     PAX_PROPERTY_SOURCE(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
 
-    TomatoSauce::This * TomatoSauce::createFromProvider(PAX::ContentProvider & ) {
-        return new TomatoSauce();
-    }
-
-    void TomatoSauce::initializeFromProvider(PAX::ContentProvider & c) {
-        if (std::optional<int> scov = c.get<int>("scoville")) {
-            scoville = scov.value();
-        }
-
-        Super::initializeFromProvider(c);
+    ClassMetadata TomatoSauce::getMetadata() {
+        ClassMetadata m = Super::getMetadata();
+        m.add({"scoville", paxtypeof(int), &scoville});
+        return m;
     }
 
     std::string TomatoSauce::yummy() {

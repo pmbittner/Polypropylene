@@ -39,7 +39,8 @@ set(HEADERS_FOR_CLION
         reflection/TemplateTypeToString.h
         reflection/TypeHandle.h
         reflection/TypeMap.h
-        reflection/TypeRegister.h
+        reflection/ClassMetadata.h
+        reflection/Field.h
 
         resources/Resources.h
         resources/ResourceHandle.h
@@ -55,21 +56,28 @@ set(HEADERS_FOR_CLION
         json/JsonFwd.h)
 
 set(SOURCE_FILES
+        Signature.cpp
         StringUtils.cpp
-        io/Path.cpp
-        property/Entity.cpp
-        io/Settings.cpp
-        reflection/TypeRegister.cpp
-        property/construction/ContentProvider.cpp
-        event/EventService.cpp
         StringVariables.cpp
+
+        event/Event.cpp
+        event/EventService.cpp
+
+        io/Path.cpp
+        io/Settings.cpp
+
+        property/Entity.cpp
+        property/construction/ContentProvider.cpp
+        property/construction/EntityPrefab.cpp
+
+        resources/Resources.cpp
         resources/ResourceLoader.cpp
         resources/ResourceHandle.cpp
-        Signature.cpp
-        resources/Resources.cpp
+
         log/Log.cpp
-        property/construction/EntityPrefab.cpp
-        event/Event.cpp)
+
+        reflection/ClassMetadata.cpp
+        reflection/Field.cpp)
 
 if (POLYPROPYLENE_WITH_JSON)
     set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}
@@ -85,7 +93,7 @@ if (POLYPROPYLENE_WITH_JSON)
     set(SOURCE_FILES ${SOURCE_FILES}
             json/JsonUtil.cpp
             json/JsonLoader.cpp
-            property/construction/json/JsonPropertyContent.cpp system/System.cpp)
+            property/construction/json/JsonPropertyContent.cpp system/System.cpp json/JsonParser.cpp)
 endif(POLYPROPYLENE_WITH_JSON)
 
 PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})

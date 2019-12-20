@@ -9,13 +9,43 @@
 
 #include "JsonUtil.h"
 #include "../TryParser.h"
+#include "../reflection/TypeMap.h"
+#include "../reflection/Field.h"
 
 namespace PAX {
-    template<class To>
-    class TryParser<nlohmann::json, To> {
+    class IJsonParser {
     public:
-        PAX_NODISCARD static To tryParse(const nlohmann::json & f) {
-            return String::tryParse<To>(JsonToString(f));
+        PAX_NODISCARD virtual bool loadIntoField(const nlohmann::json & j, Field & field) const = 0;
+    };
+
+    class JsonParserRegister {
+        static JsonParserRegister * instance;
+        TypeMap<IJsonParser*> parsers;
+
+    public:
+        PAX_NODISCARD static JsonParserRegister * Instance();
+        PAX_NODISCARD IJsonParser * getParserFor(const PAX::TypeHandle & type) const;
+    };
+
+    template<class T>
+    class TryParser<nlohmann::json, T> {
+    public:
+        PAX_NODISCARD static T tryParse(const nlohmann::json & f) {
+            return String::tryParse<T>(JsonToString(f));
+        }
+    };
+
+    template<class T>
+    class JsonParser : public IJsonParser {
+    public:
+        PAX_NODISCARD bool loadIntoField(const nlohmann::json & j, Field & field) const override {
+            if (field.type == paxtypeof(T)) {
+                // TODO: Move?
+                *static_cast<T*>(field.data) = TryParser<nlohmann::json, T>::tryParse<T>(j);
+                return true;
+            }
+
+            return false;
         }
     };
 

@@ -12,6 +12,6 @@ namespace PAX {
 }
 
 #define paxtypeid(T) typeid(T)
-#define paxtypeof(T) PAX::TypeHandle(paxtypeid(T))
+#define paxtypeof(T) ::PAX::TypeHandle(paxtypeid(T))
 
 #endif //POLYPROPYLENE_TYPEINFO_H

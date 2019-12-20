@@ -156,22 +156,17 @@ namespace PAX {
                                     // If the entity already has properties of the given type we won't create a new one
                                     // but instead overwrite the old ones with the newer settings.
                                     const PAX::TypeHandle &propType = propertyFactory->getPropertyType();
-                                    bool isPropMultiple = propertyFactory->isPropertyMultiple();
+                                    const bool isPropMultiple = propertyFactory->isPropertyMultiple();
 
-                                    if (e.has(propType, isPropMultiple)) {
-                                        // Get the corresponding property/ies
-                                        if (isPropMultiple) {
-                                            const std::vector<Property<EntityType> *> &existingProperties = e.getMultiple(
-                                                    propType);
-                                            for (Property<EntityType> *existingProperty : existingProperties) {
-                                                propertyFactory->reinit(existingProperty, contentProvider);
-                                            }
-                                        } else {
-                                            propertyFactory->reinit(e.getSingle(propType), contentProvider);
-                                        }
+                                    if (!isPropMultiple && e.has(propType, isPropMultiple)) {
+                                        Property<EntityType> * property = e.getSingle(propType);
+                                        contentProvider.writeToMetadata(property->getMetadata(), ContentProvider::Options::IgnoreMandatoryFlags);
                                     } else {
-                                        props.emplace_back(propertyFactory->create(contentProvider));
+                                        Property<EntityType> * property = propertyFactory->create(contentProvider);
+                                        contentProvider.writeToMetadata(property->getMetadata());
+                                        props.emplace_back(property);
                                     }
+
 
                                     contentProvider.setContent(nullptr);
                                 }
@@ -191,9 +186,7 @@ namespace PAX {
 
                                 if (numOfPropsToAdd == props.size()) {
                                     // Not a single property could be added to the Entity because not a single dependency is met!
-                                    std::cerr
-                                            << "[JsonPropertyContainerPrefab::parse \"properties\"] Error during adding properties! Dependencies could not be met!"
-                                            << std::endl;
+                                    PAX_LOG(Log::Level::Error, "Parsing \"Properties\": Error during adding properties! Dependencies could not be met!");
                                     break;
                                 }
                             }

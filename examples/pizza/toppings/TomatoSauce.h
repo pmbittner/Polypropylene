@@ -15,9 +15,13 @@ namespace PAX::Examples {
 
         int scoville = 0;
 
+
+        TomatoSauce() = default;
+
     public:
         std::string yummy() override;
 
+        ClassMetadata getMetadata() override;
         void setSpicyness(float scoville);
     };
 }

@@ -5,8 +5,10 @@
 #ifndef POLYPROPYLENE_ENTITY_H
 #define POLYPROPYLENE_ENTITY_H
 
+#include <cassert>
 #include <vector>
 #include <iostream>
+#include <optional>
 
 #include "../macros/CompilerDetection.h"
 #include "../memory/AllocationService.h"

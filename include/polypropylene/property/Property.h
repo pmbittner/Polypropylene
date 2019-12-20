@@ -5,6 +5,7 @@
 #ifndef POLYPROPYLENE_PROPERTY_H
 #define POLYPROPYLENE_PROPERTY_H
 
+#include <polypropylene/reflection/ClassMetadata.h>
 #include "../reflection/TypeHandle.h"
 #include "../macros/Definitions.h"
 #include "construction/PropertyFactory.h"
@@ -57,8 +58,6 @@ namespace PAX {
         virtual void attached(E &) {}
         virtual void detached(E &) {}
 
-        virtual void initializeFromProvider(ContentProvider & provider) = 0;
-
     public:
         Property() : owner(nullptr) {}
         virtual ~Property() = default;
@@ -66,15 +65,12 @@ namespace PAX {
         PAX_NODISCARD E * getOwner() const { return owner; }
 
         PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
+        PAX_NODISCARD virtual ClassMetadata getMetadata() { return {}; }
         PAX_NODISCARD virtual bool isMultiple() const { return IsMultiple(); }
         PAX_NODISCARD virtual bool areDependenciesMetFor(const E&) const { return true; }
 
         PAX_NODISCARD bool isActive() const { return active; }
     };
-
-    /// Provide an implementation for this pure virtual function to allow calling it from subtypes.
-    template<typename C>
-    void Property<C>::initializeFromProvider(ContentProvider & provider) {}
 }
 
 #include "PropertyAnnotations.h"

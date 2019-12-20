@@ -8,25 +8,24 @@
 #ifdef PAX_WITH_JSON
 
 #include <polypropylene/property/construction/ContentProvider.h>
+// TODO: Find a way to include JsonFwd.h here instead of Json.h
 #include <polypropylene/json/Json.h>
 
-namespace PAX {
-    namespace Json {
-        class JsonPropertyContent : public Internal::PropertyContent {
-            nlohmann::json node;
+namespace PAX::Json {
+    class JsonPropertyContent : public PropertyContent {
+        nlohmann::json node;
 
-        protected:
-            std::string getValue(const std::string &key, const VariableRegister & variables) override;
-            std::vector<std::string> getValues(const std::string & key, const VariableRegister & variables) override;
+    public:
+        explicit JsonPropertyContent(const nlohmann::json &node);
+        ~JsonPropertyContent() override;
 
-        public:
-            explicit JsonPropertyContent(const nlohmann::json &node);
-            ~JsonPropertyContent() override;
+        PAX_NODISCARD std::string getValue(const std::string &key, const VariableRegister & variables) const;
 
-            bool has(const std::string &name) override;
-            VariableHierarchy getResourceParametersFor(const std::string &name) override;
-        };
-    }
+        PAX_NODISCARD bool has(const std::string &name) const override;
+        PAX_NODISCARD VariableHierarchy getResourceParametersFor(const std::string &name) const override;
+        PAX_NODISCARD bool writeTo(Field & field, const VariableRegister &variables) const override;
+        void readFrom(Field & field) override;
+    };
 }
 
 #endif // PAX_WITH_JSON

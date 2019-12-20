@@ -7,10 +7,6 @@
 namespace PAX::Examples {
     PAX_PROPERTY_SOURCE(Cheese, PAX_PROPERTY_IS_ABSTRACT)
 
-    void Cheese::initializeFromProvider(PAX::ContentProvider & c) {
-        Super::initializeFromProvider(c);
-    }
-
     std::string Cheese::yummy() {
         return "Cheesyyyyyyy";
     }
