@@ -23,6 +23,7 @@ namespace PAX {
         TypeMap<IJsonParser*> parsers;
 
     public:
+        void registerParser(const PAX::TypeHandle & type, IJsonParser * parser);
         PAX_NODISCARD static JsonParserRegister * Instance();
         PAX_NODISCARD IJsonParser * getParserFor(const PAX::TypeHandle & type) const;
     };
@@ -41,7 +42,7 @@ namespace PAX {
         PAX_NODISCARD bool loadIntoField(const nlohmann::json & j, Field & field) const override {
             if (field.type == paxtypeof(T)) {
                 // TODO: Move?
-                *static_cast<T*>(field.data) = TryParser<nlohmann::json, T>::tryParse<T>(j);
+                *static_cast<T*>(field.data) = TryParser<nlohmann::json, T>::tryParse(j);
                 return true;
             }
 

@@ -12,6 +12,7 @@
 #ifdef PAX_WITH_JSON
 #include "polypropylene/json/JsonLoader.h"
 #include "polypropylene/property/construction/json/JsonEntityPrefabLoader.h"
+#include "polypropylene/json/JsonParser.h"
 #endif
 
 /**
@@ -47,6 +48,7 @@ int main(int argc, char** argv) {
     // Todo: Find a way to prebuild this
 #ifdef PAX_WITH_JSON
     Resources resources;
+    JsonParserRegister::Instance()->registerParser(paxtypeof(int), new JsonParser<int>());
     Json::JsonLoader jsonLoader;
     Json::JsonEntityPrefabLoader<Pizza> prefabLoader(resources);
     Json::JsonEntityPrefab<Pizza>::initialize(resources);

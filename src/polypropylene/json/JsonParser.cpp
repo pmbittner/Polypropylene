@@ -16,6 +16,10 @@ namespace PAX {
         return instance;
     }
 
+    void JsonParserRegister::registerParser(const PAX::TypeHandle & type, IJsonParser *parser) {
+        parsers.insert({type, parser});
+    }
+
     IJsonParser * JsonParserRegister::getParserFor(const PAX::TypeHandle & type) const {
         const auto & it = parsers.find(type);
         if (it != parsers.end()) {

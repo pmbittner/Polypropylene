@@ -112,7 +112,7 @@ Event services may optionally be linked such that events can be exchanged betwee
     ```
     Furthermore, a simplified specialised **EventHandler** inspired by C# events can be used to register and listen for a specific event types.
 
-- **Deserialisation**: Entities may be specified entirely in json files.
+- **Serialisation**: Entities may be specified entirely in json files.
     ```
     >>> margherita.json
     {
@@ -157,18 +157,14 @@ Event services may optionally be linked such that events can be exchanged betwee
   
     Pizza * pizzaFunghi = prefab->create({{"spicyness", spicyness}});
     ```
-    As C++ does not provide reflection information, properties are supposed to initialise themselves from the an abstracted representation of the json file:
+    As C++ does not provide reflection information, properties can provide metadata by their own for de-/serialisation:
     ```
-    void TomatoSauce::initializeFromProvider(PAX::ContentProvider & c) {
-        if (std::optional<int> scov = c.get<int>("scoville")) {
-            this->scoville = scov.value();
-        }
-
-        Super::initializeFromProvider(c);
+    ClassMetadata TomatoSauce::getMetadata() {
+        ClassMetadata m = Super::getMetadata();
+        m.add({"scoville", paxtypeof(int), &scoville});
+        return m;
     }
      ```
-    The ContentProvider has further utilities, such as `require` the presence of a variable or direct loading of resources.
-    For instance, where `get` would return the path to an image file, the image can directly be obtained with `getResource`.
 
 #### Further Utilities:
 - **Resource Management**: A centralised resource management decouples actual resource loaders from their callees.
