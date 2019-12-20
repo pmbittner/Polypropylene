@@ -25,6 +25,16 @@ namespace PAX {
         bool trimValues;
     };
 
+    /**
+     * This is a self-contained class for config file loading of a custom regular language consisting of assignments:
+     *
+     * # A very detailed comment
+     * appName = SettingsTest
+     * x = 500
+     * y = ${x} # y gets the value of x
+     * importantValue = 3.1415
+     * persons = (Alice, Bob, Eve)
+     */
     class Settings
     {
     private:
@@ -67,38 +77,38 @@ namespace PAX {
          * @param value The value the variable should have as a string.
          */
         void set(const std::string& varName, const std::string& value);
-        bool has(const std::string& varName) const;
+        PAX_NODISCARD bool has(const std::string& varName) const;
 
     private:
         void check(const std::string& varName) const;
 
         template<typename T>
-        std::vector<T> getTypeVector(const std::string &varName) const {
+        PAX_NODISCARD std::vector<T> getTypeVector(const std::string &varName) const {
             std::vector<std::string> stringTuple = getTypeVector<std::string>(varName);
             std::vector<T> tuple(stringTuple.size());
 
             for (unsigned int i = 0; i < stringTuple.size(); ++i) {
-                tuple[i] = Util::String::tryParse<T>(stringTuple[i]);
+                tuple[i] = String::tryParse<T>(stringTuple[i]);
             }
 
             return tuple;
         }
 
     public:
-        bool writeToFile(const Path& path, bool overwrite = false) const;
+        PAX_NODISCARD bool writeToFile(const Path& path, bool overwrite = false) const;
 
         /**
          * Returns false if the value is '0' or 'false'. Other values will result
          * in returning true.
          */
         template<typename T = std::string>
-        T get(const std::string& varName) const {
+        PAX_NODISCARD  T get(const std::string& varName) const {
             check(varName);
             return String::tryParse<T>(settings.at(varName));
         }
 
         template<typename T = std::string>
-        T getOrDefault(const std::string& varName, const T& defaultValue = T()) const {
+        PAX_NODISCARD T getOrDefault(const std::string& varName, const T& defaultValue = T()) const {
             if (has(varName))
                 return String::tryParse<T>(settings.at(varName));
             else
@@ -106,12 +116,12 @@ namespace PAX {
         }
 
         template<typename T = std::string>
-        std::vector<T> getVector(const std::string& varName) const {
+        PAX_NODISCARD std::vector<T> getVector(const std::string& varName) const {
             return getTypeVector<T>(varName);
         }
 
         template<typename T = std::string>
-        std::vector<T> getVectorOrDefault(const std::string& varName, const std::vector<T>& defaultValue = {}) const {
+        PAX_NODISCARD std::vector<T> getVectorOrDefault(const std::string& varName, const std::vector<T>& defaultValue = {}) const {
             if (has(varName))
                 return getTypeVector<T>(varName);
             else

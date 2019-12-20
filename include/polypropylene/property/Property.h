@@ -9,6 +9,9 @@
 #include "../macros/Definitions.h"
 #include "construction/PropertyFactory.h"
 
+#include "event/PropertyAttachedEvent.h"
+#include "event/PropertyDetachedEvent.h"
+
 namespace PAX {
     template<class C>
     class Entity;
@@ -60,13 +63,13 @@ namespace PAX {
         Property() : owner(nullptr) {}
         virtual ~Property() = default;
 
-        E * getOwner() const { return owner; }
+        PAX_NODISCARD E * getOwner() const { return owner; }
 
         PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
         PAX_NODISCARD virtual bool isMultiple() const { return IsMultiple(); }
-        virtual bool areDependenciesMetFor(const E&) const { return true; }
+        PAX_NODISCARD virtual bool areDependenciesMetFor(const E&) const { return true; }
 
-        bool isActive() { return active; }
+        PAX_NODISCARD bool isActive() const { return active; }
     };
 
     /// Provide an implementation for this pure virtual function to allow calling it from subtypes.

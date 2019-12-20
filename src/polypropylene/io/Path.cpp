@@ -12,6 +12,8 @@
 
 #ifdef PAX_OS_LINUX
 #include <limits.h> /* PATH_MAX */
+#include <polypropylene/log/Log.h>
+
 #endif
 
 namespace PAX {
@@ -80,7 +82,7 @@ namespace PAX {
 
         return false;
 #else
-        return Util::String::startsWith(path, "/");
+        return String::startsWith(path, "/");
 #endif
     }
 
@@ -113,12 +115,12 @@ namespace PAX {
 
         return Path(buffer);
 #else
-        char buf[PATH_MAX + 1]; /* not sure about the "+ 1" */
+        char buf[PATH_MAX]; /* not sure about the "+ 1" */
         char *res = realpath(path.c_str(), buf);
         if (res) {
             return buf;
         } else {
-            std::cerr << "[Path::toAbsolute] realpath failed with message: " << res << std::endl;
+            PAX_LOG(Log::Level::Error, "realpath failed with message: " << res);
             return path;
         }
 #endif

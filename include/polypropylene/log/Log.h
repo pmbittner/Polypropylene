@@ -55,7 +55,6 @@ namespace PAX {
 #define PAX_FUNCTION_NAME __PRETTY_FUNCTION__
 #endif
 
-#define ___PAX_LOG_IMPL(level, stream, message)
 #define PAX_LOG(level, ... /* message */) do {::PAX::Log::instance.stream(level, PAX_FUNCTION_NAME, __FILE__, __LINE__) << __VA_ARGS__ << std::endl;} while(0)
 #define PAX_LOG_RAW(level, ... /* message */) do {::PAX::Log::instance.stream_raw(level) << __VA_ARGS__ << std::endl;} while(0)
 

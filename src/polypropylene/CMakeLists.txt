@@ -6,9 +6,6 @@ set(HEADERS_FOR_CLION
         event/EventHandler.h
         event/EventService.h
 
-        genericfactory/GenericFactory.h
-        genericfactory/GenericFactoryService.h
-
         io/FileTypeChecker.h
         io/Path.h
         io/Settings.h
@@ -34,6 +31,10 @@ set(HEADERS_FOR_CLION
         property/construction/PropertyFactory.h
         property/construction/ContentProvider.h
         property/construction/EntityPrefab.h
+
+        system/System.h
+        system/SystemManager.h
+        system/PropertyOwningSystem.h
 
         reflection/TemplateTypeToString.h
         reflection/TypeHandle.h
@@ -84,7 +85,7 @@ if (POLYPROPYLENE_WITH_JSON)
     set(SOURCE_FILES ${SOURCE_FILES}
             json/JsonUtil.cpp
             json/JsonLoader.cpp
-            property/construction/json/JsonPropertyContent.cpp)
+            property/construction/json/JsonPropertyContent.cpp system/System.cpp)
 endif(POLYPROPYLENE_WITH_JSON)
 
 PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})

@@ -24,7 +24,7 @@
 
 #define PAX_INTERNAL(name) _paxinternal_##name
 
-#define ___PAX_STRINGIFY_2(a) #a
-#define PAX_STRINGIFY(a) ___PAX_STRINGIFY_2(a)
+#define ___PAX_STRINGIFY_2_(a) #a
+#define PAX_STRINGIFY(a) ___PAX_STRINGIFY_2_(a)
 
 #endif //POLYPROPYLENE_DEFINITIONS_H

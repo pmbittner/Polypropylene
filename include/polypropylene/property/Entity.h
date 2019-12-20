@@ -17,38 +17,45 @@
 
 // We have to create this workaround, because MSVC can't handle constexpr functions in enable_if.
 #ifdef PAX_COMPILER_MSVC
-#define PAX_GENERATE_PropertyContainerFunctionTemplateHeader(rettype, neg) \
+#define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
 template <class PropertyType, bool mult = PropertyType::IsMultiple()> \
 typename std::enable_if<neg mult, rettype>::type
 #else
-#define PAX_GENERATE_PropertyContainerFunctionTemplateHeader(rettype, neg) \
+#define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
 template <class PropertyType> \
 typename std::enable_if<neg PropertyType::IsMultiple(), rettype>::type
 #endif
 
 namespace PAX {
-    template<class T>
+    /**
+     * An Entity is a generic container for Properties.
+     * @tparam Derived The class deriving from Entity.
+     */
+    template<class Derived>
     class Entity {
-        static const std::vector<Property<T>*> EmptyPropertyVector;
+        static const std::vector<Property<Derived>*> EmptyPropertyVector;
         static AllocationService propertyAllocator;
 
         EventService _localEventService;
         bool active = false;
 
-        TypeMap<Property<T>*> _singleProperties;
-        TypeMap<std::vector<Property<T>*>> _multipleProperties;
+        TypeMap<Property<Derived>*> _singleProperties;
+        TypeMap<std::vector<Property<Derived>*>> _multipleProperties;
 
-        std::vector<Property<T>*> _allProperties; // Do we really want to have a copy of all pointers for easy access?
+        std::vector<Property<Derived>*> _allProperties; // Do we really want to have a copy of all pointers for easy access?
 
     public:
         Entity() = default;
 
+        /**
+         * Deletes all properties.
+         */
         virtual ~Entity() {
             // 1.) Unattach everything to invoke detach events and not delete something twice.
             // 2.) Delete propertys as they should not be reused.
 
             while (!_singleProperties.empty()) {
-                Property<T> * propToRemove = _singleProperties.begin()->second;
+                Property<Derived> * propToRemove = _singleProperties.begin()->second;
                 remove(propToRemove);
                 delete propToRemove;
             }
@@ -56,11 +63,11 @@ namespace PAX {
             while (!_multipleProperties.empty()) {
                 const auto & it = _multipleProperties.begin();
                 if (!it->second.empty()) {
-                    Property<T> * propToRemove = it->second.front();
+                    Property<Derived> * propToRemove = it->second.front();
                     if (remove(propToRemove)) {
                         delete propToRemove;
                     } else {
-                        std::cerr << "[PropertyContainer::~PropertyContainer] Invalid state: Removing property of type" << propToRemove->getClassType().name() << " unsuccessful!";
+                        PAX_LOG(Log::Level::Error, "Invalid state: Removing property of type " << propToRemove->getClassType().name() << " was unsuccessful!");
                     }
                 }
             }
@@ -69,56 +76,80 @@ namespace PAX {
         }
 
     private:
-        bool isValid(Property<T>* property) {
+        bool isValid(Property<Derived>* property) {
             if (property->owner)
                 return false;
 
-            return property->areDependenciesMetFor(*static_cast<T*>(this));
+            return property->areDependenciesMetFor(*static_cast<Derived*>(this));
         }
 
-        void registerproperty(Property<T>* property) {
-            property->owner = static_cast<T*>(this);
-            property->attached(*static_cast<T*>(this));
+        void registerproperty(Property<Derived>* property) {
+            property->owner = static_cast<Derived*>(this);
+            property->attached(*static_cast<Derived*>(this));
         }
 
-        void unregisterproperty(Property<T>* property) {
+        void unregisterproperty(Property<Derived>* property) {
             property->owner = nullptr;
-            property->detached(*static_cast<T*>(this));
+            property->detached(*static_cast<Derived*>(this));
         }
 
-    protected:
+    public:
+        /**
+         * Marks this Entity and all its properties as active.
+         * This is a custom flag that can be used for enabling custom behaviour.
+         * In video games, this entities can be marked active if they are part of the current scene or world.
+         */
         void activate() {
             if (active) return;
             active = true;
             auto props = getAll();
-            for (Property<T> * p : props) {
+            for (Property<Derived> * p : props) {
                 p->active = true;
                 p->activated();
             }
         }
 
+        /**
+         * Marks this Entity and all its properties as inactive.
+         * @ref activate()
+         */
         void deactivate() {
             if (!active) return;
             active = false;
             auto props = getAll();
-            for (Property<T> * p : props) {
+            for (Property<Derived> * p : props) {
                 p->active = false;
                 p->deactivated();
             }
         }
 
-    public:
+        /**
+         * Indicates if this entity together with all its properties is marked as active.
+         * The semantics of this flag are user defined and thereby may be used for any purpose.
+         * @ref activate()
+         * @return True, iff this entity is marked active.
+         */
+        bool isActive() {
+            return active;
+        }
+
+        /**
+         * @return the AllocationService that is used for property (de-) allocation for properties for derived entitiy type Derived.
+         */
         static AllocationService& GetPropertyAllocator() {
             return propertyAllocator;
         }
 
+        /**
+         * @return The internal EventService of this Entity that is used for internal communication between properties.
+         */
         EventService& getEventService() {
             return _localEventService;
         }
-
-        bool add(Property<T>* property) {
+        
+        bool add(Property<Derived>* property) {
             if (isValid(property)) {
-                property->PAX_INTERNAL(addTo)(*static_cast<T*>(this));
+                property->PAX_INTERNAL(addTo)(*static_cast<Derived*>(this));
                 registerproperty(property);
                 _allProperties.push_back(property);
                 if (active) {
@@ -131,8 +162,8 @@ namespace PAX {
             return false;
         }
 
-        bool remove(Property<T>* property) {
-            bool ret = property->PAX_INTERNAL(removeFrom)(*static_cast<T*>(this));
+        bool remove(Property<Derived>* property) {
+            bool ret = property->PAX_INTERNAL(removeFrom)(*static_cast<Derived*>(this));
             unregisterproperty(property);
             Util::removeFromVector(_allProperties, property);
             if (active) {
@@ -142,12 +173,12 @@ namespace PAX {
             return ret;
         }
 
-        PAX_GENERATE_PropertyContainerFunctionTemplateHeader(bool, !)
+        PAX_GENERATE_EntityTemplateHeader(bool, !)
         has() const {
             return _singleProperties.count(paxtypeid(PropertyType)) > 0;
         }
 
-        PAX_GENERATE_PropertyContainerFunctionTemplateHeader(bool, )
+        PAX_GENERATE_EntityTemplateHeader(bool, )
         has() const {
             return _multipleProperties.count(paxtypeid(PropertyType)) > 0;
         }
@@ -181,7 +212,7 @@ namespace PAX {
             return ret;
         }
 
-        PAX_GENERATE_PropertyContainerFunctionTemplateHeader(PropertyType*, !)
+        PAX_GENERATE_EntityTemplateHeader(PropertyType*, !)
         get() {
             const auto& property = _singleProperties.find(paxtypeid(PropertyType));
             if (property != _singleProperties.end())
@@ -189,7 +220,7 @@ namespace PAX {
             return nullptr;
         }
 
-        PAX_GENERATE_PropertyContainerFunctionTemplateHeader(const std::vector<PropertyType*>&, )
+        PAX_GENERATE_EntityTemplateHeader(const std::vector<PropertyType*>&, )
         get() {
             const auto& properties = _multipleProperties.find(paxtypeid(PropertyType));
             if (properties != _multipleProperties.end())
@@ -198,11 +229,17 @@ namespace PAX {
                 return *reinterpret_cast<const std::vector<PropertyType*>*>(&EmptyPropertyVector);
         }
 
-        const std::vector<Property<T>*> & getAll() {
+        PAX_NODISCARD const std::vector<Property<Derived>*> & getAllProperties() const {
             return _allProperties;
         }
 
-        Property<T> * getSingle(const TypeHandle & type) const {
+        /**
+         * Returns a property from its runtime typehandle.
+         * @param type The runtime type of the requested property.
+         * @return The property of the given type which has single multiplicity (PAX_PROPERTY_IS_SINGLE), null if
+         * this entity does not contain a property of that type or the type is not single.
+         */
+        PAX_NODISCARD Property<Derived> * getSingle(const TypeHandle & type) const {
             const auto & it = _singleProperties.find(type);
 
             if (it != _singleProperties.end()) {
@@ -212,7 +249,13 @@ namespace PAX {
             return nullptr;
         }
 
-        const std::vector<Property<T>*> & getMultiple(const TypeHandle & type) const {
+        /**
+         * Returns a property from its runtime typehandle.
+         * @param type The runtime type of the requested property.
+         * @return The properties of the given type which has multiple multiplicity (PAX_PROPERTY_IS_MULTIPLE), an
+         * empty vector if this entity does not contain a property of that type or the type is not multiple.
+         */
+        PAX_NODISCARD const std::vector<Property<Derived>*> & getMultiple(const TypeHandle & type) const {
             const auto & it = _multipleProperties.find(type);
 
             if (it != _multipleProperties.end()) {
@@ -222,16 +265,25 @@ namespace PAX {
             return EmptyPropertyVector;
         }
 
-        std::vector<Property<T>*> get(const TypeHandle & type) {
+        /**
+         * Returns all properties of the given type contained in this entity.
+         * @param type The runtime type of the requested properties.
+         * @return The properties of the given type with any multiplicity.
+         * The returned vector is empty, iff this entity does not contain any properties of the given type.
+         * If the property type is single (PAX_PROPERTY_IS_SINGLE), the returned vector will have size 1.
+         * If the property type is multiple (PAX_PROPERTY_IS_MULTIPLE), the returned vector will contain all properties
+         * of the given type.
+         */
+        std::vector<Property<Derived>*> get(const TypeHandle & type) {
             // Copy is intended
-            std::vector<Property<T>*> props = getMultiple(type);
-            if (Property<T> * single = getSingle(type)) {
+            std::vector<Property<Derived>*> props = getMultiple(type);
+            if (Property<Derived> * single = getSingle(type)) {
                 props.emplace_back(single);
             }
             return props;
         }
 
-        PAX_GENERATE_PropertyContainerFunctionTemplateHeader(PropertyType*, !)
+        PAX_GENERATE_EntityTemplateHeader(PropertyType*, !)
         removeAll() {
             const auto& propertyIt = _singleProperties.contains(paxtypeid(PropertyType));
             if (propertyIt != _singleProperties.end()) {
@@ -243,7 +295,7 @@ namespace PAX {
             return nullptr;
         }
 
-        PAX_GENERATE_PropertyContainerFunctionTemplateHeader(const std::vector<PropertyType*>&, )
+        PAX_GENERATE_EntityTemplateHeader(const std::vector<PropertyType*>&, )
         removeAll() {
             const auto& propertiesIt = _multipleProperties.contains(paxtypeid(PropertyType));
             if (propertiesIt != _multipleProperties.end()) {
@@ -260,16 +312,15 @@ namespace PAX {
             return EmptyPropertyVector;
         }
 
-        bool isActive() {
-            return active;
-        }
+        
+        /// DANGER ZONE: Functions for internal use only !!!!!!!!!!!!!!
 
-        bool PAX_INTERNAL(addAsMultiple)(const std::type_info & type, Property<T>* property) {
+        bool PAX_INTERNAL(addAsMultiple)(const std::type_info & type, Property<Derived>* property) {
             _multipleProperties[type].push_back(property);
             return true;
         }
 
-        bool PAX_INTERNAL(addAsSingle)(const std::type_info & type, Property<T>* property) {
+        bool PAX_INTERNAL(addAsSingle)(const std::type_info & type, Property<Derived>* property) {
             if (_singleProperties.count(type)) {
                 return false;
             } else
@@ -278,8 +329,8 @@ namespace PAX {
             return true;
         }
 
-        bool PAX_INTERNAL(removeAsMultiple)(const std::type_info & type, Property<T>* property) {
-            std::vector<Property<T>*> &result = _multipleProperties.at(type);
+        bool PAX_INTERNAL(removeAsMultiple)(const std::type_info & type, Property<Derived>* property) {
+            std::vector<Property<Derived>*> &result = _multipleProperties.at(type);
             if (!Util::removeFromVector(result, property))
                 return false;
 
@@ -290,7 +341,7 @@ namespace PAX {
             return true;
         }
 
-        bool PAX_INTERNAL(removeAsSingle)(const std::type_info & type, Property<T>* property) {
+        bool PAX_INTERNAL(removeAsSingle)(const std::type_info & type, Property<Derived>* property) {
             // The given property is not the property, that is registered for the given type.
             if (_singleProperties.at(type) != property)
                 return false;

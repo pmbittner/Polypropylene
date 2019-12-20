@@ -30,24 +30,24 @@ namespace PAX {
 
     public:
         Path();
-        /*implicit*/ Path(const char* path);
-        /*implicit*/ Path(const std::string& path);
+        PAX_IMPLICIT Path(const char* path);
+        PAX_IMPLICIT Path(const std::string& path);
         Path(const Path& other);
 
         /// A Path is considered to be a file, if it contains a dot, indicating a file ending, after the last slash/backslash.
-        bool isFile() const;
-        bool isDirectory() const;
-        bool isAbsolute() const;
-        bool isRelative() const;
-        Path getDirectory() const;
-        Path toAbsolute() const;
+        PAX_NODISCARD bool isFile() const;
+        PAX_NODISCARD bool isDirectory() const;
+        PAX_NODISCARD bool isAbsolute() const;
+        PAX_NODISCARD bool isRelative() const;
+        PAX_NODISCARD Path getDirectory() const;
+        PAX_NODISCARD Path toAbsolute() const;
 
         void convertToCurrentPlatform();
         void convertToWin();
         void convertToUnix();
-        Path convertedToCurrentPlatform() const;
-        Path convertedToWin() const;
-        Path convertedToUnix() const;
+        PAX_NODISCARD Path convertedToCurrentPlatform() const;
+        PAX_NODISCARD Path convertedToWin() const;
+        PAX_NODISCARD Path convertedToUnix() const;
         void simplify();
 
         static void convertToCurrentPlatform(std::string & path);
@@ -56,16 +56,16 @@ namespace PAX {
         static void simplify(std::string & path);
         static std::string toAbsolute(const std::string & path);
 
-        const char* c_str() const;
-        const std::string& toString() const;
+        PAX_NODISCARD const char* c_str() const;
+        PAX_NODISCARD const std::string& toString() const;
 
         bool operator==(const Path& other) const;
         bool operator<(const Path& other) const;
         bool operator>(const Path& other) const;
         bool operator!=(const Path& other) const;
 
-        /*implicit*/ operator const char*() const;
-        /*implicit*/ operator std::string() const;
+        PAX_IMPLICIT operator const char*() const;
+        PAX_IMPLICIT operator std::string() const;
 
         Path& operator=(const char* path);
         Path& operator=(const std::string& path);
