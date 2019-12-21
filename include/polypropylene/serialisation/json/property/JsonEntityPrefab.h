@@ -10,6 +10,7 @@
 #include <polypropylene/io/Path.h>
 
 #include <polypropylene/property/Property.h>
+#include <polypropylene/serialisation/json/JsonParser.h>
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 #include "JsonFieldStorage.h"
@@ -115,7 +116,7 @@ namespace PAX {
                 return p;
             }
 
-            static void initialize(Resources &resources) {
+            static void initialize(Resources &resources, JsonParserRegister & jsonParserRegister) {
                 Parsers.registerParser(
                         "Inherits",
                         [&resources](json &node, EntityType &e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
@@ -138,11 +139,10 @@ namespace PAX {
 
                 Parsers.registerParser(
                         "Properties",
-                        [&resources](json &node, EntityType & e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
+                        [&resources, &jsonParserRegister](json &node, EntityType & e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
                             std::vector<Property<EntityType> *> props;
 
-                            ClassMetadataSerialiser serialiser(resources,
-                                                                    variableRegister);
+                            ClassMetadataSerialiser serialiser(resources, variableRegister);
 
                             for (auto &el : node.items()) {
                                 const std::string propTypeName = el.key();
@@ -150,7 +150,7 @@ namespace PAX {
                                         propTypeName);
 
                                 if (propertyFactory) {
-                                    JsonFieldStorage storage(el.value());
+                                    JsonFieldStorage storage(el.value(), jsonParserRegister);
                                     serialiser.setStorage(&storage);
 
                                     // If the entity already has properties of the given type we won't create a new one

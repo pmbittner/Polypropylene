@@ -6,8 +6,8 @@
 #include <polypropylene/serialisation/json/JsonParser.h>
 
 namespace PAX::Json {
-    JsonFieldStorage::JsonFieldStorage(const nlohmann::json &node)
-            : FieldStorage(), node(node) {}
+    JsonFieldStorage::JsonFieldStorage(const nlohmann::json &node, const JsonParserRegister & jsonParserRegister)
+            : FieldStorage(), node(node), parsers(jsonParserRegister) {}
 
     JsonFieldStorage::~JsonFieldStorage() = default;
 
@@ -57,7 +57,7 @@ namespace PAX::Json {
     bool JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
         nlohmann::json j = StringToJson(getValue(field.name, variables));
 
-        IJsonParser * parser = JsonParserRegister::Instance()->getParserFor(field.type);
+        IJsonParser * parser = parsers.getParserFor(field.type);
         if (parser) {
             return parser->loadIntoField(j, field);
         }

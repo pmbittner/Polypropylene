@@ -8,23 +8,27 @@
 #ifdef PAX_WITH_JSON
 
 #include "JsonUtil.h"
-#include "polypropylene/serialisation/TryParser.h"
+#include "polypropylene/stdutils/StringUtils.h"
 #include "polypropylene/reflection/TypeMap.h"
 #include "polypropylene/reflection/Field.h"
 
-namespace PAX {
+namespace PAX::Json {
     class IJsonParser {
     public:
         PAX_NODISCARD virtual bool loadIntoField(const nlohmann::json & j, Field & field) const = 0;
     };
 
+    /**
+     * By default, parsers for all primitive types (bool, char, int, float, ...) are registered.
+     * Parsers for arbitrary types can be registered manually.
+     */
     class JsonParserRegister {
-        static JsonParserRegister * instance;
         TypeMap<IJsonParser*> parsers;
 
     public:
+        JsonParserRegister();
+
         void registerParser(const PAX::TypeHandle & type, IJsonParser * parser);
-        PAX_NODISCARD static JsonParserRegister * Instance();
         PAX_NODISCARD IJsonParser * getParserFor(const PAX::TypeHandle & type) const;
     };
 
@@ -32,7 +36,7 @@ namespace PAX {
     class TryParser<nlohmann::json, T> {
     public:
         PAX_NODISCARD static T tryParse(const nlohmann::json & f) {
-            return String::tryParse<T>(JsonToString(f));
+            return ::PAX::String::tryParse<T>(JsonToString(f));
         }
     };
 
@@ -50,19 +54,10 @@ namespace PAX {
         }
     };
 
-    namespace Json {
-        template<typename T>
-        PAX_NODISCARD T tryParse(const nlohmann::json & j) {
-            return TryParser<nlohmann::json, T>::tryParse(j);
-        }
+    template<typename T>
+    PAX_NODISCARD T tryParse(const nlohmann::json & j) {
+        return TryParser<nlohmann::json, T>::tryParse(j);
     }
-
-#define PAX_SPECIALIZE_JSONTRYPARSE_HEADER(type) \
-            template<> \
-            class TryParser<nlohmann::json, type> { \
-            public: \
-                PAX_NODISCARD static type tryParse(const nlohmann::json & j); \
-            };
 }
 
 #else // !PAX_WITH_JSON
