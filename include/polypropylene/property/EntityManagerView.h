@@ -8,6 +8,14 @@
 #include "EntityManager.h"
 
 namespace PAX {
+    /**
+     * EntityManagerViews filter the entities of an EntityManager by their containing nodes.
+     * The method EntityManagerView::getEntities returns exactly those entities from the given manager that contain
+     * the specified properties.
+     *
+     * @tparam EntityType The concrete Entity type (i.e., the derived class)
+     * @tparam RequiredProperties A list of Property types that should be contained by filtered entities.
+     */
     template<typename EntityType, typename... RequiredProperties>
     class EntityManagerView {
         const EntityManager<EntityType> & manager;

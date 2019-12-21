@@ -1,6 +1,9 @@
 set(POLYPROPYLENE_INCLUDE_DIR ../../include/polypropylene)
 
 set(HEADERS_FOR_CLION
+        Polypropylene.h
+        Dependency.h
+
         event/Delegate.h
         event/Event.h
         event/EventHandler.h
@@ -52,9 +55,7 @@ set(HEADERS_FOR_CLION
         resources/Signature.h
 
         stdutils/CollectionUtils.h
-        stdutils/StringUtils.h
-
-        Dependency.h)
+        stdutils/StringUtils.h)
 
 set(SOURCE_FILES
         event/Event.cpp
@@ -88,17 +89,17 @@ if (POLYPROPYLENE_WITH_JSON)
             serialisation/json/JsonLoader.h
             serialisation/json/JsonParser.h
             serialisation/json/JsonUtil.h
+            serialisation/json/JsonFieldStorage.h
 
             serialisation/json/property/JsonEntityPrefab.h
             serialisation/json/property/JsonEntityPrefabLoader.h
-            serialisation/json/property/JsonFieldStorage.h
             )
 
     set(SOURCE_FILES ${SOURCE_FILES}
             serialisation/json/JsonUtil.cpp
             serialisation/json/JsonLoader.cpp
             serialisation/json/JsonParser.cpp
-            serialisation/json/property/JsonFieldStorage.cpp)
+            serialisation/json/JsonFieldStorage.cpp)
 endif(POLYPROPYLENE_WITH_JSON)
 
 PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})

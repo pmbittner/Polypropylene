@@ -1,7 +1,7 @@
 # Polypropylene - Let Your Objects Become Anything You Wish
 
 Polypropylene is a C++17 library for dynamic object definition by composition of properties.
-It started as yet another _Entity-Component System (ECS)_ but grew more general and flexible soon.
+It started as an _Entity-Component System (ECS)_ but grew more general and flexible soon.
 An ECS is a design pattern mostly used in video game engineering where objects are required to change behaviour and shape frequently and arbitrarily.
 Thereby, an object (i.e., an _Entity_) is purely defined as a composition of individual components.
 We refer to _Components_ as _Properties_ because Polypropylene is not a pure ECS anymore but a general-purpose library.

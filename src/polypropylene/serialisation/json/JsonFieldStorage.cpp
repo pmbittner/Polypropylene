@@ -2,7 +2,7 @@
 // Created by Paul on 02.03.2019.
 //
 
-#include <polypropylene/serialisation/json/property/JsonFieldStorage.h>
+#include <polypropylene/serialisation/json/JsonFieldStorage.h>
 #include <polypropylene/serialisation/json/JsonParser.h>
 
 namespace PAX::Json {

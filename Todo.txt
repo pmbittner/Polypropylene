@@ -4,8 +4,10 @@ Before publish:
 
 General:
 - Logo
+- Entitiy::toPrefab()
+- metadata writing, Json writing
 - dependency resolving upon remove
-- type system as built in the engine
+- type system (as built in the engine?)
 - make ResourceLoaderT::loadToOrGetFromResources more intuitive
 - entity allocation
 (- Log singleton does not allow polymorphism so far)

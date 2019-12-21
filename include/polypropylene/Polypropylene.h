@@ -5,10 +5,11 @@
 #ifndef POLYPROPYLENE_MAININCLUDES_H
 #define POLYPROPYLENE_MAININCLUDES_H
 
-#include "macros/CompilerDetection.h"
-#include "macros/OSDetection.h"
-#include "macros/Definitions.h"
+#include "definitions/CompilerDetection.h"
+#include "definitions/OSDetection.h"
+#include "definitions/Definitions.h"
 
 #include "polypropylene/property/Entity.h"
+#include "polypropylene/property/EntityPrefab.h"
 
 #endif //POLYPROPYLENE_MAININCLUDES_H

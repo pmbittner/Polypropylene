@@ -2,18 +2,18 @@
 // Created by Bittner on 05.12.2019.
 //
 
-#include "Pizza.h"
-#include "toppings/Mozzarella.h"
-#include "toppings/Champignon.h"
-#include "toppings/TomatoSauce.h"
-
-#include "polypropylene/property/EntityPrefab.h"
+#include "polypropylene/Polypropylene.h"
 
 #ifdef PAX_WITH_JSON
 #include "polypropylene/serialisation/json/JsonLoader.h"
 #include "polypropylene/serialisation/json/property/JsonEntityPrefabLoader.h"
 #include "polypropylene/serialisation/json/JsonParser.h"
 #endif
+
+#include "Pizza.h"
+#include "toppings/Mozzarella.h"
+#include "toppings/Champignon.h"
+#include "toppings/TomatoSauce.h"
 
 /**
  * Each type of property has to be registered before it can be used in prefabs.
@@ -83,6 +83,7 @@ int main(int argc, char** argv) {
     pizzaFunghi->yummy();
     pizzaFunghi->bake();
 
+    /// example for property access via templates (there are also non-template versions)
     std::vector<Cheese*> cheeses = pizzaFunghi->get<Cheese>();
     Mozzarella * g = pizzaFunghi->get<Mozzarella>();
 

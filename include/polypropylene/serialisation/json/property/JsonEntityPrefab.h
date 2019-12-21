@@ -13,7 +13,7 @@
 #include <polypropylene/serialisation/json/JsonParser.h>
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
-#include "JsonFieldStorage.h"
+#include "polypropylene/serialisation/json/JsonFieldStorage.h"
 
 namespace PAX {
     namespace Json {

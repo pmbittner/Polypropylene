@@ -11,6 +11,9 @@
 #include "FieldStorage.h"
 
 namespace PAX {
+    /**
+     * This class reads and writes ClassMetadata from / to FieldStorages.
+     */
     class ClassMetadataSerialiser {
         FieldStorage * fieldStorage = nullptr;
         Resources & resources;

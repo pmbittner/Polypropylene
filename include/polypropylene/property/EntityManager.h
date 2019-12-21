@@ -20,6 +20,15 @@ namespace PAX {
         explicit EntityRemovedEvent(EntityType * entity) : EntityEvent<EntityType>(entity) {}
     };
 
+    /**
+     * An EntityManager is a collection of entities.
+     * It links the event services of all contained entities to allow communication between them.
+     * The contained entities can either be accessed explicitly with getEntities() or implicitly by
+     * iterating over the manager itself.
+     * Using managers allows the usage of custom views on entities (@ref EntityManagerView).
+     *
+     * @tparam EntityType The concrete Entity type (i.e., the derived class)
+     */
     template<typename EntityType>
     class EntityManager {
         std::set<EntityType*> entities;

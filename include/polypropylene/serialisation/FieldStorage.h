@@ -10,6 +10,11 @@
 #include <polypropylene/reflection/VariableRegister.h>
 
 namespace PAX {
+    /**
+     * Interface for representing persistent serialisation data, typically present on the hard drive.
+     * Fields can be read from or written to a FieldStorage for serialisation.
+     * For example, @ref JsonFieldStorage translates fields to json files.
+     */
     class FieldStorage {
     public:
         FieldStorage() = default;
