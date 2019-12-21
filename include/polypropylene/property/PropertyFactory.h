@@ -27,7 +27,7 @@ namespace PAX {
     class IPropertyFactory {
     public:
         IPropertyFactory() noexcept = default;
-        virtual ~IPropertyFactory() {}
+        virtual ~IPropertyFactory() = default;
 
         PAX_NODISCARD virtual Property<C> * create(ClassMetadataSerialiser & contentProvider) const = 0;
         PAX_NODISCARD virtual TypeHandle getPropertyType() const = 0;
@@ -76,7 +76,7 @@ namespace PAX {
         virtual ~PropertyFactory() = default;
 
         PAX_NODISCARD PropertyType * create(ClassMetadataSerialiser &contentProvider) const override {
-            return new (Entity<C>::GetPropertyAllocator().allocate<PropertyType>()) PropertyType();
+            return new (C::GetPropertyAllocator().template allocate<PropertyType>()) PropertyType();
         }
 
         PAX_NODISCARD TypeHandle getPropertyType() const override {

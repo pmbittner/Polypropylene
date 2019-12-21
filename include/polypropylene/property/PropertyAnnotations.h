@@ -5,8 +5,6 @@
 #ifndef POLYPROPYLENE_PROPERTYANNOTATIONS_H
 #define POLYPROPYLENE_PROPERTYANNOTATIONS_H
 
-#include <type_traits>
-
 #include "PropertyDependencies.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
@@ -30,14 +28,15 @@ bool Type::methodName(EntityType & e) { \
 }
 
 ///// Annotations
+#define PAX_PROPERTY_IS_CONCRETE false
+#define PAX_PROPERTY_IS_ABSTRACT true
 
 /// Mandatory
-#define PAX_PROPERTY(Typename) \
+#define PAX_PROPERTY(Typename, isAbstract) \
 public: \
     friend ::PAX::PropertyFactory<Typename, EntityType>; \
-    friend ::std::is_default_constructible<Typename>; \
     const ::PAX::TypeHandle& getClassType() const override; \
-    static constexpr bool IsAbstract() { return !::std::is_default_constructible<Typename>::value; } \
+    static constexpr bool IsAbstract() { return isAbstract; } \
 protected: \
     bool PAX_INTERNAL(addTo)(EntityType & e) override; \
     bool PAX_INTERNAL(removeFrom)(EntityType & e) override; \

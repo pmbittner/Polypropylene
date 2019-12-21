@@ -145,7 +145,7 @@ namespace PAX {
                             ClassMetadataSerialiser serialiser(resources, variableRegister);
 
                             for (auto &el : node.items()) {
-                                const std::string propTypeName = el.key();
+                                const std::string & propTypeName = el.key();
                                 IPropertyFactory<EntityType> *propertyFactory = PropertyFactoryRegister<EntityType>::getFactoryFor(
                                         propTypeName);
 
@@ -160,10 +160,12 @@ namespace PAX {
 
                                     if (!isPropMultiple && e.has(propType, isPropMultiple)) {
                                         Property<EntityType> * property = e.getSingle(propType);
-                                        serialiser.writeToMetadata(property->getMetadata(), ClassMetadataSerialiser::Options::IgnoreMandatoryFlags);
+                                        ClassMetadata metadata = property->getMetadata();
+                                        serialiser.writeToMetadata(metadata, ClassMetadataSerialiser::Options::IgnoreMandatoryFlags);
                                     } else {
                                         Property<EntityType> * property = propertyFactory->create(serialiser);
-                                        serialiser.writeToMetadata(property->getMetadata());
+                                        ClassMetadata metadata = property->getMetadata();
+                                        serialiser.writeToMetadata(metadata);
                                         props.emplace_back(property);
                                     }
 
