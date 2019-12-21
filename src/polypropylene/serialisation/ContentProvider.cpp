@@ -2,7 +2,7 @@
 // Created by paul on 09.01.19.
 //
 
-#include <polypropylene/property/construction/ContentProvider.h>
+#include <polypropylene/serialisation/ContentProvider.h>
 
 namespace PAX
 {

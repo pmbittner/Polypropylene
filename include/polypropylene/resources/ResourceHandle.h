@@ -8,7 +8,7 @@
 #include <memory>
 #include <string>
 
-#include <polypropylene/Signature.h>
+#include <polypropylene/resources/Signature.h>
 #include <polypropylene/reflection/TemplateTypeToString.h>
 
 namespace PAX {

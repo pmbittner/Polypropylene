@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <polypropylene/stdutils/CollectionUtils.h>
 #include <iostream>
-#include <polypropylene/StringUtils.h>
+#include <polypropylene/stdutils/StringUtils.h>
 
 namespace PAX::Util {
     class FileTypeChecker {

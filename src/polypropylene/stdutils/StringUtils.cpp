@@ -2,7 +2,7 @@
 // Created by Paul on 04.10.2017.
 //
 
-#include <polypropylene/StringUtils.h>
+#include <polypropylene/stdutils/StringUtils.h>
 #include <sstream>
 #include <iostream>
 

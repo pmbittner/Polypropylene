@@ -12,9 +12,9 @@ set(HEADERS_FOR_CLION
         log/Errors.h
         log/Log.h
 
-        macros/CompilerDetection.h
-        macros/Definitions.h
-        macros/OSDetection.h
+        definitions/CompilerDetection.h
+        definitions/Definitions.h
+        definitions/OSDetection.h
 
         memory/Allocator.h
         memory/AllocationService.h
@@ -27,9 +27,12 @@ set(HEADERS_FOR_CLION
         property/EntityManager.h
         property/EntityManagerView.h
         property/PropertyDependencies.h
-        property/construction/PropertyFactory.h
-        property/construction/ContentProvider.h
-        property/construction/EntityPrefab.h
+        property/PropertyFactory.h
+        property/EntityPrefab.h
+
+        serialisation/ContentProvider.h
+        serialisation/TryParser.h
+        serialisation/json/JsonFwd.h
 
         system/System.h
         system/SystemManager.h
@@ -40,24 +43,22 @@ set(HEADERS_FOR_CLION
         reflection/TypeMap.h
         reflection/ClassMetadata.h
         reflection/Field.h
+        reflection/StringVariables.h
 
         resources/Resources.h
         resources/ResourceHandle.h
         resources/ResourceLoader.h
+        resources/Signature.h
 
         stdutils/CollectionUtils.h
+        stdutils/StringUtils.h
 
-        Dependency.h
-        Signature.h
-        StringUtils.h
-        StringVariables.h
-        TryParser.h
-        json/JsonFwd.h)
+        Dependency.h)
 
 set(SOURCE_FILES
-        Signature.cpp
-        StringUtils.cpp
-        StringVariables.cpp
+        resources/Signature.cpp
+        stdutils/StringUtils.cpp
+        reflection/StringVariables.cpp
 
         event/Event.cpp
         event/EventService.cpp
@@ -65,8 +66,8 @@ set(SOURCE_FILES
         io/Path.cpp
 
         property/Entity.cpp
-        property/construction/ContentProvider.cpp
-        property/construction/EntityPrefab.cpp
+        serialisation/ContentProvider.cpp
+        property/EntityPrefab.cpp
 
         resources/Resources.cpp
         resources/ResourceLoader.cpp
@@ -81,20 +82,20 @@ set(SOURCE_FILES
 
 if (POLYPROPYLENE_WITH_JSON)
     set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}
-            json/JsonLoader.h
-            json/JsonParser.h
-            json/JsonUtil.h
+            serialisation/json/JsonLoader.h
+            serialisation/json/JsonParser.h
+            serialisation/json/JsonUtil.h
 
-            property/construction/json/JsonEntityPrefab.h
-            property/construction/json/JsonEntityPrefabLoader.h
-            property/construction/json/JsonPropertyContent.h
+            serialisation/json/property/JsonEntityPrefab.h
+            serialisation/json/property/JsonEntityPrefabLoader.h
+            serialisation/json/property/JsonPropertyContent.h
             )
 
     set(SOURCE_FILES ${SOURCE_FILES}
-            json/JsonUtil.cpp
-            json/JsonLoader.cpp
-            json/JsonParser.cpp
-            property/construction/json/JsonPropertyContent.cpp)
+            serialisation/json/JsonUtil.cpp
+            serialisation/json/JsonLoader.cpp
+            serialisation/json/JsonParser.cpp
+            serialisation/json/property/JsonPropertyContent.cpp)
 endif(POLYPROPYLENE_WITH_JSON)
 
 PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})

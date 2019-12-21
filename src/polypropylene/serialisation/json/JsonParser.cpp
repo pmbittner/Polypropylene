@@ -2,7 +2,7 @@
 // Created by Bittner on 20.12.2019.
 //
 
-#include <polypropylene/json/JsonParser.h>
+#include <polypropylene/serialisation/json/JsonParser.h>
 #include <polypropylene/log/Errors.h>
 
 namespace PAX {

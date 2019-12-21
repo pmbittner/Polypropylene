@@ -6,8 +6,8 @@
 #define POLYPROPYLENE_PATH_H
 
 #include <string>
-#include <polypropylene/StringUtils.h>
-#include <polypropylene/macros/OSDetection.h>
+#include <polypropylene/stdutils/StringUtils.h>
+#include <polypropylene/definitions/OSDetection.h>
 
 namespace PAX {
     class Path {

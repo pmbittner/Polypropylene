@@ -5,8 +5,8 @@
 #ifndef POLYPROPYLENE_LOG_H
 #define POLYPROPYLENE_LOG_H
 
-#include "../macros/OSDetection.h"
-#include "../macros/Definitions.h"
+#include "../definitions/OSDetection.h"
+#include "../definitions/Definitions.h"
 #include <ostream>
 #include <map>
 

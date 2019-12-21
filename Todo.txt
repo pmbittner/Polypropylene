@@ -1,6 +1,5 @@
 Before publish:
 - Example with Manager and View (and Systems thereby?)
-- Recheck project structure
 - move and rename contentprovider and propertycontent
 
 General:

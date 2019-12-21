@@ -5,13 +5,13 @@
 #ifndef POLYPROPYLENE_JSONENTITYPREFAB_H
 #define POLYPROPYLENE_JSONENTITYPREFAB_H
 
-#include <polypropylene/property/construction/EntityPrefab.h>
-#include <polypropylene/json/JsonUtil.h>
+#include <polypropylene/property/EntityPrefab.h>
+#include <polypropylene/serialisation/json/JsonUtil.h>
 #include <polypropylene/io/Path.h>
 
 #include <polypropylene/property/Property.h>
 
-#include "../ContentProvider.h"
+#include "polypropylene/serialisation/ContentProvider.h"
 #include "JsonPropertyContent.h"
 
 namespace PAX {

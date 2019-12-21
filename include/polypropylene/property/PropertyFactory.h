@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "ContentProvider.h"
+#include "polypropylene/serialisation/ContentProvider.h"
 
 #define PAX_PROPERTY_REGISTER_AS(PropertyType, Name) \
 do { \

@@ -5,8 +5,8 @@
 #ifndef POLYPROPYLENE_ENTITYPREFAB_H
 #define POLYPROPYLENE_ENTITYPREFAB_H
 
-#include "polypropylene/StringVariables.h"
-#include "polypropylene/property/construction/PropertyFactory.h"
+#include "polypropylene/reflection/StringVariables.h"
+#include "PropertyFactory.h"
 #include "polypropylene/memory/Allocator.h"
 
 namespace PAX {

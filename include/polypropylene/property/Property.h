@@ -7,8 +7,8 @@
 
 #include <polypropylene/reflection/ClassMetadata.h>
 #include "../reflection/TypeHandle.h"
-#include "../macros/Definitions.h"
-#include "construction/PropertyFactory.h"
+#include "../definitions/Definitions.h"
+#include "PropertyFactory.h"
 
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"

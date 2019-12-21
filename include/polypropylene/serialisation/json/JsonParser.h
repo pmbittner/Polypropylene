@@ -8,9 +8,9 @@
 #ifdef PAX_WITH_JSON
 
 #include "JsonUtil.h"
-#include "../TryParser.h"
-#include "../reflection/TypeMap.h"
-#include "../reflection/Field.h"
+#include "polypropylene/serialisation/TryParser.h"
+#include "polypropylene/reflection/TypeMap.h"
+#include "polypropylene/reflection/Field.h"
 
 namespace PAX {
     class IJsonParser {

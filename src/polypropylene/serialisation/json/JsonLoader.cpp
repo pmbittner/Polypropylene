@@ -2,8 +2,8 @@
 // Created by Bittner on 01/03/2019.
 //
 
-#include <polypropylene/json/JsonLoader.h>
-#include <polypropylene/json/Json.h>
+#include <polypropylene/serialisation/json/JsonLoader.h>
+#include <polypropylene/serialisation/json/Json.h>
 #include <polypropylene/io/FileTypeChecker.h>
 #include <polypropylene/resources/Resources.h>
 #include <fstream>

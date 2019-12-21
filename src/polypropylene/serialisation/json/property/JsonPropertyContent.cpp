@@ -2,8 +2,8 @@
 // Created by Paul on 02.03.2019.
 //
 
-#include <polypropylene/property/construction/json/JsonPropertyContent.h>
-#include <polypropylene/json/JsonParser.h>
+#include <polypropylene/serialisation/json/property/JsonPropertyContent.h>
+#include <polypropylene/serialisation/json/JsonParser.h>
 
 namespace PAX::Json {
     JsonPropertyContent::JsonPropertyContent(const nlohmann::json &node)

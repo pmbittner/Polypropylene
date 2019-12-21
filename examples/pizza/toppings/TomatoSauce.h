@@ -15,7 +15,6 @@ namespace PAX::Examples {
 
         int scoville = 0;
 
-
         TomatoSauce() = default;
 
     public:

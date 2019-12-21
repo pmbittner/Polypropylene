@@ -5,7 +5,7 @@
 #ifndef POLYPROPYLENE_TRYPARSER_H
 #define POLYPROPYLENE_TRYPARSER_H
 
-#include "macros/Definitions.h"
+#include "polypropylene/definitions/Definitions.h"
 
 namespace PAX {
     template<class From, class To>

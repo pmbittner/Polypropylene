@@ -5,7 +5,7 @@
 #ifndef POLYPROPYLENE_TEMPLATETYPETOSTRING_H
 #define POLYPROPYLENE_TEMPLATETYPETOSTRING_H
 
-#include <polypropylene/macros/CompilerDetection.h>
+#include <polypropylene/definitions/CompilerDetection.h>
 
 #ifdef PAX_COMPILER_GCC
 #include <typeinfo>

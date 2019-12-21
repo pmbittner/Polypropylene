@@ -7,12 +7,12 @@
 #include "toppings/Champignon.h"
 #include "toppings/TomatoSauce.h"
 
-#include "polypropylene/property/construction/EntityPrefab.h"
+#include "polypropylene/property/EntityPrefab.h"
 
 #ifdef PAX_WITH_JSON
-#include "polypropylene/json/JsonLoader.h"
-#include "polypropylene/property/construction/json/JsonEntityPrefabLoader.h"
-#include "polypropylene/json/JsonParser.h"
+#include "polypropylene/serialisation/json/JsonLoader.h"
+#include "polypropylene/serialisation/json/property/JsonEntityPrefabLoader.h"
+#include "polypropylene/serialisation/json/JsonParser.h"
 #endif
 
 /**

@@ -6,7 +6,7 @@
 #define POLYPROPYLENE_TYPES_H
 
 #include <map>
-#include "log/Log.h"
+#include "polypropylene/log/Log.h"
 
 namespace PAX {
     using VariableRegister = std::map<std::string, std::string>;

@@ -6,7 +6,7 @@
 #define POLYPROPYLENE_CLASSMETADATA_H
 
 #include <vector>
-#include <polypropylene/macros/Definitions.h>
+#include <polypropylene/definitions/Definitions.h>
 
 #include "Field.h"
 

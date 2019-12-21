@@ -11,7 +11,7 @@
 #include <cctype>
 #include <locale>
 
-#include "TryParser.h"
+#include "polypropylene/serialisation/TryParser.h"
 
 namespace PAX {
     namespace String {

@@ -4,7 +4,7 @@
 
 #include <cstring>
 
-#include <polypropylene/StringVariables.h>
+#include <polypropylene/reflection/StringVariables.h>
 
 namespace PAX {
     std::string VariableResolver::resolveVariables(const std::string & str, const VariableRegister & variables) {

@@ -8,7 +8,7 @@
 #include <memory>
 #include <map>
 
-#include "polypropylene/StringVariables.h"
+#include "polypropylene/reflection/StringVariables.h"
 
 // This is just for use in subclasses, where Path is needed almost every time.
 #include "polypropylene/io/Path.h"

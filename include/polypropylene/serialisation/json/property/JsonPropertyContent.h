@@ -7,9 +7,9 @@
 
 #ifdef PAX_WITH_JSON
 
-#include <polypropylene/property/construction/ContentProvider.h>
+#include <polypropylene/serialisation/ContentProvider.h>
 // TODO: Find a way to include JsonFwd.h here instead of Json.h
-#include <polypropylene/json/Json.h>
+#include <polypropylene/serialisation/json/Json.h>
 
 namespace PAX::Json {
     class JsonPropertyContent : public PropertyContent {

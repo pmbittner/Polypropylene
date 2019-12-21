@@ -10,7 +10,7 @@
 #include <iostream>
 #include <optional>
 
-#include "../macros/CompilerDetection.h"
+#include "../definitions/CompilerDetection.h"
 #include "../memory/AllocationService.h"
 #include "../reflection/TypeMap.h"
 #include "../event/EventService.h"
