@@ -113,6 +113,7 @@ Event services may optionally be linked such that events can be exchanged betwee
     Furthermore, a simplified specialised **EventHandler** inspired by C# events can be used to register and listen for a specific event types.
 
 - **Serialisation**: Entities may be specified entirely in json files.
+    (Other formats are not supported yet but can be integrated easily.)
     ```
     >>> margherita.json
     {
@@ -207,14 +208,10 @@ Entities however may only be allowed to contain certain combinations (configurat
 For instance, two property types could be exclusive to each other as they implement respectively contradicting data or behaviour.
 Such additional constraints could be implemented by using techniques from software product line engineering, especially feature models.
 
-- Error messages on prefab loading are quite unhelpful yet.
-
 - Dependencies are not considered upon property removal. When removing a property, dependencies of other properties may break.
 
 - Support for Older C++ Standards Than 17: Therefore, we need a custom implementation of `std::optional`.
 We have to see if that would pay off.
-
-- Support other File Formats Than Just JSON
 
 
 ## Feedback
