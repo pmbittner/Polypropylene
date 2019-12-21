@@ -45,14 +45,13 @@ int main(int argc, char** argv) {
     /// INITIAL SETUP
     registerPropertyTypes();
 
-    // Todo: Find a way to prebuild this
 #ifdef PAX_WITH_JSON
     using namespace PAX::Json;
     Resources resources;
 
-    JsonLoader jsonLoader; // loads json files from disk to nlohmann::json instances
-    JsonParserRegister jsonParserRegister; // contains parsers from nlohmann::json to any custom type
-    JsonEntityPrefabLoader<Pizza> prefabLoader(resources); // loads json files from disk to EntityPrefab<Pizza>
+    JsonLoader jsonLoader; /// loads json files from disk to nlohmann::json instances
+    JsonParserRegister jsonParserRegister; /// contains parsers from nlohmann::json to any custom type
+    JsonEntityPrefabLoader<Pizza> prefabLoader(resources); /// loads json files from disk to EntityPrefab<Pizza>
 
     JsonEntityPrefab<Pizza>::initialize(resources, jsonParserRegister);
     resources.registerLoader(&jsonLoader);
