@@ -14,7 +14,7 @@
 
 #include <polypropylene/reflection/TypeMap.h>
 #include <polypropylene/stdutils/CollectionUtils.h>
-#include <polypropylene/reflection/StringVariables.h>
+#include <polypropylene/reflection/VariableRegister.h>
 
 #include "ResourceLoader.h"
 #include "ResourceHandle.h"

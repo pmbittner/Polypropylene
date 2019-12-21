@@ -2,20 +2,20 @@
 // Created by Paul on 02.03.2019.
 //
 
-#include <polypropylene/serialisation/json/property/JsonPropertyContent.h>
+#include <polypropylene/serialisation/json/property/JsonFieldStorage.h>
 #include <polypropylene/serialisation/json/JsonParser.h>
 
 namespace PAX::Json {
-    JsonPropertyContent::JsonPropertyContent(const nlohmann::json &node)
-            : PropertyContent(), node(node) {}
+    JsonFieldStorage::JsonFieldStorage(const nlohmann::json &node)
+            : FieldStorage(), node(node) {}
 
-    JsonPropertyContent::~JsonPropertyContent() = default;
+    JsonFieldStorage::~JsonFieldStorage() = default;
 
-    bool JsonPropertyContent::has(const std::string &name) const {
+    bool JsonFieldStorage::has(const std::string &name) const {
         return node.count(name) > 0;
     }
 
-    std::string JsonPropertyContent::getValue(const std::string &key, const VariableRegister & variables) const {
+    std::string JsonFieldStorage::getValue(const std::string &key, const VariableRegister & variables) const {
         return VariableResolver::resolveVariables(JsonToString(node[key]), variables);
     }
 
@@ -48,13 +48,13 @@ namespace PAX::Json {
         }
     }
 
-    VariableHierarchy JsonPropertyContent::getResourceParametersFor(const std::string &name) const {
+    VariableHierarchy JsonFieldStorage::getResourceParametersFor(const std::string &name) const {
         VariableHierarchy params;
         buildVariableHierarchy(params, node[name]);
         return params;
     }
 
-    bool JsonPropertyContent::writeTo(Field & field, const VariableRegister &variables) const {
+    bool JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
         nlohmann::json j = StringToJson(getValue(field.name, variables));
 
         IJsonParser * parser = JsonParserRegister::Instance()->getParserFor(field.type);
@@ -65,7 +65,7 @@ namespace PAX::Json {
         return true;
     }
 
-    void JsonPropertyContent::readFrom(Field &field) {
+    void JsonFieldStorage::readFrom(Field &field) {
         PAX_NOT_IMPLEMENTED();
     }
 }

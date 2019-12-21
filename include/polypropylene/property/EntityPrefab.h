@@ -5,7 +5,7 @@
 #ifndef POLYPROPYLENE_ENTITYPREFAB_H
 #define POLYPROPYLENE_ENTITYPREFAB_H
 
-#include "polypropylene/reflection/StringVariables.h"
+#include "polypropylene/reflection/VariableRegister.h"
 #include "PropertyFactory.h"
 #include "polypropylene/memory/Allocator.h"
 

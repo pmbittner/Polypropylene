@@ -16,7 +16,7 @@
 namespace PAX {
     template<class C>
     class Entity;
-    class ContentProvider;
+    class ClassMetadataSerialiser;
 
     template<class E>
     class Property {

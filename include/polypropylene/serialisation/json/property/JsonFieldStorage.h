@@ -2,22 +2,22 @@
 // Created by Paul on 02.03.2019.
 //
 
-#ifndef POLYPROPYLENE_JSONPROPERTYCONTENT_H
-#define POLYPROPYLENE_JSONPROPERTYCONTENT_H
+#ifndef POLYPROPYLENE_JSONFIELDSTORAGE_H
+#define POLYPROPYLENE_JSONFIELDSTORAGE_H
 
 #ifdef PAX_WITH_JSON
 
-#include <polypropylene/serialisation/ContentProvider.h>
+#include <polypropylene/serialisation/ClassMetadataSerialiser.h>
 // TODO: Find a way to include JsonFwd.h here instead of Json.h
 #include <polypropylene/serialisation/json/Json.h>
 
 namespace PAX::Json {
-    class JsonPropertyContent : public PropertyContent {
+    class JsonFieldStorage : public FieldStorage {
         nlohmann::json node;
 
     public:
-        explicit JsonPropertyContent(const nlohmann::json &node);
-        ~JsonPropertyContent() override;
+        explicit JsonFieldStorage(const nlohmann::json &node);
+        ~JsonFieldStorage() override;
 
         PAX_NODISCARD std::string getValue(const std::string &key, const VariableRegister & variables) const;
 
@@ -30,4 +30,4 @@ namespace PAX::Json {
 
 #endif // PAX_WITH_JSON
 
-#endif //POLYPROPYLENE_JSONPROPERTYCONTENT_H
+#endif //POLYPROPYLENE_JSONFIELDSTORAGE_H

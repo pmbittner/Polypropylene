@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "polypropylene/serialisation/ContentProvider.h"
+#include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 
 #define PAX_PROPERTY_REGISTER_AS(PropertyType, Name) \
 do { \
@@ -29,7 +29,7 @@ namespace PAX {
         IPropertyFactory() noexcept = default;
         virtual ~IPropertyFactory() {}
 
-        PAX_NODISCARD virtual Property<C> * create(ContentProvider & contentProvider) const = 0;
+        PAX_NODISCARD virtual Property<C> * create(ClassMetadataSerialiser & contentProvider) const = 0;
         PAX_NODISCARD virtual TypeHandle getPropertyType() const = 0;
         PAX_NODISCARD virtual bool isPropertyMultiple() const = 0;
     };
@@ -75,7 +75,7 @@ namespace PAX {
         explicit PropertyFactory(const std::string &name) noexcept : IPropertyFactory<C>() {}
         virtual ~PropertyFactory() = default;
 
-        PAX_NODISCARD PropertyType * create(ContentProvider &contentProvider) const override {
+        PAX_NODISCARD PropertyType * create(ClassMetadataSerialiser &contentProvider) const override {
             return new
 #ifndef PAX_OVERWRITE_NEW_AND_DELETE_FOR_PROPERTIES
                 (Entity<C>::GetPropertyAllocator().allocate<PropertyType>())

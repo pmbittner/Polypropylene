@@ -30,7 +30,8 @@ set(HEADERS_FOR_CLION
         property/PropertyFactory.h
         property/EntityPrefab.h
 
-        serialisation/ContentProvider.h
+        serialisation/FieldStorage.h
+        serialisation/ClassMetadataSerialiser.h
         serialisation/TryParser.h
         serialisation/json/JsonFwd.h
 
@@ -43,7 +44,7 @@ set(HEADERS_FOR_CLION
         reflection/TypeMap.h
         reflection/ClassMetadata.h
         reflection/Field.h
-        reflection/StringVariables.h
+        reflection/VariableRegister.h
 
         resources/Resources.h
         resources/ResourceHandle.h
@@ -56,29 +57,31 @@ set(HEADERS_FOR_CLION
         Dependency.h)
 
 set(SOURCE_FILES
-        resources/Signature.cpp
-        stdutils/StringUtils.cpp
-        reflection/StringVariables.cpp
-
         event/Event.cpp
         event/EventService.cpp
 
         io/Path.cpp
 
         property/Entity.cpp
-        serialisation/ContentProvider.cpp
         property/EntityPrefab.cpp
 
         resources/Resources.cpp
         resources/ResourceLoader.cpp
         resources/ResourceHandle.cpp
+        resources/Signature.cpp
+
+        serialisation/ClassMetadataSerialiser.cpp
+        serialisation/FieldStorage.cpp
 
         system/System.cpp
+
+        stdutils/StringUtils.cpp
 
         log/Log.cpp
 
         reflection/ClassMetadata.cpp
-        reflection/Field.cpp)
+        reflection/Field.cpp
+        reflection/VariableRegister.cpp)
 
 if (POLYPROPYLENE_WITH_JSON)
     set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}
@@ -88,14 +91,14 @@ if (POLYPROPYLENE_WITH_JSON)
 
             serialisation/json/property/JsonEntityPrefab.h
             serialisation/json/property/JsonEntityPrefabLoader.h
-            serialisation/json/property/JsonPropertyContent.h
+            serialisation/json/property/JsonFieldStorage.h
             )
 
     set(SOURCE_FILES ${SOURCE_FILES}
             serialisation/json/JsonUtil.cpp
             serialisation/json/JsonLoader.cpp
             serialisation/json/JsonParser.cpp
-            serialisation/json/property/JsonPropertyContent.cpp)
+            serialisation/json/property/JsonFieldStorage.cpp)
 endif(POLYPROPYLENE_WITH_JSON)
 
 PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})

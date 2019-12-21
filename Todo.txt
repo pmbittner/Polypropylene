@@ -1,6 +1,7 @@
 Before publish:
 - Example with Manager and View (and Systems thereby?)
-- move and rename contentprovider and propertycontent
+- better registration for json serialisers
+- test on linux again
 
 General:
 - Logo
