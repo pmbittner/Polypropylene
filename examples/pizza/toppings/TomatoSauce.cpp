@@ -6,7 +6,10 @@
 #include "TomatoSauce.h"
 
 namespace PAX::Examples {
-    PAX_PROPERTY_SOURCE(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
+    PAX_PROPERTY_SOURCE(TomatoSauce)
+
+    TomatoSauce::TomatoSauce() = default;
+    TomatoSauce::TomatoSauce(int scoville) : scoville(scoville) {}
 
     ClassMetadata TomatoSauce::getMetadata() {
         ClassMetadata m = Super::getMetadata();
@@ -16,9 +19,5 @@ namespace PAX::Examples {
 
     std::string TomatoSauce::yummy() {
         return std::to_string(scoville) + " scoville tomato sauce";
-    }
-
-    void TomatoSauce::setSpicyness(float scoville) {
-        this->scoville = scoville;
     }
 }

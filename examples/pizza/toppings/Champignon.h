@@ -9,7 +9,7 @@
 
 namespace PAX::Examples {
     class Champignon : public Topping {
-        PAX_PROPERTY(Champignon, PAX_PROPERTY_IS_CONCRETE)
+        PAX_PROPERTY(Champignon)
         PAX_PROPERTY_DERIVES(Topping)
         PAX_PROPERTY_IS_SINGLE
 

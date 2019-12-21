@@ -9,19 +9,22 @@
 
 namespace PAX::Examples {
     class TomatoSauce : public Topping {
-        PAX_PROPERTY(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
+        PAX_PROPERTY(TomatoSauce)
         PAX_PROPERTY_DERIVES(Topping)
         PAX_PROPERTY_IS_SINGLE
 
         int scoville = 0;
 
-        TomatoSauce() = default;
+        /**
+         * Although we require scoville to be set, we provide a private default constructor for deserialisation (Prefabs).
+         * We tell the deserialisation then in getMetadata that scoville has to be initialised, i.e., it IsMandatory.
+         */
+        TomatoSauce();
 
     public:
-        std::string yummy() override;
-
+        explicit TomatoSauce(int scoville);
         ClassMetadata getMetadata() override;
-        void setSpicyness(float scoville);
+        std::string yummy() override;
     };
 }
 

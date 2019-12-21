@@ -76,11 +76,7 @@ namespace PAX {
         virtual ~PropertyFactory() = default;
 
         PAX_NODISCARD PropertyType * create(ClassMetadataSerialiser &contentProvider) const override {
-            return new
-#ifndef PAX_OVERWRITE_NEW_AND_DELETE_FOR_PROPERTIES
-                (Entity<C>::GetPropertyAllocator().allocate<PropertyType>())
-#endif
-                PropertyType();
+            return new (Entity<C>::GetPropertyAllocator().allocate<PropertyType>()) PropertyType();
         }
 
         PAX_NODISCARD TypeHandle getPropertyType() const override {

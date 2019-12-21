@@ -69,15 +69,24 @@ int main(int argc, char** argv) {
 
     Pizza * pizzaFunghi = prefab->create({{"spicyness", spicyness}});
 #else
-    float spicyness;
+    int spicyness;
     std::cin >> spicyness;
 
     Pizza * pizzaFunghi = new Pizza();
-    pizzaFunghi->add(new TomatoSauce());
-    pizzaFunghi->add(new Mozzarella());
-    pizzaFunghi->add(new Champignon());
 
-    pizzaFunghi->get<TomatoSauce>()->setSpicyness(spicyness);
+    /// Ideally, the allocation service is used for allocating memory for properties for efficient and correct
+    /// iteration over properties in systems.
+    /// However, using the allocation service is optional.
+    /// I could be done with placement new:
+    ///   new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce(spicyness)
+    TomatoSauce tomatoSauce(spicyness);
+    Mozzarella mozzarella;
+    Champignon champignon;
+
+    /// Add TomatoSauce first because Cheeses, e.g. Mozzarella, depend on it.
+    pizzaFunghi->add(&tomatoSauce);
+    pizzaFunghi->add(&mozzarella);
+    pizzaFunghi->add(&champignon);
 #endif
 
     pizzaFunghi->yummy();

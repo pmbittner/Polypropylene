@@ -5,7 +5,7 @@
 #include "Cheese.h"
 
 namespace PAX::Examples {
-    PAX_PROPERTY_SOURCE(Cheese, PAX_PROPERTY_IS_ABSTRACT)
+    PAX_PROPERTY_SOURCE(Cheese)
 
     std::string Cheese::yummy() {
         return "Cheesyyyyyyy";

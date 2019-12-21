@@ -9,7 +9,7 @@
 
 namespace PAX::Examples {
     class Topping : public PAX::Property<Pizza> {
-        PAX_PROPERTY(Topping, PAX_PROPERTY_IS_ABSTRACT)
+        PAX_PROPERTY(Topping)
         PAX_PROPERTY_DERIVES(::PAX::Property<Pizza>)
         PAX_PROPERTY_IS_MULTIPLE
 

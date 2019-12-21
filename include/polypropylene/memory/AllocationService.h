@@ -27,6 +27,7 @@ namespace PAX {
             return allocators.erase(type);
         }
 
+        // TODO: Can we avoid the template here in a safe way?
         template<class T>
         PAX_NODISCARD void * allocate() {
             Allocator<sizeof(T)> * allocator = nullptr;
