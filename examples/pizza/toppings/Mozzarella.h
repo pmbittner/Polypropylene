@@ -9,7 +9,7 @@
 
 namespace PAX::Examples {
     class Mozzarella : public Cheese {
-        PAX_PROPERTY(Mozzarella)
+        PAX_PROPERTY(Mozzarella, PAX_PROPERTY_IS_CONCRETE)
         PAX_PROPERTY_DERIVES(Cheese)
         PAX_PROPERTY_IS_SINGLE
 
