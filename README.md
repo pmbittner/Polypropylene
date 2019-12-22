@@ -162,7 +162,7 @@ Event services may optionally be linked such that events can be exchanged betwee
     ```
     ClassMetadata TomatoSauce::getMetadata() {
         ClassMetadata m = Super::getMetadata();
-        m.add({"scoville", paxtypeof(int), &scoville});
+        m.add({paxfield(scoville), Field::IsMandatory});
         return m;
     }
      ```
