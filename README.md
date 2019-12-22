@@ -53,7 +53,7 @@ Multiplicity is also considered upon retrieving objects as either the single ins
 
 - **Property Dependencies**: Property types can specify dependencies on other properties with `PAX_PROPERTY_DEPENDS_ON`.
 A property can only be added to an entity if all its dependencies are met.
-Thus, a properties can always assume that at least one property of each depending type is present in their entity.
+Thus, properties can always assume that at least one property of each depending type is present in their entity.
 In our example, `Cheese` can only be added to the `Pizza` if it contains `TomatoSauce`.
 
 ... and thereby is:
@@ -93,7 +93,7 @@ Event services may optionally be linked such that events can be exchanged betwee
     class Cheese : public PAX::Property<Pizza> {
         /** more code **/
     public:
-        virtual void attached(Pizza & p) override {
+        void attached(Pizza & p) override {
             p.getEventService().add<BakedEvent, Cheese, &Cheese::onPizzaBaked>(this);
         }
   
