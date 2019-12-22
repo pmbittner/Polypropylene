@@ -13,7 +13,7 @@ namespace PAX::Examples {
 
     ClassMetadata TomatoSauce::getMetadata() {
         ClassMetadata m = Super::getMetadata();
-        m.add({"scoville", paxtypeof(int), &scoville, Field::IsMandatory});
+        m.add({paxfield(scoville), Field::IsMandatory});
         return m;
     }
 

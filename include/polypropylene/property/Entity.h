@@ -7,7 +7,6 @@
 
 #include <cassert>
 #include <vector>
-#include <iostream>
 #include <optional>
 
 #include "../definitions/CompilerDetection.h"
@@ -15,7 +14,7 @@
 #include "../reflection/TypeMap.h"
 #include "../event/EventService.h"
 
-#include "Property.h"
+#include "PrototypeEntityPrefab.h"
 
 // We have to create this workaround, because MSVC can't handle constexpr functions in enable_if.
 #ifdef PAX_COMPILER_MSVC
@@ -131,22 +130,26 @@ namespace PAX {
          * @ref activate()
          * @return True, iff this entity is marked active.
          */
-        bool isActive() {
+        PAX_NODISCARD bool isActive() {
             return active;
         }
 
         /**
          * @return the AllocationService that is used for property (de-) allocation for properties for derived entitiy type Derived.
          */
-        static AllocationService& GetPropertyAllocator() {
+        PAX_NODISCARD static AllocationService& GetPropertyAllocator() {
             return propertyAllocator;
         }
 
         /**
          * @return The internal EventService of this Entity that is used for internal communication between properties.
          */
-        EventService& getEventService() {
+        PAX_NODISCARD EventService& getEventService() {
             return _localEventService;
+        }
+
+        PAX_NODISCARD PrototypeEntityPrefab<Derived> * toPrefab() const {
+
         }
         
         bool add(Property<Derived>* property) {
@@ -177,12 +180,12 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(bool, !)
         has() const {
-            return _singleProperties.count(paxtypeid(PropertyType)) > 0;
+            return _singleProperties.count(typeid(PropertyType)) > 0;
         }
 
         PAX_GENERATE_EntityTemplateHeader(bool, )
         has() const {
-            return _multipleProperties.count(paxtypeid(PropertyType)) > 0;
+            return _multipleProperties.count(typeid(PropertyType)) > 0;
         }
 
         template<class FirstPropertyType, class SecondPropertyType, class... FurtherPropertyTypees>
@@ -216,7 +219,7 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(PropertyType*, !)
         get() {
-            const auto& property = _singleProperties.find(paxtypeid(PropertyType));
+            const auto& property = _singleProperties.find(typeid(PropertyType));
             if (property != _singleProperties.end())
                 return static_cast<PropertyType*>(property->second);
             return nullptr;
@@ -224,7 +227,7 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(const std::vector<PropertyType*>&, )
         get() {
-            const auto& properties = _multipleProperties.find(paxtypeid(PropertyType));
+            const auto& properties = _multipleProperties.find(typeid(PropertyType));
             if (properties != _multipleProperties.end())
                 return reinterpret_cast<std::vector<PropertyType*>&>(properties->second);
             else
@@ -287,7 +290,7 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(PropertyType*, !)
         removeAll() {
-            const auto& propertyIt = _singleProperties.contains(paxtypeid(PropertyType));
+            const auto& propertyIt = _singleProperties.contains(typeid(PropertyType));
             if (propertyIt != _singleProperties.end()) {
                 PropertyType* property = static_cast<PropertyType*>(propertyIt->second);
                 if (remove(property))
@@ -299,10 +302,10 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(const std::vector<PropertyType*>&, )
         removeAll() {
-            const auto& propertiesIt = _multipleProperties.contains(paxtypeid(PropertyType));
+            const auto& propertiesIt = _multipleProperties.contains(typeid(PropertyType));
             if (propertiesIt != _multipleProperties.end()) {
                 // Copy to be able to return all removed instances
-                auto properties = reinterpret_cast<std::vector<PropertyType*>>(_multipleProperties.get(paxtypeid(PropertyType)));
+                auto properties = reinterpret_cast<std::vector<PropertyType*>>(_multipleProperties.get(typeid(PropertyType)));
                 for (PropertyType* property : properties) {
                     if (!remove(property))
                         return EmptyPropertyVector;

@@ -38,12 +38,12 @@ namespace PAX {
         void add(Listener* listener) {
             PAX_ES_MAP_VALUES* listenerList;
 
-            const auto & listenerListIt = _listeners.find(paxtypeid(EventClass));
+            const auto & listenerListIt = _listeners.find(typeid(EventClass));
             if (listenerListIt != _listeners.end())
                 listenerList = static_cast<PAX_ES_MAP_VALUES*>(listenerListIt->second);
             else {
                 listenerList = new PAX_ES_MAP_VALUES;
-                _listeners[paxtypeid(EventClass)] = listenerList;
+                _listeners[typeid(EventClass)] = listenerList;
             }
 
             PAX_ES_DELEGATE delegate(listener, &invoke<EventClass, Listener, Method>);
@@ -54,7 +54,7 @@ namespace PAX {
 
         template<typename EventClass, typename Listener, void (Listener::*Method)(EventClass&)>
         bool remove(Listener *listener) {
-            const auto & listenerListIt = _listeners.find(paxtypeid(EventClass));
+            const auto & listenerListIt = _listeners.find(typeid(EventClass));
             if (listenerListIt != _listeners.end()) {
                 PAX_ES_MAP_VALUES* vec = static_cast<PAX_ES_MAP_VALUES*>(listenerListIt->second);
                 return PAX::Util::removeFromVector(*vec, PAX_ES_DELEGATE(listener, &invoke<EventClass, Listener, Method>));
@@ -70,7 +70,7 @@ namespace PAX {
 
         template<typename EventClass>
         void fire(EventClass& event) {
-            const auto & listener = _listeners.find(paxtypeid(EventClass));
+            const auto & listener = _listeners.find(typeid(EventClass));
             if (listener != _listeners.end()) {
                 PAX_ES_MAP_VALUES *values = static_cast<PAX_ES_MAP_VALUES *>(listener->second);
                 for (PAX_ES_DELEGATE &delegate : *values) {

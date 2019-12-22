@@ -40,7 +40,12 @@ namespace PAX {
          * @param variableRegister Custom variables that can be considered upon creation.
          * @return returns a new entity of this prefab.
          */
-        virtual EntityType * create(const VariableRegister & variableRegister) = 0;
+        virtual EntityType * create(const VariableRegister & variableRegister) {
+            // TODO: Agree on global Allocator for PropertyContainers!
+            EntityType * e = new EntityType();
+            addMyContentTo(*e, variableRegister);
+            return e;
+        }
 
         /**
          * Adds all properties of this prefab to the given entity.

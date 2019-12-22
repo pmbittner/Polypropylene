@@ -180,6 +180,7 @@ namespace PAX {
 
                                 for (auto it = props.begin(); it != props.end(); ++it) {
                                     if ((*it)->areDependenciesMetFor(e)) {
+                                        *it->created();
                                         e.add(*it);
                                         props.erase(it);
                                         break;
@@ -193,16 +194,6 @@ namespace PAX {
                                 }
                             }
                         });
-            }
-
-            EntityType * create(const VariableRegister & variableRegister) override {
-                EntityType * e = nullptr;
-
-                // TODO: Agree on global Allocator for PropertyContainers!!!
-                e = new EntityType();
-
-                addMyContentTo(*e, variableRegister);
-                return e;
             }
 
             void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {

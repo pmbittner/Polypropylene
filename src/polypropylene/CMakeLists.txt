@@ -32,6 +32,7 @@ set(HEADERS_FOR_CLION
         property/PropertyDependencies.h
         property/PropertyFactory.h
         property/EntityPrefab.h
+        property/PrototypeEntityPrefab.h
 
         serialisation/FieldStorage.h
         serialisation/ClassMetadataSerialiser.h
@@ -82,7 +83,8 @@ set(SOURCE_FILES
 
         reflection/ClassMetadata.cpp
         reflection/Field.cpp
-        reflection/VariableRegister.cpp)
+        reflection/VariableRegister.cpp
+        reflection/TypeHandle.cpp)
 
 if (POLYPROPYLENE_WITH_JSON)
     set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}

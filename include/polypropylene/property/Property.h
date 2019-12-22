@@ -16,7 +16,6 @@
 namespace PAX {
     template<class C>
     class Entity;
-    class ClassMetadataSerialiser;
 
     template<class E>
     class Property {
@@ -33,7 +32,7 @@ namespace PAX {
 
     protected:
         virtual bool PAX_INTERNAL(addTo)(E & entity) PAX_NON_CONST {
-            if (entity.PAX_INTERNAL(addAsMultiple)(paxtypeid(Property<E>), this)) {
+            if (entity.PAX_INTERNAL(addAsMultiple)(typeid(Property<E>), this)) {
                 ::PAX::PropertyAttachedEvent<E, Property<E>> event(this, &entity);
                 entity.getEventService()(event);
                 return true;
@@ -43,7 +42,7 @@ namespace PAX {
         }
 
         virtual bool PAX_INTERNAL(removeFrom)(E & entity) PAX_NON_CONST {
-            if (entity.PAX_INTERNAL(removeAsMultiple)(paxtypeid(Property<E>), this)) {
+            if (entity.PAX_INTERNAL(removeAsMultiple)(typeid(Property<E>), this)) {
                 ::PAX::PropertyDetachedEvent<E, Property<E>> event(this, &entity);
                 entity.getEventService()(event);
                 return true;
@@ -51,6 +50,8 @@ namespace PAX {
 
             return false;
         }
+
+        virtual void created() {}
 
         virtual void activated() {}
         virtual void deactivated() {}
@@ -70,6 +71,17 @@ namespace PAX {
         PAX_NODISCARD virtual bool areDependenciesMetFor(const E&) const { return true; }
 
         PAX_NODISCARD bool isActive() const { return active; }
+
+        PAX_NODISCARD virtual Property<E> * clone() {
+            // TODO: It would be nice if we can make this method const.
+            //       This is not trivial however because getMetadata()
+            //       is not const because of all the pointers we retrieve from there.
+            Property<E> * clone = PropertyFactoryRegister<E>::getFactoryFor(getClassType())->create();
+            ClassMetadata cloneMetadata = clone->getMetadata();
+            getMetadata().writeTo(cloneMetadata);
+            clone->created();
+            return clone;
+        }
     };
 }
 

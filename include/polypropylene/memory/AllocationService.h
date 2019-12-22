@@ -19,11 +19,11 @@ namespace PAX {
     public:
         AllocationService() = default;
 
-        void registerAllocator(const TypeHandle& type, IAllocator * provider) {
+        void registerAllocator(const std::type_index & type, IAllocator * provider) {
             allocators[type] = provider;
         }
 
-        size_t unregisterAllocator(const TypeHandle & type) {
+        size_t unregisterAllocator(const std::type_index & type) {
             return allocators.erase(type);
         }
 
@@ -32,7 +32,7 @@ namespace PAX {
         PAX_NODISCARD void * allocate() {
             Allocator<sizeof(T)> * allocator = nullptr;
 
-            const auto & allocIt = allocators.find(paxtypeid(T));
+            const auto & allocIt = allocators.find(typeid(T));
             if (allocIt != allocators.end()) {
                 allocator = dynamic_cast<Allocator<sizeof(T)>*>(allocIt->second);
                 if (!allocator) {
@@ -43,13 +43,13 @@ namespace PAX {
             if (!allocator){
                 // TODO: Avoid new: Allocator for allocator lul
                 allocator = new PoolAllocator<sizeof(T)>();
-                registerAllocator(paxtypeid(T), allocator);
+                registerAllocator(typeid(T), allocator);
             }
 
             return allocator->allocate();
         }
 
-        bool free(const TypeHandle& type, void * object) {
+        bool free(const std::type_index & type, void * object) {
             const auto& allocator = allocators.find(type);
             if (allocator != allocators.end()) {
                 allocator->second->destroy(object);

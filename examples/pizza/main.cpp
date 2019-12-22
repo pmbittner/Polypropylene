@@ -2,6 +2,8 @@
 // Created by Bittner on 05.12.2019.
 //
 
+#include <iostream>
+
 #include "polypropylene/Polypropylene.h"
 
 #ifdef PAX_WITH_JSON

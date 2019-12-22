@@ -8,17 +8,16 @@
 #include <typeindex>
 #include <map>
 #include <unordered_map>
-#include <polypropylene/reflection/TypeHandle.h>
 
 namespace PAX {
 #define PAX_TYPE_MAP_LIGHTWEIGHT
 
 #ifdef PAX_TYPE_MAP_LIGHTWEIGHT
     template<typename ValueType>
-    using TypeMap = std::map<TypeHandle, ValueType>;
+    using TypeMap = std::map<std::type_index, ValueType>;
 
     template<typename ValueType>
-    using UnorderedTypeMap = std::unordered_map<TypeHandle, ValueType>;
+    using UnorderedTypeMap = std::unordered_map<std::type_index, ValueType>;
 #else
     template<typename ValueType, class Map = std::unordered_map<std::type_index, ValueType>>
     class TypeMap {
