@@ -1,6 +1,6 @@
+- move activated flag to pax3
 - Logo
-- Entitiy::toPrefab()
-- metadata writing, Json writing
+- Json writing
 - dependency resolving upon remove
 - type system (as built in the engine?)
 - make ResourceLoaderT::loadToOrGetFromResources more intuitive
