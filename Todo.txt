@@ -1,4 +1,5 @@
 - move activated flag to pax3
+- remove resources?
 - Logo
 - Json writing
 - dependency resolving upon remove

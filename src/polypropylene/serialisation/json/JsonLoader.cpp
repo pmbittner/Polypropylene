@@ -23,15 +23,20 @@ namespace PAX {
                 return std::make_shared<nlohmann::json>(j);
             }
             catch (nlohmann::json::parse_error &e) {
-                std::cerr
-                        << "[PAX::JsonLoader::load]: File "
+                PAX_LOG(Log::Level::Error, "File at path "
                         << path
                         << " could not be parsed:\n"
                         << e.what() << '\n'
                         << "exception id: " << e.id << '\n'
-                        << "byte position of error: " << e.byte << std::endl;
+                        << "byte position of error: " << e.byte);
                 return nullptr;
             }
+        }
+
+        void JsonLoader::write(const nlohmann::json &json, const Path & path) const {
+            std::ofstream fileStream(path.c_str());
+            fileStream << json;
+            fileStream.close();
         }
 
         std::shared_ptr<nlohmann::json>

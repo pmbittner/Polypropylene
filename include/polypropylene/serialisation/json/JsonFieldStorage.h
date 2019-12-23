@@ -7,10 +7,10 @@
 
 #ifdef PAX_WITH_JSON
 
-#include <polypropylene/serialisation/ClassMetadataSerialiser.h>
+#include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 // TODO: Find a way to include JsonFwd.h here instead of Json.h
-#include <polypropylene/serialisation/json/Json.h>
-#include <polypropylene/serialisation/json/JsonParser.h>
+#include "polypropylene/serialisation/json/Json.h"
+#include "polypropylene/serialisation/json/JsonParser.h"
 
 namespace PAX::Json {
     class JsonFieldStorage : public FieldStorage {
@@ -26,7 +26,9 @@ namespace PAX::Json {
         PAX_NODISCARD bool has(const std::string &name) const override;
         PAX_NODISCARD VariableHierarchy getResourceParametersFor(const std::string &name) const override;
         PAX_NODISCARD bool writeTo(Field & field, const VariableRegister &variables) const override;
-        void readFrom(Field & field) override;
+        bool readFrom(const Field & field) override;
+
+        void clear();
     };
 }
 

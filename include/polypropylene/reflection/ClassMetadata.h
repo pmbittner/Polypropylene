@@ -24,6 +24,7 @@ namespace PAX {
         PAX_NODISCARD Field & get(const std::string & name);
         PAX_NODISCARD const Field & get(const std::string & name) const;
         PAX_NODISCARD std::vector<Field> & getFields();
+        PAX_NODISCARD const std::vector<Field> & getFields() const;
 
         void writeTo(ClassMetadata & other) const;
     };

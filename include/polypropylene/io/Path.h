@@ -40,6 +40,7 @@ namespace PAX {
         PAX_NODISCARD bool isAbsolute() const;
         PAX_NODISCARD bool isRelative() const;
         PAX_NODISCARD Path getDirectory() const;
+        PAX_NODISCARD Path toRelative(const Path & root) const;
         PAX_NODISCARD Path toAbsolute() const;
 
         void convertToCurrentPlatform();
@@ -48,6 +49,7 @@ namespace PAX {
         PAX_NODISCARD Path convertedToCurrentPlatform() const;
         PAX_NODISCARD Path convertedToWin() const;
         PAX_NODISCARD Path convertedToUnix() const;
+
         void simplify();
 
         static void convertToCurrentPlatform(std::string & path);

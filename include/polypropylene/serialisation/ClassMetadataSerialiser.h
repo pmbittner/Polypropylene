@@ -30,7 +30,7 @@ namespace PAX {
 
         void setStorage(FieldStorage * fieldStorage);
         void writeToMetadata(ClassMetadata & metadata, Options options = None) const;
-        void readFromMetadata(ClassMetadata & metadata);
+        void readFromMetadata(const ClassMetadata & metadata);
     };
 }
 

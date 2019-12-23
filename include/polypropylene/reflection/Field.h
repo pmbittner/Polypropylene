@@ -22,8 +22,8 @@ namespace PAX {
 
         TypeHandle type;
         std::string name;
-        Flag flag;
         void * data;
+        Flag flags;
 
         Field(const std::string & name, const TypeHandle & type, void * data, Flag flags = None);
 

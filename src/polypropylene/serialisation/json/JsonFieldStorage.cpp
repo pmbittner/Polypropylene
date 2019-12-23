@@ -57,15 +57,30 @@ namespace PAX::Json {
     bool JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
         nlohmann::json j = StringToJson(getValue(field.name, variables));
 
-        IJsonParser * parser = parsers.getParserFor(field.type);
+        const IJsonParser * parser = parsers.getParserFor(field.type);
         if (parser) {
             return parser->loadIntoField(j, field);
+        } else {
+            PAX_THROW_RUNTIME_ERROR("Could not write to field of type \"" << field.type.name() << "\" because no IJsonParser is registered for it!");
         }
 
         return true;
     }
 
-    void JsonFieldStorage::readFrom(Field &field) {
-        PAX_NOT_IMPLEMENTED();
+    bool JsonFieldStorage::readFrom(const Field & field) {
+        clear();
+
+        const IJsonParser * parser = parsers.getParserFor(field.type);
+        if (parser) {
+            return parser->loadIntoJson(field, node);
+        } else {
+            PAX_THROW_RUNTIME_ERROR("Could not read field of type \"" << field.type.name() << "\" because no IJsonParser is registered for it!");
+        }
+
+        return true;
+    }
+
+    void JsonFieldStorage::clear() {
+        node.clear();
     }
 }

@@ -5,6 +5,7 @@
 #include <polypropylene/io/Path.h>
 #include <iostream>
 #include <stack>
+#include <algorithm>
 
 #ifdef PAX_OS_WIN
 #include <windows.h>
@@ -29,9 +30,7 @@ namespace PAX {
 
     }
 
-    Path::Path(const Path &other) : _path(other._path) {
-        // do not call other constructors to avoid unnecessary simplification
-    }
+    Path::Path(const Path &other) = default;
 
     bool Path::isFile() const {
         auto dotPos = _path.find_last_of('.');
@@ -68,14 +67,14 @@ namespace PAX {
 #ifdef PAX_OS_WIN
         // Absolute paths on win are of the form
         // Drive:/
-        for (size_t i = 0; i < path.size(); ++i) {
-            if (path[i] == Path::PathSeparator) {
+        for (char i : path) {
+            if (i == Path::PathSeparator) {
                 break;
             }
-            else if (path[i] == '.') {
+            else if (i == '.') {
                 break;
             }
-            else if (path[i] == ':') {
+            else if (i == ':') {
                 return true;
             }
         }
@@ -96,11 +95,53 @@ namespace PAX {
         }
     }
 
+    Path Path::toRelative(const Path &root) const {
+        if (isRelative()) return *this;
+        std::string me = this->convertedToUnix();
+        std::string other = root.toAbsolute().convertedToUnix();
+
+        // the given root should be a prefix of _path but that needs not to be the case
+        // hence we are looking for the longest common prefix of both
+        while (true) {
+            size_t myPathSep = me.find_first_of(PathSeparator_Unix) + 1;
+            size_t otherPathSep = other.find_first_of(PathSeparator_Unix) + 1;
+            std::string myToken = me.substr(0, myPathSep);
+            std::string otherToken = other.substr(0, otherPathSep);
+
+            if (myToken.empty() || otherToken.empty()) {
+                break;
+            }
+
+            if (myToken == otherToken) {
+                me = me.substr(myPathSep);
+                other = other.substr(otherPathSep);
+            } else {
+                break;
+            }
+        }
+
+        // The other path is a prefix of ours.
+        if (other.empty()) {
+            return me;
+        }
+
+        std::string goUp;
+        size_t depth = std::count(other.begin(), other.end(), PathSeparator_Unix) + 1;
+        for (size_t i = 0; i < depth; ++i) {
+            goUp += "..";
+            goUp += PathSeparator_Unix;
+        }
+
+        return goUp + me;
+    }
+
     Path Path::toAbsolute() const {
         return toAbsolute(_path);
     }
 
     std::string Path::toAbsolute(const std::string &path) {
+        if (Path(path).isAbsolute()) return path;
+
 #ifdef PAX_OS_WIN
         constexpr unsigned int HARDCODED_BUFSIZE = 4096;
         TCHAR  buffer[HARDCODED_BUFSIZE] = TEXT("");
@@ -330,10 +371,7 @@ namespace PAX {
         return *this;
     }
 
-    Path& Path::operator=(const Path &other) {
-        _path = other._path;
-        return *this;
-    }
+    Path& Path::operator=(const Path &other) = default;
 
     Path Path::operator+(const char *path) const {
         return Path(_path + PathSeparator + std::string(path));
@@ -366,5 +404,5 @@ namespace PAX {
 
 std::ostream& operator<<(std::ostream& os, const PAX::Path & p)
 {
-    return os << p.toAbsolute().toString();
+    return os << p.toString();
 }

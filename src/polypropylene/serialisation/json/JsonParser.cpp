@@ -34,11 +34,11 @@ namespace PAX::Json {
 #undef JSONPARSERREGISTER_REGISTERPRIMITIVE_WITHUNSIGNED
 #undef JSONPARSERREGISTER_REGISTERPRIMITIVE
 
-    void JsonParserRegister::registerParser(const PAX::TypeHandle & type, IJsonParser *parser) {
+    void JsonParserRegister::registerParser(const PAX::TypeHandle & type, const IJsonParser *parser) {
         parsers.insert({type, parser});
     }
 
-    IJsonParser * JsonParserRegister::getParserFor(const PAX::TypeHandle & type) const {
+    const IJsonParser * JsonParserRegister::getParserFor(const PAX::TypeHandle & type) const {
         const auto & it = parsers.find(type);
         if (it != parsers.end()) {
             return it->second;

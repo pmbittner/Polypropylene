@@ -15,8 +15,9 @@ namespace PAX {
         class JsonLoader : public ResourceLoader<nlohmann::json, Path> {
         public:
             std::shared_ptr<nlohmann::json> loadToOrGetFromResources(Resources &resources, const VariableHierarchy &parameters) override;
-            bool canLoad(Path) const override;
+            PAX_NODISCARD bool canLoad(Path) const override;
             std::shared_ptr<nlohmann::json> load(Path) override;
+            void write(const nlohmann::json & json, const Path & path) const;
         };
     }
 }

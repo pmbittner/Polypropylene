@@ -46,6 +46,10 @@ namespace PAX {
         return fields;
     }
 
+    const std::vector<Field> & ClassMetadata::getFields() const {
+        return fields;
+    }
+
     void ClassMetadata::writeTo(ClassMetadata & other) const {
         for (const Field & myField : fields) {
             Field & otherField = other.get(myField.name);

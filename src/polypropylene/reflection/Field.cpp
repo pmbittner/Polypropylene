@@ -11,7 +11,7 @@
 
 namespace PAX {
     Field::Field(const std::string &name, const PAX::TypeHandle &type, void *data, PAX::Field::Flag flags)
-    : name(name), type(type), data(data), flag(flags)
+    : name(name), type(type), data(data), flags(flags)
     {
 
     }
