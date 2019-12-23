@@ -5,10 +5,9 @@
 #ifndef POLYPROPYLENE_PROPERTY_H
 #define POLYPROPYLENE_PROPERTY_H
 
-#include <polypropylene/reflection/ClassMetadata.h>
-#include "../reflection/TypeHandle.h"
-#include "../definitions/Definitions.h"
-#include "PropertyFactory.h"
+#include "polypropylene/reflection/ClassMetadata.h"
+#include "polypropylene/reflection/TypeHandle.h"
+#include "polypropylene/definitions/Definitions.h"
 
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
@@ -20,7 +19,6 @@ namespace PAX {
     template<class E>
     class Property {
         friend class Entity<E>;
-        friend class IPropertyFactory<E>;
 
     public:
         using EntityType = E;
@@ -51,27 +49,83 @@ namespace PAX {
             return false;
         }
 
+        /**
+         * Callback that is invoked when the property was created by a prefab or cloned from another property.
+         * Fields declared in Metadata (@ref getMetadata()) can be assumed to be initialised if values for them
+         * were specified in the creating object (e.g., prefab).
+         */
         virtual void created() {}
 
+        /**
+         * Callback that is invoked when the owning entity got activated or this property got attached to an
+         * active entity.
+         * The semantics of activation are user defined, i.e., activation status can be interpreted and used as
+         * needed but does not affect properties or entities behaviour.
+         */
         virtual void activated() {}
+
+        /**
+         * Callback that is invoked when the owning entity got deactivated or this property got attached to an
+         * inactive entity.
+         * The semantics of activation are user defined, i.e., activation status can be interpreted and used as
+         * needed.
+         */
         virtual void deactivated() {}
 
-        virtual void attached(E &) {}
-        virtual void detached(E &) {}
+        /**
+         * Callback that is invoked when this property gets attached to an entity.
+         * @param E The entity this property got attached to.
+         */
+        virtual void attached(E & entity) {}
+
+
+        /**
+         * Callback that is invoked when this property gets removed from an entity.
+         * @param E The entity this property got removed from.
+         */
+        virtual void detached(E & entity) {}
 
     public:
         Property() : owner(nullptr) {}
         virtual ~Property() = default;
 
+        /**
+         * @return The entity this property is attached to. Returns nullptr if this property is not attached to an entity.
+         */
         PAX_NODISCARD E * getOwner() const { return owner; }
 
         PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
-        PAX_NODISCARD virtual ClassMetadata getMetadata() { return {}; }
-        PAX_NODISCARD virtual bool isMultiple() const { return IsMultiple(); }
-        PAX_NODISCARD virtual bool areDependenciesMetFor(const E&) const { return true; }
 
+        /**
+         * @return Reflection information on the fields of this property that should be considered for cloning,
+         * (de-)serialisation, and prefabs.
+         */
+        PAX_NODISCARD virtual ClassMetadata getMetadata() { return {}; }
+
+        /**
+         * @return True if multiple instances of this property can be attached to the same entity.
+         * Returns false if only a single instance is allowed per entity.
+         */
+        PAX_NODISCARD virtual bool isMultiple() const { return IsMultiple(); }
+
+        /**
+         * This method is invoked to resolve dependencies upon attaching this property to an entity.
+         * Properties may depend on other properties, i.e., require their presence.
+         * @param entity The entity this property should be attached to.
+         * @return True if all dependencies if this property are met for the given entity.
+         */
+        PAX_NODISCARD virtual bool areDependenciesMetFor(const E & entity) const { return true; }
+
+        /**
+         *
+         * @return True if this property is active.
+         */
         PAX_NODISCARD bool isActive() const { return active; }
 
+        /**
+         * Creates a copy of this property by considering all fields specified by the @ref getMetadata() method.
+         * @return A clone of this property.
+         */
         PAX_NODISCARD virtual Property<E> * clone() {
             // TODO: It would be nice if we can make this method const.
             //       This is not trivial however because getMetadata()

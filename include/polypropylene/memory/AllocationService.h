@@ -19,8 +19,8 @@ namespace PAX {
     public:
         AllocationService() = default;
 
-        void registerAllocator(const std::type_index & type, IAllocator * provider) {
-            allocators[type] = provider;
+        void registerAllocator(const std::type_index & type, IAllocator * allocator) {
+            allocators[type] = allocator;
         }
 
         size_t unregisterAllocator(const std::type_index & type) {

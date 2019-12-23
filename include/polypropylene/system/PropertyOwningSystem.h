@@ -10,6 +10,10 @@
 #include "../memory/allocators/PoolAllocator.h"
 
 namespace PAX {
+    /**
+     * Iterator for pool allocators used for PropertyOwningSystems.
+     * @tparam PropertyType The type of property this iterator iterates over.
+     */
     template<typename PropertyType>
     struct PropertyOwningSystemIterator {
     private:
@@ -51,7 +55,16 @@ namespace PAX {
         }
     };
 
-
+    /**
+     * Owning systems own all properties of a given type and manage their allocation.
+     * Iterating over the system yields all active properties that are currently in use.
+     * Note that only properties allocated via the allocation service of the corresponding entity
+     * (@ref Entity<T>::GetPropertyAllocator()) are owned by and known to this system.
+     * @tparam ManagerType The manager type to which this system can be added to.
+     * @tparam PropertyType The type of properties that should be allocated by this system.
+     * For the specified property type a pool allocator is registered in the allocation service of the corresponding
+     * entity.
+     */
     template<class ManagerType, class PropertyType>
     class PropertyOwningSystem : public System<ManagerType> {
         PoolAllocator<sizeof(PropertyType)> allocator;
@@ -59,11 +72,10 @@ namespace PAX {
     public:
         PropertyOwningSystem() = default;
 
-        void initialize(ManagerType *game) override {
-            System<ManagerType>::initialize(game);
-
-            AllocationService & allocationService = PropertyType::Container::GetPropertyAllocator();
-            allocationService.registerAllocator(paxtypeid(PropertyType), &allocator);
+        void initialize(ManagerType * manager) override {
+            System<ManagerType>::initialize(manager);
+            AllocationService & allocationService = PropertyType::EntityType::GetPropertyAllocator();
+            allocationService.registerAllocator(typeid(PropertyType), &allocator);
         }
 
         PropertyOwningSystemIterator<PropertyType> begin() { return allocator.getMemory(); }
