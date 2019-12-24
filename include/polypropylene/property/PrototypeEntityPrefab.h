@@ -16,8 +16,8 @@ namespace PAX {
 
     public:
         explicit PrototypeEntityPrefab(const Entity<EntityType> & prototype) {
-            const std::vector<Property<EntityType>*> & prototypeProperties = prototype = prototype.getAllProperties();
-            for (const Property<EntityType> * original : prototypeProperties) {
+            const std::vector<Property<EntityType>*> & prototypeProperties = prototype.getAllProperties();
+            for (Property<EntityType> * original : prototypeProperties) {
                 prototypes.emplace_back(original->clone());
             }
         }
@@ -25,7 +25,7 @@ namespace PAX {
         PrototypeEntityPrefab(const PrototypeEntityPrefab<EntityType> & other) = default;
 
         void addMyContentTo(EntityType & entity, const VariableRegister & variableRegister) override {
-            for (const Property<EntityType> * prototype : prototypes) {
+            for (Property<EntityType> * prototype : prototypes) {
                 entity.add(prototype->clone());
             }
         }
