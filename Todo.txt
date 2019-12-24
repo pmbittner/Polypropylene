@@ -1,5 +1,7 @@
 General:
 - const correctness in prefabs
+    - const version for Property<T>::getMetadata()
+    - parent parsing in json beforehand
 - Logo
 - dependency resolving upon remove
 - type system (as built in the engine?)
