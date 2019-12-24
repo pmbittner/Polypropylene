@@ -52,28 +52,15 @@ namespace PAX {
          * Deletes all properties.
          */
         virtual ~Entity() {
-            // 1.) Unattach everything to invoke detach events and not delete something twice.
-            // 2.) Delete propertys as they should not be reused.
+            std::vector<Property<Derived>*> myProperties = getAllProperties();
+            while (!myProperties.empty()) {
+                Property<Derived> * victim = myProperties.back();
+                myProperties.pop_back();
 
-            while (!_singleProperties.empty()) {
-                Property<Derived> * propToRemove = _singleProperties.begin()->second;
-                remove(propToRemove);
-                delete propToRemove;
+                TypeHandle victimType = victim->getClassType();
+                victim->~Property<Derived>();
+                GetPropertyAllocator().free(victimType.typeindex, victim);
             }
-
-            while (!_multipleProperties.empty()) {
-                const auto & it = _multipleProperties.begin();
-                if (!it->second.empty()) {
-                    Property<Derived> * propToRemove = it->second.front();
-                    if (remove(propToRemove)) {
-                        delete propToRemove;
-                    } else {
-                        PAX_LOG(Log::Level::Error, "Invalid state: Removing property of type " << propToRemove->getClassType().name() << " was unsuccessful!");
-                    }
-                }
-            }
-
-            _multipleProperties.clear();
         }
 
     private:
@@ -148,8 +135,8 @@ namespace PAX {
             return _localEventService;
         }
 
-        PAX_NODISCARD PrototypeEntityPrefab<Derived> * toPrefab() const {
-
+        PAX_NODISCARD PrototypeEntityPrefab<Derived> toPrefab() const {
+            return PrototypeEntityPrefab<Derived>(*this);
         }
         
         bool add(Property<Derived>* property) {

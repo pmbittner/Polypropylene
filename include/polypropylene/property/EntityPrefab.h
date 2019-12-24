@@ -28,9 +28,6 @@ namespace PAX {
      */
     template<class EntityType>
     class EntityPrefab : public Prefab {
-    protected:
-        std::map<Path, std::shared_ptr<EntityPrefab<EntityType>>> parentPrefabs;
-
     public:
         explicit EntityPrefab() = default;
         virtual ~EntityPrefab() = default;
@@ -40,7 +37,7 @@ namespace PAX {
          * @param variableRegister Custom variables that can be considered upon creation.
          * @return returns a new entity of this prefab.
          */
-        virtual EntityType * create(const VariableRegister & variableRegister) {
+        PAX_NODISCARD virtual EntityType * create(const VariableRegister & variableRegister) {
             // TODO: Agree on global Allocator for PropertyContainers!
             EntityType * e = new EntityType();
             addMyContentTo(*e, variableRegister);

@@ -50,11 +50,6 @@ set(HEADERS_FOR_CLION
         reflection/Field.h
         reflection/VariableRegister.h
 
-        resources/Resources.h
-        resources/ResourceHandle.h
-        resources/ResourceLoader.h
-        resources/Signature.h
-
         stdutils/CollectionUtils.h
         stdutils/StringUtils.h)
 
@@ -66,11 +61,6 @@ set(SOURCE_FILES
 
         property/Entity.cpp
         property/EntityPrefab.cpp
-
-        resources/Resources.cpp
-        resources/ResourceLoader.cpp
-        resources/ResourceHandle.cpp
-        resources/Signature.cpp
 
         serialisation/ClassMetadataSerialiser.cpp
         serialisation/FieldStorage.cpp

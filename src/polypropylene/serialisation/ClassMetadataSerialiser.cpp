@@ -2,12 +2,13 @@
 // Created by paul on 09.01.19.
 //
 
+#include "polypropylene/log/Errors.h"
 #include <polypropylene/serialisation/ClassMetadataSerialiser.h>
 
 namespace PAX
 {
-    ClassMetadataSerialiser::ClassMetadataSerialiser(PAX::Resources &resources, const PAX::VariableRegister &variables)
-            : resources(resources), variables(variables) {}
+    ClassMetadataSerialiser::ClassMetadataSerialiser(const PAX::VariableRegister &variables)
+            : variables(variables) {}
 
     void ClassMetadataSerialiser::setStorage(FieldStorage * fieldStorage) {
         this->fieldStorage = fieldStorage;

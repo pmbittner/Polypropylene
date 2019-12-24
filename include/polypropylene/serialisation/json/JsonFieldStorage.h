@@ -14,11 +14,11 @@
 
 namespace PAX::Json {
     class JsonFieldStorage : public FieldStorage {
-        nlohmann::json node;
+        nlohmann::json & node;
         const JsonParserRegister & parsers;
 
     public:
-        explicit JsonFieldStorage(const nlohmann::json &node, const JsonParserRegister & jsonParserRegister);
+        explicit JsonFieldStorage(nlohmann::json &node, const JsonParserRegister & jsonParserRegister);
         ~JsonFieldStorage() override;
 
         PAX_NODISCARD std::string getValue(const std::string &key, const VariableRegister & variables) const;

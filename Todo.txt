@@ -1,9 +1,7 @@
-- move activated flag to pax3
-- remove resources?
+General:
+- const correctness in prefabs
 - Logo
-- Json writing
 - dependency resolving upon remove
 - type system (as built in the engine?)
-- make ResourceLoaderT::loadToOrGetFromResources more intuitive
 - entity allocation
 (- Log singleton does not allow polymorphism so far)

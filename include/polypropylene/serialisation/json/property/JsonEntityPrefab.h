@@ -14,6 +14,7 @@
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 #include "polypropylene/serialisation/json/JsonFieldStorage.h"
+#include "JsonEntityPrefabLoader.h"
 
 namespace PAX {
     namespace Json {
@@ -81,13 +82,21 @@ namespace PAX {
 
         template<typename EntityType>
         class JsonEntityPrefab : public EntityPrefab<EntityType> {
+            struct DefaultElements {
+                static constexpr const char * Inherits = "Inherits";
+                static constexpr const char * Properties = "Properties";
+            };
+
             using json = nlohmann::json;
 
-            std::shared_ptr<json> rootNode;
+            static JsonParserRegister * GlobalParsers;
+
+            std::vector<JsonEntityPrefab<EntityType>> parentPrefabs;
+            json rootNode;
             Path path;
 
             void parse(json &parent, const std::string &childname, EntityType & e, const VariableRegister & variableRegister) {
-                const auto &parserRegister = Parsers.getRegister();
+                const auto &parserRegister = ElementParsers.getRegister();
                 const auto &it = parserRegister.find(childname);
                 if (it != parserRegister.end()) {
                     if (parent.count(childname) > 0) {
@@ -99,10 +108,29 @@ namespace PAX {
             }
 
         public:
-            static JsonEntityPrefabElementParserRegister<EntityType> Parsers;
+            static JsonEntityPrefabElementParserRegister<EntityType> ElementParsers;
 
-            explicit JsonEntityPrefab(const std::shared_ptr<json> &file, const Path &path)
-                    : EntityPrefab<EntityType>(), rootNode(file), path(path) {}
+            explicit JsonEntityPrefab(const json & j, const Path & path)
+                    : EntityPrefab<EntityType>(), rootNode(j), path(path) {}
+
+            explicit JsonEntityPrefab(EntityPrefab<EntityType> & other) {
+                json & propertiesNode = rootNode[DefaultElements::Properties];
+
+                EntityType * e = other.create({});
+                const std::vector<Property<EntityType>*> & properties = e->getAllProperties();
+
+                ClassMetadataSerialiser serialiser({});
+                for (Property<EntityType> * property : properties) {
+                    IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(property->getClassType());
+                    json & propertyNode = propertiesNode[factory->getPropertyName()];
+                    JsonFieldStorage storage(propertyNode, *GlobalParsers);
+                    serialiser.setStorage(&storage);
+                    serialiser.readFromMetadata(property->getMetadata());
+                    serialiser.setStorage(nullptr);
+                }
+
+                delete e;
+            }
 
             virtual ~JsonEntityPrefab() = default;
 
@@ -116,62 +144,68 @@ namespace PAX {
                 return p;
             }
 
-            static void initialize(Resources &resources, JsonParserRegister & jsonParserRegister) {
-                Parsers.registerParser(
-                        "Inherits",
-                        [&resources](json &node, EntityType &e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
+            static void initialize(JsonParserRegister & jsonParserRegister) {
+                GlobalParsers = &jsonParserRegister;
+
+                ElementParsers.registerParser(
+                        DefaultElements::Inherits,
+                        [](json &node, EntityType &e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
+                            JsonEntityPrefabLoader<EntityType> prefabLoader;
+
                             for (auto &el : node.items()) {
                                 Path parentPath = prefab.path.getDirectory() + el.value();
-                                std::shared_ptr<EntityPrefab<EntityType>> parentPrefab;
+                                JsonEntityPrefab<EntityType> * parentPrefab = nullptr;
 
-                                const auto &it = prefab.parentPrefabs.find(parentPath);
-                                if (it != prefab.parentPrefabs.end()) {
-                                    parentPrefab = it->second;
-                                } else {
-                                    parentPrefab = resources.loadOrGet<EntityPrefab<EntityType>>(
-                                            parentPath);
-                                    prefab.parentPrefabs[parentPath] = parentPrefab;
+                                for (JsonEntityPrefab<EntityType> & parent : prefab.parentPrefabs) {
+                                    if (parent.getPath() == parentPath) {
+                                        parentPrefab = &parent;
+                                        break;
+                                    }
+                                }
+
+                                if (!parentPrefab) {
+                                    prefab.parentPrefabs.emplace_back(prefabLoader.load(parentPath));
+                                    parentPrefab = &prefab.parentPrefabs.back();
                                 }
 
                                 parentPrefab->addMyContentTo(e, variableRegister);
                             }
                         });
 
-                Parsers.registerParser(
-                        "Properties",
-                        [&resources, &jsonParserRegister](json &node, EntityType & e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
+                ElementParsers.registerParser(
+                        DefaultElements::Properties,
+                        [&jsonParserRegister](json &node, EntityType & e, const JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
                             std::vector<Property<EntityType> *> props;
 
-                            ClassMetadataSerialiser serialiser(resources, variableRegister);
+                            ClassMetadataSerialiser serialiser(variableRegister);
 
                             for (auto &el : node.items()) {
                                 const std::string & propTypeName = el.key();
                                 IPropertyFactory<EntityType> *propertyFactory = PropertyFactoryRegister<EntityType>::getFactoryFor(
                                         propTypeName);
 
-                                if (propertyFactory) {
-                                    JsonFieldStorage storage(el.value(), jsonParserRegister);
-                                    serialiser.setStorage(&storage);
+                                JsonFieldStorage storage(el.value(), jsonParserRegister);
+                                serialiser.setStorage(&storage);
 
-                                    // If the entity already has properties of the given type we won't create a new one
-                                    // but instead overwrite the old ones with the newer settings.
-                                    const PAX::TypeHandle &propType = propertyFactory->getPropertyType();
-                                    const bool isPropMultiple = propertyFactory->isPropertyMultiple();
+                                // If the entity already has properties of the given type we won't create a new one
+                                // but instead overwrite the old ones with the newer settings.
+                                const PAX::TypeHandle &propType = propertyFactory->getPropertyType();
+                                const bool isPropMultiple = propertyFactory->isPropertyMultiple();
 
-                                    if (!isPropMultiple && e.has(propType, isPropMultiple)) {
-                                        Property<EntityType> * property = e.getSingle(propType);
-                                        ClassMetadata metadata = property->getMetadata();
-                                        serialiser.writeToMetadata(metadata, ClassMetadataSerialiser::Options::IgnoreMandatoryFlags);
-                                    } else {
-                                        Property<EntityType> * property = propertyFactory->create(serialiser);
-                                        ClassMetadata metadata = property->getMetadata();
-                                        serialiser.writeToMetadata(metadata);
-                                        props.emplace_back(property);
-                                    }
+                                Property<EntityType> * property = nullptr;
+                                ClassMetadataSerialiser::Options options = ClassMetadataSerialiser::Options::None;
 
-
-                                    serialiser.setStorage(nullptr);
+                                if (!isPropMultiple && e.has(propType, isPropMultiple)) {
+                                    property = e.getSingle(propType);
+                                    options = ClassMetadataSerialiser::Options::IgnoreMandatoryFlags;
+                                } else {
+                                    property = propertyFactory->create();
+                                    props.emplace_back(property);
                                 }
+
+                                ClassMetadata metadata = property->getMetadata();
+                                serialiser.writeToMetadata(metadata, options);
+                                serialiser.setStorage(nullptr);
                             }
 
                             // Add the properties deferred to resolve their dependencies.
@@ -180,7 +214,7 @@ namespace PAX {
 
                                 for (auto it = props.begin(); it != props.end(); ++it) {
                                     if ((*it)->areDependenciesMetFor(e)) {
-                                        *it->created();
+                                        (*it)->created();
                                         e.add(*it);
                                         props.erase(it);
                                         break;
@@ -199,36 +233,59 @@ namespace PAX {
             void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {
                 // Compose given variables with the predefined ones.
                 // Therefore, copy the given VariableRegister, such that duplicates
-                // are override with the custom variables.
+                // are overriden with the custom variables.
+                // TODO: Check if this is the correct order.
                 VariableRegister composedVariableRegister = variableRegister;
                 composedVariableRegister.insert(EntityPrefab<EntityType>::PreDefinedVariables.begin(),
                                                 EntityPrefab<EntityType>::PreDefinedVariables.end());
 
                 std::vector<std::string> parseOrder = {
-                        "Inherits",
-                        "Properties"
+                        DefaultElements::Inherits,
+                        DefaultElements::Properties
                 };
 
                 for (const std::string & name : parseOrder) {
-                    if (rootNode->count(name) > 0) {
-                        parse(*rootNode.get(), name, e, composedVariableRegister);
+                    if (rootNode.count(name) > 0) {
+                        parse(rootNode, name, e, composedVariableRegister);
                     }
                 }
 
-                for (auto &el : rootNode->items()) {
+                for (auto &el : rootNode.items()) {
                     if (!Util::vectorContains(parseOrder, el.key())) {
-                        parse(*rootNode.get(), el.key(), e, composedVariableRegister);
+                        parse(rootNode, el.key(), e, composedVariableRegister);
                     }
                 }
             }
 
-            const Path & getPath() {
+            PAX_NODISCARD nlohmann::json toJson() {
+                json me;
+                json & propertiesNode = me[DefaultElements::Properties];
+
+                EntityType * e = create({});
+                ClassMetadataSerialiser serialiser({});
+                const std::vector<Property<EntityType>*> & properties = e->getAllProperties();
+                for (Property<EntityType> * p : properties) {
+                    IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(p->getClassType());
+                    json & propertyNode = propertiesNode[factory->getPropertyName()];
+                    JsonFieldStorage storage(propertyNode, *GlobalParsers);
+                    serialiser.setStorage(&storage);
+                    ClassMetadata m = p->getMetadata();
+                    serialiser.readFromMetadata(m);
+                }
+                delete e;
+                return me;
+            }
+
+            PAX_NODISCARD const Path & getPath() const {
                 return path;
             }
         };
 
         template<typename EntityType>
-        JsonEntityPrefabElementParserRegister<EntityType> JsonEntityPrefab<EntityType>::Parsers;
+        JsonParserRegister * JsonEntityPrefab<EntityType>::GlobalParsers = nullptr;
+
+        template<typename EntityType>
+        JsonEntityPrefabElementParserRegister<EntityType> JsonEntityPrefab<EntityType>::ElementParsers;
     }
 }
 

@@ -7,19 +7,15 @@
 
 #ifdef PAX_WITH_JSON
 
-#include <polypropylene/resources/ResourceLoader.h>
+#include <polypropylene/io/Path.h>
 #include "JsonFwd.h"
 
-namespace PAX {
-    namespace Json {
-        class JsonLoader : public ResourceLoader<nlohmann::json, Path> {
-        public:
-            std::shared_ptr<nlohmann::json> loadToOrGetFromResources(Resources &resources, const VariableHierarchy &parameters) override;
-            PAX_NODISCARD bool canLoad(Path) const override;
-            std::shared_ptr<nlohmann::json> load(Path) override;
-            void write(const nlohmann::json & json, const Path & path) const;
-        };
-    }
+namespace PAX::Json {
+    class JsonLoader {
+    public:
+        PAX_NODISCARD nlohmann::json load(const Path & path) const;
+        void write(const nlohmann::json & json, const Path & path, unsigned short indentLength = 2) const;
+    };
 }
 
 #endif // PAX_WITH_JSON

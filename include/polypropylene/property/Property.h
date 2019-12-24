@@ -50,13 +50,6 @@ namespace PAX {
         }
 
         /**
-         * Callback that is invoked when the property was created by a prefab or cloned from another property.
-         * Fields declared in Metadata (@ref getMetadata()) can be assumed to be initialised if values for them
-         * were specified in the creating object (e.g., prefab).
-         */
-        virtual void created() {}
-
-        /**
          * Callback that is invoked when the owning entity got activated or this property got attached to an
          * active entity.
          * The semantics of activation are user defined, i.e., activation status can be interpreted and used as
@@ -136,6 +129,13 @@ namespace PAX {
             clone->created();
             return clone;
         }
+        
+        /**
+         * Callback that is invoked when the property was created by a prefab or cloned from another property.
+         * Fields declared in Metadata (@ref getMetadata()) can be assumed to be initialised if values for them
+         * were specified in the creating object (e.g., prefab).
+         */
+        virtual void created() {}
     };
 }
 

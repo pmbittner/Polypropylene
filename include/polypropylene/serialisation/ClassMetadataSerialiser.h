@@ -6,7 +6,6 @@
 #define POLYPROPYLENE_CLASSMETADATASERIALISER_H
 
 #include <string>
-#include <polypropylene/resources/Resources.h>
 #include <polypropylene/reflection/ClassMetadata.h>
 #include "FieldStorage.h"
 
@@ -16,7 +15,6 @@ namespace PAX {
      */
     class ClassMetadataSerialiser {
         FieldStorage * fieldStorage = nullptr;
-        Resources & resources;
         const VariableRegister & variables;
 
     public:
@@ -25,7 +23,7 @@ namespace PAX {
             IgnoreMandatoryFlags = 1
         };
 
-        explicit ClassMetadataSerialiser(Resources & resources, const VariableRegister & variables);
+        explicit ClassMetadataSerialiser(const VariableRegister & variables);
         virtual ~ClassMetadataSerialiser() = default;
 
         void setStorage(FieldStorage * fieldStorage);

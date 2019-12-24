@@ -26,10 +26,13 @@ namespace PAX {
 
     template<class C>
     class IPropertyFactory {
-    public:
-        IPropertyFactory() noexcept = default;
+        std::string name;
+
+    protected:
+        explicit IPropertyFactory(const std::string & name) noexcept : name(name) {}
         virtual ~IPropertyFactory() = default;
 
+    public:
         /**
          * Creates a property allocated with the allocator of Entity<C>.
          * @return A newly heap-allocated Property.
@@ -37,6 +40,9 @@ namespace PAX {
         PAX_NODISCARD virtual Property<C> * create() const = 0;
         PAX_NODISCARD virtual TypeHandle getPropertyType() const = 0;
         PAX_NODISCARD virtual bool isPropertyMultiple() const = 0;
+        PAX_NODISCARD const std::string & getPropertyName() const {
+            return name;
+        }
     };
 
     template<class C>
@@ -90,7 +96,7 @@ namespace PAX {
     template<typename PropertyType, typename C>
     class PropertyFactory : public IPropertyFactory<C> {
     public:
-        explicit PropertyFactory() noexcept : IPropertyFactory<C>() {}
+        explicit PropertyFactory(const std::string & name) noexcept : IPropertyFactory<C>(name) {}
         virtual ~PropertyFactory() = default;
 
         PAX_NODISCARD PropertyType * create() const override {
@@ -109,7 +115,7 @@ namespace PAX {
     template<class C>
     template<typename PropertyType>
     void PropertyFactoryRegister<C>::registerFactory(const std::string & name) {
-        static PropertyFactory<PropertyType, C> factory;
+        static PropertyFactory<PropertyType, C> factory(name);
         PropertyFactoryRegister<C>::getNameMap()[name] = &factory;
         PropertyFactoryRegister<C>::getTypeMap()[typeid(PropertyType)] = &factory;
     }

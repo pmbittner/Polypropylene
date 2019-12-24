@@ -4,9 +4,10 @@
 
 #include <polypropylene/serialisation/json/JsonFieldStorage.h>
 #include <polypropylene/serialisation/json/JsonParser.h>
+#include "polypropylene/log/Errors.h"
 
 namespace PAX::Json {
-    JsonFieldStorage::JsonFieldStorage(const nlohmann::json &node, const JsonParserRegister & jsonParserRegister)
+    JsonFieldStorage::JsonFieldStorage(nlohmann::json &node, const JsonParserRegister & jsonParserRegister)
             : FieldStorage(), node(node), parsers(jsonParserRegister) {}
 
     JsonFieldStorage::~JsonFieldStorage() = default;
