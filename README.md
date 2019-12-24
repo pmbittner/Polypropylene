@@ -206,13 +206,14 @@ Event services may optionally be linked such that events can be exchanged betwee
   }
   ```
 
+
 #### Further Utilities:
 - **Logging**: Polypropylene records errors and warnings with a custom logger.
                By default, logs are printed to `std::cout` and `std::cerr` but can be piped to any custom `ostream`.
-               Upon logging, timestamp, severity, and the function containing the log statement are printed.
-               It provides several levels of severity for messages, such as `Info`, `Debug`, or `Error`.
-- **Path** data type for platform agnostic path specification, simplification, and navigation
-- Inclusion of the [nlohmann::json library][1] for loading json files
+               Logging also records timestamp, severity, and the name of the function containing the log statement.
+               Several levels of severity for messages, such as `Info`, `Debug`, or `Error`, are available.
+- **Path**: Struct for platform agnostic path specification, simplification, and navigation.
+- Inclusion of the [nlohmann::json library][1] for loading json files.
 
 
 #### Customisations for Compile Time Minimisation
