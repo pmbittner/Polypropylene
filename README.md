@@ -164,7 +164,10 @@ Event services may optionally be linked such that events can be exchanged betwee
         return m;
     }
      ```
-    Prefabs can also be created from entities with `Enity::toPrefab()` and can be stored to json files.
+    Prefabs can also be created from entities with `Enity::toPrefab()`.
+    This will return a prefab that allows instantiating copies of the original entity at the point in time the prefab was created.
+    Thus, any entity can be copied and the state of entities can be saved.
+    Furthermore, prefabs can be stored to json files.
 
 #### Further Utilities:
 - **Logging**: Polypropylene records errors and warnings with a custom logger.
