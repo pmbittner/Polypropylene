@@ -42,6 +42,9 @@ namespace PAX {
 
         template<typename T>
         T tryParse(const std::string &str) {
+            if (str.empty()) {
+                PAX_LOG(Log::Level::Warn, "String is empty!");
+            }
             return TryParser<std::string, T>::tryParse(str);
         }
     }
