@@ -143,7 +143,7 @@ Event services may optionally be linked such that events can be exchanged betwee
     Pizza * pizzaFunghi = prefab.create({});
     ```
     To customise the individual instances created by a prefab, custom parameters may be specified.
-    For example, the scoville of the TomatoSauce can be made variable by replacing it by:
+    For example, the scoville of the TomatoSauce can be made variable by replacing it in the json file by:
     ```
     "scoville": "${spicyness}"
     ```
@@ -168,6 +168,43 @@ Event services may optionally be linked such that events can be exchanged betwee
     This will return a prefab that allows instantiating copies of the original entity at the point in time the prefab was created.
     Thus, any entity can be copied and the state of entities can be saved.
     Furthermore, prefabs can be stored to json files.
+    
+- **Views**: Managing collections of entities can be done with `EntityManagers`.
+  `EntityManagers` link the event services of all contained entities such that a central `EventService` receives and broadcasts the events of all entities.
+  `EntityManagerViews` provide a filtered view on all entities in a given `EntityManager`:
+  ```
+  EntityManager<Pizza> manager;
+  manager.add(pizzaMargherita);
+  manager.add(pizzaFunghi);
+  manager.add(pizzaSalami);
+  
+  EntityManagerView<Pizza, Champignon> champignonView(manager);
+  const std::vector<Pizza*> & pizzasWithChampignons = champignonView.getEntities();
+  
+  EntityManagerView<Pizza, Mozzarella, Salami> salamiView(manager);
+  const std::vector<Pizza*> & pizzasThatAreAtLeastPizzaSalami = salamiView.getEntities();
+  ```
+  
+- **Systems**: Systems can be used for any kinds of (global) behaviour.
+  In entity component systems, they are used to manage and execute behaviour on properties.
+  For this reason, `PropertyOwningSystems` contain all properties of a given type by managing their allocation with a pool allocator.
+  That allows for fast iteration over all active properties of a certain type.
+  `Entities` and `Properties` have an `active` flag to show if they should be recognised by systems yet.
+  For instance, some properties may be allocated already but not in use.
+  The `active` flag of entities however may be used as needed by the user / developer.
+  ```
+  // The system will register itself as the allocator to use for TomatoSauce.
+  // Hence, it needs to be created before creating any TomatoSauce.
+  PropertyOwningSystem<Pizza, TomatoSauce> tomatoValley;
+  
+  Pizza p;
+  p.add(new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce());
+  p.activate();
+  
+  for (TomatoSauce * t : tomatoValley) {
+    // Here each active TomatoSauce that was allocated with the pizza's allocator can be found.
+  }
+  ```
 
 #### Further Utilities:
 - **Logging**: Polypropylene records errors and warnings with a custom logger.
