@@ -12,6 +12,7 @@
 #include <locale>
 
 #include "polypropylene/serialisation/TryParser.h"
+#include "polypropylene/log/Log.h"
 
 namespace PAX {
     namespace String {
