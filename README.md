@@ -222,9 +222,8 @@ We made certain features, such as loading from json files, optional such that yo
 The following cmake options allow compile time customisation.
 By default, all options are activated (set to ON):
 
-- `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][1] for loading `EntityPrefabs` from json files.
+- `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][1] for loading and writing `EntityPrefabs` from and to json files.
 - `POLYPROPYLENE_WITH_EXAMPLES`: Specifies if examples should be built or not.
-
 
 ## Code Examples
 
