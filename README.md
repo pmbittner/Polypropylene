@@ -135,14 +135,12 @@ Event services may optionally be linked such that events can be exchanged betwee
       }
     }
     ```
-
     From such files so called prefabs are created.
     A prefab represents the kind of entity described in the json file.
     It allows instantiating arbitrary amounts of the corresponding entity:
     ```
-    using PizzaPrefab = EntityPrefab<Pizza>;
-    std::shared_ptr<PizzaPrefab> prefab = resources.loadOrGet<PizzaPrefab>(Path("res/pizza/funghi.json"));
-    Pizza * pizzaFunghi = prefab->create({});
+    JsonEntityPrefab<Pizza> prefab = prefabLoader.load("res/pizza/funghi.json");
+    Pizza * pizzaFunghi = prefab.create({});
     ```
     To customise the individual instances created by a prefab, custom parameters may be specified.
     For example, the scoville of the TomatoSauce can be made variable by replacing it by:
@@ -166,10 +164,9 @@ Event services may optionally be linked such that events can be exchanged betwee
         return m;
     }
      ```
+    Prefabs can also be created from entities with `Enity::toPrefab()` and can be stored to json files.
 
 #### Further Utilities:
-- **Resource Management**: A centralised resource management decouples actual resource loaders from their callees.
-                       It is used by the deserialisation for loading resources from paths if so wished.
 - **Logging**: Polypropylene records errors and warnings with a custom logger.
                By default, logs are printed to `std::cout` and `std::cerr` but can be piped to any custom `ostream`.
                Upon logging, timestamp, severity, and the function containing the log statement are printed.

@@ -61,9 +61,7 @@ int main(int argc, char** argv) {
     std::string spicyness;
     std::cin >> spicyness;
 
-    using PizzaPrefab = EntityPrefab<Pizza>;
     JsonEntityPrefab<Pizza> prefab = prefabLoader.load("res/pizza/funghi.json");
-
     Pizza * pizzaFunghi = prefab.create({{"spicyness", spicyness}});
 #else
     int spicyness;
