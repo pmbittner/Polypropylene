@@ -14,7 +14,6 @@
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 #include "polypropylene/serialisation/json/JsonFieldStorage.h"
-#include "JsonEntityPrefabLoader.h"
 
 namespace PAX {
     namespace Json {
@@ -144,91 +143,7 @@ namespace PAX {
                 return p;
             }
 
-            static void initialize(JsonParserRegister & jsonParserRegister) {
-                GlobalParsers = &jsonParserRegister;
-
-                ElementParsers.registerParser(
-                        DefaultElements::Inherits,
-                        [](json &node, EntityType &e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
-                            JsonEntityPrefabLoader<EntityType> prefabLoader;
-
-                            for (auto &el : node.items()) {
-                                Path parentPath = prefab.path.getDirectory() + el.value();
-                                JsonEntityPrefab<EntityType> * parentPrefab = nullptr;
-
-                                for (JsonEntityPrefab<EntityType> & parent : prefab.parentPrefabs) {
-                                    if (parent.getPath() == parentPath) {
-                                        parentPrefab = &parent;
-                                        break;
-                                    }
-                                }
-
-                                if (!parentPrefab) {
-                                    prefab.parentPrefabs.emplace_back(prefabLoader.load(parentPath));
-                                    parentPrefab = &prefab.parentPrefabs.back();
-                                }
-
-                                parentPrefab->addMyContentTo(e, variableRegister);
-                            }
-                        });
-
-                ElementParsers.registerParser(
-                        DefaultElements::Properties,
-                        [&jsonParserRegister](json &node, EntityType & e, const JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
-                            std::vector<Property<EntityType> *> props;
-
-                            ClassMetadataSerialiser serialiser(variableRegister);
-
-                            for (auto &el : node.items()) {
-                                const std::string & propTypeName = el.key();
-                                IPropertyFactory<EntityType> *propertyFactory = PropertyFactoryRegister<EntityType>::getFactoryFor(
-                                        propTypeName);
-
-                                JsonFieldStorage storage(el.value(), jsonParserRegister);
-                                serialiser.setStorage(&storage);
-
-                                // If the entity already has properties of the given type we won't create a new one
-                                // but instead overwrite the old ones with the newer settings.
-                                const PAX::TypeHandle &propType = propertyFactory->getPropertyType();
-                                const bool isPropMultiple = propertyFactory->isPropertyMultiple();
-
-                                Property<EntityType> * property = nullptr;
-                                ClassMetadataSerialiser::Options options = ClassMetadataSerialiser::Options::None;
-
-                                if (!isPropMultiple && e.has(propType, isPropMultiple)) {
-                                    property = e.getSingle(propType);
-                                    options = ClassMetadataSerialiser::Options::IgnoreMandatoryFlags;
-                                } else {
-                                    property = propertyFactory->create();
-                                    props.emplace_back(property);
-                                }
-
-                                ClassMetadata metadata = property->getMetadata();
-                                serialiser.writeToMetadata(metadata, options);
-                                serialiser.setStorage(nullptr);
-                            }
-
-                            // Add the properties deferred to resolve their dependencies.
-                            while (!props.empty()) {
-                                size_t numOfPropsToAdd = props.size();
-
-                                for (auto it = props.begin(); it != props.end(); ++it) {
-                                    if ((*it)->areDependenciesMetFor(e)) {
-                                        (*it)->created();
-                                        e.add(*it);
-                                        props.erase(it);
-                                        break;
-                                    }
-                                }
-
-                                if (numOfPropsToAdd == props.size()) {
-                                    // Not a single property could be added to the Entity because not a single dependency is met!
-                                    PAX_LOG(Log::Level::Error, "Parsing \"Properties\": Error during adding properties! Dependencies could not be met!");
-                                    break;
-                                }
-                            }
-                        });
-            }
+            static void initialize(JsonParserRegister & jsonParserRegister);
 
             void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {
                 // Compose given variables with the predefined ones.
@@ -288,5 +203,9 @@ namespace PAX {
         JsonEntityPrefabElementParserRegister<EntityType> JsonEntityPrefab<EntityType>::ElementParsers;
     }
 }
+
+#define POLYPROPYLENE_JSONENTITYPREFAB_DEFINED
+#include "JsonEntityPrefabLoader.h"
+#include "JsonEntityPrefabImpl.h"
 
 #endif //POLYPROPYLENE_JSONENTITYPREFAB_H

@@ -85,7 +85,8 @@ if (POLYPROPYLENE_WITH_JSON)
 
             serialisation/json/property/JsonEntityPrefab.h
             serialisation/json/property/JsonEntityPrefabLoader.h
-            )
+            serialisation/json/property/JsonEntityPrefabLoaderImpl.h
+            serialisation/json/property/JsonEntityPrefabImpl.h)
 
     set(SOURCE_FILES ${SOURCE_FILES}
             serialisation/json/JsonUtil.cpp

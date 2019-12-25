@@ -8,11 +8,12 @@
 #ifdef PAX_WITH_JSON
 
 #include <polypropylene/io/Path.h>
-#include <polypropylene/io/FileTypeChecker.h>
-
-#include "JsonEntityPrefab.h"
+#include "../JsonFwd.h"
 
 namespace PAX::Json {
+    template<typename EntityType>
+    class JsonEntityPrefab;
+
     template<typename EntityType>
     class JsonEntityPrefabLoader {
     public:
@@ -28,11 +29,7 @@ namespace PAX::Json {
          * @param path Path to a json file containing a description for a prefab.
          * @return The prefab from the json file.
          */
-        PAX_NODISCARD JsonEntityPrefab<EntityType> load(const Path & path) const {
-            JsonLoader jsonLoader;
-            nlohmann::json j = jsonLoader.load(path);
-            return load(j, path);
-        }
+        PAX_NODISCARD JsonEntityPrefab<EntityType> load(const Path & path) const;
 
         /**
          * Loads the prefab from the given json object.
@@ -43,17 +40,15 @@ namespace PAX::Json {
          * the given json object does not contain any file imports, the path can be empty.
          * @return The prefab constructed from the given json instance.
          */
-        PAX_NODISCARD JsonEntityPrefab<EntityType> load(const nlohmann::json & json, const Path & path) const {
-            return JsonEntityPrefab<EntityType>(json, path);
-        }
+        PAX_NODISCARD JsonEntityPrefab<EntityType> load(const nlohmann::json & json, const Path & path) const;
 
-        void write(JsonEntityPrefab<EntityType> & prefab, const Path & path) {
-            JsonLoader loader;
-            nlohmann::json j = prefab.toJson();
-            loader.write(j, path);
-        }
+        void write(JsonEntityPrefab<EntityType> & prefab, const Path & path);
     };
 }
+
+#define POLYPROPYLENE_JSONENTITYPREFABLOADER_DEFINED
+#include "JsonEntityPrefab.h"
+#include "JsonEntityPrefabLoaderImpl.h"
 
 #endif // PAX_WITH_JSON
 
