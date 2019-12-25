@@ -39,7 +39,7 @@ During development several issues arose that were not addressed by existing ECS 
     const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // contains our Mozzarella only
     
 
-**Opposed to existing Entity-Component Systems**, Polypropylene offers the following features:
+**Opposed to existing Entity-Component Systems and Dynamic Mixin Implementations**, Polypropylene offers the following features:
 
 - **Polymorphism Awareness**: Properties added to an entity are identified by each of their polymorphic types.
 A property can be retrieved from an entity not only by its direct type but also by any of its super types.
@@ -136,7 +136,7 @@ Event services may optionally be linked such that events can be exchanged betwee
       }
     }
     ```
-    From such files so called prefabs are created.
+    From such files so called **prefabs** are created.
     A prefab represents the kind of entity described in the json file.
     It allows instantiating arbitrary amounts of the corresponding entity:
     ```
@@ -168,7 +168,7 @@ Event services may optionally be linked such that events can be exchanged betwee
     Prefabs can also be created from entities with `Enity::toPrefab()`.
     This will return a prefab that allows instantiating copies of the original entity at the point in time the prefab was created.
     Thus, any entity can be copied and the state of entities can be saved.
-    Furthermore, prefabs can be stored to json files.
+    Furthermore, **prefabs can be stored to json files**.
     
 - **Views**: Managing collections of entities can be done with `EntityManagers`.
   `EntityManagers` link the event services of all contained entities such that a central `EventService` receives and broadcasts the events of all entities.
@@ -254,7 +254,7 @@ We have to see if that would pay off.
 
 ## Feedback
 I welcome any constructive critism or questions.
-Feel free to open issues or comments here on GitHub.
+Feel free to open issues or pull-requests here on GitHub.
 
 
 ## Naming Conventions and "Where does the name come from?"
