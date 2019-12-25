@@ -5,10 +5,7 @@
 #ifndef POLYPROPYLENE_PROPERTY_H
 #define POLYPROPYLENE_PROPERTY_H
 
-#include "polypropylene/reflection/ClassMetadata.h"
-#include "polypropylene/reflection/TypeHandle.h"
-#include "polypropylene/definitions/Definitions.h"
-
+#include "PropertyFactory.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
 
