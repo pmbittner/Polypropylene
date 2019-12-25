@@ -1,5 +1,9 @@
 # Polypropylene - Let Your Objects Become Anything You Wish
 
+[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
+[![Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 Polypropylene is a C++17 library for dynamic object definition by composition of properties.
 Properties add state and functionality to objects similar to mixins but are composed dynamically during runtime.
 Polypropylene started as an _Entity-Component System (ECS)_ but grew more general and flexible soon.
