@@ -58,7 +58,7 @@ namespace PAX::Json {
     bool JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
         nlohmann::json j = StringToJson(getValue(field.name, variables));
 
-        const IJsonParser * parser = parsers.getParserFor(field.type);
+        const IJsonParser * parser = parsers.getParserFor(field.type.id);
         if (parser) {
             return parser->loadIntoField(j, field);
         } else {
@@ -71,7 +71,7 @@ namespace PAX::Json {
     bool JsonFieldStorage::readFrom(const Field & field) {
         clear();
 
-        const IJsonParser * parser = parsers.getParserFor(field.type);
+        const IJsonParser * parser = parsers.getParserFor(field.type.id);
         if (parser) {
             return parser->loadIntoJson(field, node);
         } else {

@@ -5,23 +5,23 @@
 #include "polypropylene/reflection/TypeHandle.h"
 
 namespace PAX {
-    TypeHandle::TypeHandle(const std::type_index & type, size_t size) : typeindex(type), size(size) {
+    TypeHandle::TypeHandle(const TypeId & type, size_t size) : id(type), size(size) {
 
     }
 
     const char * TypeHandle::name() const noexcept {
-        return typeindex.name();
+        return id.name();
     }
 
     size_t TypeHandle::hash_code() const noexcept {
-        return typeindex.hash_code();
+        return id.hash_code();
     }
 
     bool TypeHandle::operator==(const TypeHandle & other) const noexcept {
-        return this->typeindex == other.typeindex && this->size == other.size;
+        return this->id == other.id && this->size == other.size;
     }
 
-    TypeHandle::operator std::type_index() const noexcept {
-        return typeindex;
+    TypeHandle::operator TypeId() const noexcept {
+        return id;
     }
 }

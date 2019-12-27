@@ -29,7 +29,7 @@ namespace PAX {
             PAX_THROW_RUNTIME_ERROR("Fields have different sizes!");
         }
 
-        if (this->type.typeindex != field.type.typeindex) {
+        if (this->type.id != field.type.id) {
             PAX_THROW_RUNTIME_ERROR("Fields have different types!");
         }
 

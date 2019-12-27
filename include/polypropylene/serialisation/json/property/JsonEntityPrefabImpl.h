@@ -60,8 +60,8 @@ namespace PAX::Json {
                         Property<EntityType> * property = nullptr;
                         ClassMetadataSerialiser::Options options = ClassMetadataSerialiser::Options::None;
 
-                        if (!isPropMultiple && e.has(propType, isPropMultiple)) {
-                            property = e.getSingle(propType);
+                        if (!isPropMultiple && e.has(propType.id, isPropMultiple)) {
+                            property = e.getSingle(propType.id);
                             options = ClassMetadataSerialiser::Options::IgnoreMandatoryFlags;
                         } else {
                             property = propertyFactory->create();

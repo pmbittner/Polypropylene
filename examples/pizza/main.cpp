@@ -69,16 +69,21 @@ int main(int argc, char** argv) {
 
     Pizza * pizzaFunghi = new Pizza();
 
-    /// Ideally, the allocation service is used for allocating memory for properties for efficient and correct
-    /// iteration over properties in systems.
-    /// However, using the allocation service is optional.
-    /// I could be done with placement new:
+    /// Ideally, the allocation service is used for allocating memory of properties.
+    /// Using the allocation service is optional.
+    /// It can be used with placement new:
     ///   new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce(spicyness)
+    /// Notice that using the allocation service has benefits though:
+    ///   - PropertyOwningSystems only operate on properties allocated by the allocation service.
+    ///     Manually allocated properties as done here won't be recognised.
+    ///   - Entities take ownership of properties added to them. Deleting an entity also deletes
+    ///     all contained properties but only those that were allocated with the allocation service.
+    ///     Thus, beware of memory leaks as customly allocated properties have to be deleted manually!
     TomatoSauce tomatoSauce(spicyness);
     Mozzarella mozzarella;
     Champignon champignon;
 
-    /// Add TomatoSauce first because Cheeses, e.g. Mozzarella, depend on it.
+    /// Add TomatoSauce first because Cheeses (e.g., Mozzarella) depend on it.
     pizzaFunghi->add(&tomatoSauce);
     pizzaFunghi->add(&mozzarella);
     pizzaFunghi->add(&champignon);
@@ -87,9 +92,18 @@ int main(int argc, char** argv) {
     pizzaFunghi->yummy();
     pizzaFunghi->bake();
 
-    /// example for property access via templates (there are also non-template versions)
-    std::vector<Cheese*> cheeses = pizzaFunghi->get<Cheese>();
-    Mozzarella * g = pizzaFunghi->get<Mozzarella>();
+    /// example for property access via templates
+    {
+        const std::vector<Cheese *> & cheeses = pizzaFunghi->get<Cheese>();
+        Mozzarella * m = pizzaFunghi->get<Mozzarella>();
+    }
+
+    /// example for property access without templates
+    /// (correct get function according to properties multiplicity has to be invoked)
+    {
+        const std::vector<Property<Pizza> *> & cheeses = pizzaFunghi->getMultiple(paxtypeid(Cheese));
+        Mozzarella * m = dynamic_cast<Mozzarella*>(pizzaFunghi->getSingle(paxtypeid(Mozzarella)));
+    }
 
 #ifdef PAX_WITH_JSON
     Path outPath = "res/pizza/out/funghiWith" + spicyness + "scoville.json";
@@ -97,6 +111,8 @@ int main(int argc, char** argv) {
     JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
     prefabLoader.write(asJson, outPath);
 #endif
+
+    delete pizzaFunghi;
 
     return 0;
 }

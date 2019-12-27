@@ -69,7 +69,7 @@ namespace PAX {
     public:
         virtual ~PropertyFactoryRegister() = default;
 
-        static IPropertyFactory<C> * getFactoryFor(const std::string &name) {
+        static IPropertyFactory<C> * getFactoryFor(const std::string & name) {
             const auto &map = getNameMap();
             const auto &it = map.find(name);
 
@@ -80,7 +80,7 @@ namespace PAX {
             }
         }
 
-        static IPropertyFactory<C> * getFactoryFor(const TypeHandle & type) {
+        static IPropertyFactory<C> * getFactoryFor(const TypeId & type) {
             const auto &map = getTypeMap();
             const auto &it = map.find(type);
 

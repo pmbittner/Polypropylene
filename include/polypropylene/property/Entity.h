@@ -53,13 +53,17 @@ namespace PAX {
          */
         virtual ~Entity() {
             std::vector<Property<Derived>*> myProperties = getAllProperties();
+            AllocationService & allocator = GetPropertyAllocator();
+
             while (!myProperties.empty()) {
                 Property<Derived> * victim = myProperties.back();
                 myProperties.pop_back();
 
-                TypeHandle victimType = victim->getClassType();
-                victim->~Property<Derived>();
-                GetPropertyAllocator().free(victimType.typeindex, victim);
+                if (allocator.hasAllocated(victim)) {
+                    TypeHandle victimType = victim->getClassType();
+                    victim->~Property<Derived>();
+                    GetPropertyAllocator().free(victimType.id, victim);
+                }
             }
         }
 
@@ -186,7 +190,7 @@ namespace PAX {
             return true;
         }
 
-        PAX_NODISCARD bool has(const TypeHandle & type, std::optional<bool> isMultipleHint = {}) const {
+        PAX_NODISCARD bool has(const TypeId & type, std::optional<bool> isMultipleHint = {}) const {
             bool ret = false;
 
             if (isMultipleHint.value_or(true)) {
@@ -231,7 +235,7 @@ namespace PAX {
          * @return The property of the given type which has single multiplicity (PAX_PROPERTY_IS_SINGLE), null if
          * this entity does not contain a property of that type or the type is not single.
          */
-        PAX_NODISCARD Property<Derived> * getSingle(const TypeHandle & type) const {
+        PAX_NODISCARD Property<Derived> * getSingle(const TypeId & type) const {
             const auto & it = _singleProperties.find(type);
 
             if (it != _singleProperties.end()) {
@@ -247,7 +251,7 @@ namespace PAX {
          * @return The properties of the given type which has multiple multiplicity (PAX_PROPERTY_IS_MULTIPLE), an
          * empty vector if this entity does not contain a property of that type or the type is not multiple.
          */
-        PAX_NODISCARD const std::vector<Property<Derived>*> & getMultiple(const TypeHandle & type) const {
+        PAX_NODISCARD const std::vector<Property<Derived>*> & getMultiple(const TypeId & type) const {
             const auto & it = _multipleProperties.find(type);
 
             if (it != _multipleProperties.end()) {
@@ -266,7 +270,7 @@ namespace PAX {
          * If the property type is multiple (PAX_PROPERTY_IS_MULTIPLE), the returned vector will contain all properties
          * of the given type.
          */
-        std::vector<Property<Derived>*> get(const TypeHandle & type) {
+        std::vector<Property<Derived>*> get(const TypeId & type) {
             // Copy is intended
             std::vector<Property<Derived>*> props = getMultiple(type);
             if (Property<Derived> * single = getSingle(type)) {
@@ -307,38 +311,42 @@ namespace PAX {
         
         /// DANGER ZONE: Functions for internal use only !!!!!!!!!!!!!!
 
-        bool PAX_INTERNAL(addAsMultiple)(const std::type_info & type, Property<Derived>* property) {
+        bool PAX_INTERNAL(addAsMultiple)(const TypeId & type, Property<Derived>* property) {
             _multipleProperties[type].push_back(property);
             return true;
         }
 
-        bool PAX_INTERNAL(addAsSingle)(const std::type_info & type, Property<Derived>* property) {
+        bool PAX_INTERNAL(addAsSingle)(const TypeId & type, Property<Derived>* property) {
             if (_singleProperties.count(type)) {
                 return false;
-            } else
+            } else {
                 _singleProperties[type] = property;
+            }
 
             return true;
         }
 
-        bool PAX_INTERNAL(removeAsMultiple)(const std::type_info & type, Property<Derived>* property) {
+        bool PAX_INTERNAL(removeAsMultiple)(const TypeId & type, Property<Derived>* property) {
             std::vector<Property<Derived>*> &result = _multipleProperties.at(type);
-            if (!Util::removeFromVector(result, property))
+            if (!Util::removeFromVector(result, property)) {
                 return false;
+            }
 
             // Remove vector if no propertys remain
-            if (result.empty())
+            if (result.empty()) {
                 _multipleProperties.erase(type);
+            }
 
             return true;
         }
 
-        bool PAX_INTERNAL(removeAsSingle)(const std::type_info & type, Property<Derived>* property) {
+        bool PAX_INTERNAL(removeAsSingle)(const TypeId & type, Property<Derived>* property) {
             // The given property is not the property, that is registered for the given type.
-            if (_singleProperties.at(type) != property)
+            if (_singleProperties.at(type) != property) {
                 return false;
-            else
+            } else {
                 return _singleProperties.erase(type) != 0;
+            }
         }
     };
 

@@ -120,7 +120,7 @@ namespace PAX {
             // TODO: It would be nice if we can make this method const.
             //       This is not trivial however because getMetadata()
             //       is not const because of all the pointers we retrieve from there.
-            Property<E> * clone = PropertyFactoryRegister<E>::getFactoryFor(getClassType())->create();
+            Property<E> * clone = PropertyFactoryRegister<E>::getFactoryFor(getClassType().id)->create();
             ClassMetadata cloneMetadata = clone->getMetadata();
             getMetadata().writeTo(cloneMetadata);
             clone->created();

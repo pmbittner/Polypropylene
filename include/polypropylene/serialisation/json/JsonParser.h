@@ -58,8 +58,8 @@ namespace PAX {
         public:
             JsonParserRegister();
 
-            void registerParser(const PAX::TypeHandle &type, const IJsonParser * parser);
-            PAX_NODISCARD const IJsonParser * getParserFor(const PAX::TypeHandle &type) const;
+            void registerParser(const PAX::TypeId &type, const IJsonParser * parser);
+            PAX_NODISCARD const IJsonParser * getParserFor(const PAX::TypeId &type) const;
         };
 
         template<class T>

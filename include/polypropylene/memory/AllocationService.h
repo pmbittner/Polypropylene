@@ -6,6 +6,7 @@
 #define POLYPROPYLENE_PROPERTYALLOCATIONSERVICE_H
 
 
+#include <polypropylene/stdutils/CollectionUtils.h>
 #include "polypropylene/reflection/TypeMap.h"
 
 #include "Allocator.h"
@@ -15,16 +16,22 @@
 namespace PAX {
     class AllocationService {
         TypeMap<IAllocator*> allocators;
+        std::vector<void*> allocatedObjects;
 
     public:
         AllocationService() = default;
 
-        void registerAllocator(const std::type_index & type, IAllocator * allocator) {
+        void registerAllocator(const TypeId & type, IAllocator * allocator) {
             allocators[type] = allocator;
         }
 
-        size_t unregisterAllocator(const std::type_index & type) {
+        size_t unregisterAllocator(const TypeId & type) {
             return allocators.erase(type);
+        }
+
+        bool hasAllocated(void * object) {
+            // TODO: Maybe we find a better way for detecting this than caching all pointers.
+            return Util::vectorContains(allocatedObjects, object);
         }
 
         // TODO: Can we avoid the template here in a safe way?
@@ -46,12 +53,14 @@ namespace PAX {
                 registerAllocator(typeid(T), allocator);
             }
 
-            return allocator->allocate();
+            void * mem = allocator->allocate();
+            allocatedObjects.push_back(mem);
+            return mem;
         }
 
-        bool free(const std::type_index & type, void * object) {
+        bool free(const TypeId & type, void * object) {
             const auto& allocator = allocators.find(type);
-            if (allocator != allocators.end()) {
+            if (allocator != allocators.end() && Util::removeFromVector(allocatedObjects, object)) {
                 allocator->second->destroy(object);
                 return true;
             }

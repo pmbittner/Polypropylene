@@ -9,17 +9,19 @@
 #include <map>
 #include <unordered_map>
 
+#include "polypropylene/reflection/TypeHandle.h"
+
 namespace PAX {
 #define PAX_TYPE_MAP_LIGHTWEIGHT
 
 #ifdef PAX_TYPE_MAP_LIGHTWEIGHT
     template<typename ValueType>
-    using TypeMap = std::map<std::type_index, ValueType>;
+    using TypeMap = std::map<TypeId, ValueType>;
 
     template<typename ValueType>
-    using UnorderedTypeMap = std::unordered_map<std::type_index, ValueType>;
+    using UnorderedTypeMap = std::unordered_map<TypeId, ValueType>;
 #else
-    template<typename ValueType, class Map = std::unordered_map<std::type_index, ValueType>>
+    template<typename ValueType, class Map = std::unordered_map<TypeId, ValueType>>
     class TypeMap {
         Map _map;
 
@@ -32,7 +34,7 @@ namespace PAX {
             return _map.find(paxtypeof(Value)) != _map.end();
         }
 
-        inline bool contains(const std::type_index &index) const {
+        inline bool contains(const TypeId &index) const {
             return _map.find(index) != _map.end();
         }
 
@@ -41,11 +43,11 @@ namespace PAX {
             return _map.at(paxtypeof(Key));
         }
 
-        ValueType& get(const std::type_index &index) {
+        ValueType& get(const TypeId &index) {
             return _map.at(index);
         }
 
-        ValueType& operator[](const std::type_index &index) {
+        ValueType& operator[](const TypeId &index) {
             return _map[index];
         }
 
@@ -55,7 +57,7 @@ namespace PAX {
             return true;
         }
 
-        bool put(const std::type_index &index, const ValueType & value) {
+        bool put(const TypeId &index, const ValueType & value) {
             _map[index] = value;
             return true;
         }
@@ -66,7 +68,7 @@ namespace PAX {
             return _map.erase(paxtypeof(Key));
         }
 
-        size_t erase(const std::type_index &index) {
+        size_t erase(const TypeId &index) {
             return _map.erase(index);
         }
 

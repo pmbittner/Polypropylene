@@ -16,9 +16,9 @@
 bool Type::methodName(EntityType & e) { \
     if (Super::methodName(e)) { \
         PAX_CONSTEXPR_IF (Type::IsMultiple()) { \
-            if (!e.asMultiple(typeid(Type), this)) return false; \
+            if (!e.asMultiple(paxtypeid(Type), this)) return false; \
         } else { \
-            if (!e.asSingle(typeid(Type), this)) return false; \
+            if (!e.asSingle(paxtypeid(Type), this)) return false; \
         } \
         EventType<EntityType, Type> event(this, &e); \
         e.getEventService()(event); \
