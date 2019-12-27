@@ -99,10 +99,13 @@ int main(int argc, char** argv) {
     }
 
     /// example for property access without templates
-    /// (correct get function according to properties multiplicity has to be invoked)
     {
+        /// use the get function according to properties multiplicity if you know it ...
         const std::vector<Property<Pizza> *> & cheeses = pizzaFunghi->getMultiple(paxtypeid(Cheese));
         Mozzarella * m = dynamic_cast<Mozzarella*>(pizzaFunghi->getSingle(paxtypeid(Mozzarella)));
+
+        /// ... or if you do not:
+        std::vector<Property<Pizza>*> mozzarellas = pizzaFunghi->get(paxtypeid(Mozzarella));
     }
 
 #ifdef PAX_WITH_JSON
