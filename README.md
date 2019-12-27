@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/context:cpp)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/alerts/)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3539/badge)](https://bestpractices.coreinfrastructure.org/projects/3539)
 
 Polypropylene is a C++17 library for dynamic object definition by composition of properties.
 Properties add state and functionality to objects similar to mixins but are composed dynamically during runtime.
