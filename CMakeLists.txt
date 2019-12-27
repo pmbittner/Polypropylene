@@ -28,8 +28,10 @@ endif(${CMAKE_BUILD_TYPE} MATCHES Release)
 
 if (POLYPROPYLENE_WITH_JSON)
     add_definitions(-DPAX_WITH_JSON)
-    message("Building with: Json deserialisation (POLYPROPYLENE_WITH_JSON)")
-endif(POLYPROPYLENE_WITH_JSON)
+    message("Building WITH: Json (POLYPROPYLENE_WITH_JSON = ON)")
+else()
+    message("Building WITHOUT: Json (POLYPROPYLENE_WITH_JSON = OFF)")
+endif()
 
 ### SOURCE FILES ########################################
 
