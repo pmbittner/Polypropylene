@@ -14,37 +14,37 @@ An ECS is a design pattern mostly used in video game engineering where objects a
 Thereby, an object (i.e., an _Entity_) is purely defined as a composition of individual components.
 We refer to _Components_ as _Properties_ because Polypropylene is not a pure ECS anymore but a general-purpose library.
 During development several issues arose that were not addressed by existing ECS so far.
+```C++
+class Pizza : public PAX::Entity<Pizza> {};
 
-    class Pizza : public PAX::Entity<Pizza> {};
+class TomatoSauce : public PAX::Property<Pizza> {
+    PAX_PROPERTY(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
+    PAX_PROPERTY_DERIVES(PAX::Property<Pizza>)
+    PAX_PROPERTY_IS_SINGLE
+};
+
+class Cheese : public PAX::Property<Pizza> {
+    PAX_PROPERTY(Cheese, PAX_PROPERTY_IS_ABSTRACT)
+    PAX_PROPERTY_DERIVES(PAX::Property<Pizza>)
+    PAX_PROPERTY_IS_MULTIPLE
     
-    class TomatoSauce : public PAX::Property<Pizza> {
-        PAX_PROPERTY(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
-        PAX_PROPERTY_DERIVES(PAX::Property<Pizza>)
-        PAX_PROPERTY_IS_SINGLE
-    };
-    
-    class Cheese : public PAX::Property<Pizza> {
-        PAX_PROPERTY(Cheese, PAX_PROPERTY_IS_ABSTRACT)
-        PAX_PROPERTY_DERIVES(PAX::Property<Pizza>)
-        PAX_PROPERTY_IS_MULTIPLE
-        
-        PAX_PROPERTY_DEPENDS_ON(TomatoSauce)
-    };
-    
-    class Mozzarella : public Cheese {
-        PAX_PROPERTY(Mozzarella, PAX_PROPERTY_IS_CONCRETE)
-        PAX_PROPERTY_DERIVES(Cheese)
-        PAX_PROPERTY_IS_SINGLE
-    };
+    PAX_PROPERTY_DEPENDS_ON(TomatoSauce)
+};
+
+class Mozzarella : public Cheese {
+    PAX_PROPERTY(Mozzarella, PAX_PROPERTY_IS_CONCRETE)
+    PAX_PROPERTY_DERIVES(Cheese)
+    PAX_PROPERTY_IS_SINGLE
+};
 
 
-    Pizza pizza;
-    pizza.add(new TomatoSauce()); // otherwise we cannot add cheese
-    pizza.add(new Mozzarella());
-    
-    Mozzarella * mozzarella = pizza.get<Mozzarella>();
-    const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // contains our Mozzarella only
-    
+Pizza pizza;
+pizza.add(new TomatoSauce()); // otherwise we cannot add cheese
+pizza.add(new Mozzarella());
+
+Mozzarella * mozzarella = pizza.get<Mozzarella>();
+const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // contains our Mozzarella only
+```
 
 **Opposed to existing Entity-Component Systems and Dynamic Mixin Implementations**, Polypropylene offers the following features:
 
@@ -90,7 +90,7 @@ Polypropylene further contains the following features:
 Properties can emit and receive events similar to the publisher-subscriber design pattern.
 The event service is also used for `PropertyAdded-` and `PropertyRemovedEvents`.
 Event services may optionally be linked such that events can be exchanged between entities or even throughout the whole program.
-    ```
+    ```C++
     class Pizza : public PAX::Entity<Pizza> {
     public:
         void bake() {
@@ -122,42 +122,45 @@ Event services may optionally be linked such that events can be exchanged betwee
 
 - **Serialisation**: Entities may be specified entirely in json files.
     (Other formats are not supported yet but can be integrated easily.)
-    ```
-    >>> margherita.json
-    {
-      "Properties": {
-        "PAX::Examples::Mozzarella": {},
-        "PAX::Examples::TomatoSauce": {
-          "scoville": "9001"
-        }
-      }
-    }
-  
-    >>> funghi.json
-    {
-      "Inherits": [
-        "margherita.json"
-      ],
-      "Properties": {
-        "PAX::Examples::Champignon": {}
-      }
-    }
-    ```
+    
+    > margherita.json
+    >```json
+    >{
+    >  "Properties": {
+    >    "PAX::Examples::Mozzarella": {},
+    >    "PAX::Examples::TomatoSauce": {
+    >      "scoville": "9001"
+    >    }
+    >  }
+    >}
+    >```
+    
+    > funghi.json
+    >```json
+    >{
+    >  "Inherits": [
+    >    "margherita.json"
+    >  ],
+    >  "Properties": {
+    >    "PAX::Examples::Champignon": {}
+    >  }
+    >}
+    >```
     From such files so called **prefabs** are created.
     A prefab represents the kind of entity described in the json file.
     It allows instantiating arbitrary amounts of the corresponding entity:
-    ```
+    ```C++
     JsonEntityPrefab<Pizza> prefab = prefabLoader.load("res/pizza/funghi.json");
     Pizza * pizzaFunghi = prefab.create({});
     ```
     To customise the individual instances created by a prefab, custom parameters may be specified.
     For example, the scoville of the TomatoSauce can be made variable by replacing it in the json file by:
-    ```
+    ```json
     "scoville": "${spicyness}"
     ```
     Upon pizza creation, this value can be specified arbitrarily.
     That way, customers are able to be delivered pizza as hot as they like:
-    ```
+    ```C++
     std::cout << "How spicy do you like you pizza (in scoville)?\n";
     std::string spicyness;
     std::cin >> spicyness;
@@ -165,7 +168,7 @@ Event services may optionally be linked such that events can be exchanged betwee
     Pizza * pizzaFunghi = prefab->create({{"spicyness", spicyness}});
     ```
     As C++ does not provide reflection information, properties can provide metadata by their own for de-/serialisation:
-    ```
+    ```C++
     ClassMetadata TomatoSauce::getMetadata() {
         ClassMetadata m = Super::getMetadata();
         m.add({paxfield(scoville), Field::IsMandatory});
@@ -180,7 +183,7 @@ Event services may optionally be linked such that events can be exchanged betwee
 - **Views**: Managing collections of entities can be done with `EntityManagers`.
   `EntityManagers` link the event services of all contained entities such that a central `EventService` receives and broadcasts the events of all entities.
   `EntityManagerViews` provide a filtered view on all entities in a given `EntityManager`:
-  ```
+  ```C++
   EntityManager<Pizza> manager;
   manager.add(pizzaMargherita);
   manager.add(pizzaFunghi);
@@ -200,7 +203,7 @@ Event services may optionally be linked such that events can be exchanged betwee
   `Entities` and `Properties` have an `active` flag to show if they should be recognised by systems yet.
   For instance, some properties may be allocated already but not in use.
   The `active` flag of entities however may be used as needed by the user / developer.
-  ```
+  ```C++
   // The system will register itself as the allocator to use for TomatoSauce.
   // Hence, it needs to be created before creating any TomatoSauce.
   PropertyOwningSystem<Pizza, TomatoSauce> tomatoValley;
@@ -246,14 +249,13 @@ We plan to publish examples of usage of Polypropylene in video game development 
 For example, a `Pizza` with `TomatoSauce`, `Mozzarella`, and `Champignons` could be identified as `PizzaFunghi`.
 A mechanism for manual or even automatic type specification has to be implemented.
 
-- Multiple Inheritance Support for Properties
-
 - Enhancing Dependency Specification: Currently, properties are allowed to depend on other property types.
 Entities however may only be allowed to contain certain combinations (configurations) of properties.
 For instance, two property types could be exclusive to each other as they implement respectively contradicting data or behaviour.
 Such additional constraints could be implemented by using techniques from software product line engineering, especially feature models.
 
-- Dependencies are not considered upon property removal. When removing a property, dependencies of other properties may break.
+- Dependencies are not considered upon property removal, yet.
+ When removing a property, dependencies of other properties may break.
 
 - Support for Older C++ Standards Than 17: Therefore, we need a custom implementation of `std::optional`.
 We have to see if that would pay off.
