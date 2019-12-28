@@ -20,13 +20,13 @@ class Pizza : public PAX::Entity<Pizza> {};
 class TomatoSauce : public PAX::Property<Pizza> {
     PAX_PROPERTY(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
     PAX_PROPERTY_DERIVES(PAX::Property<Pizza>)
-    PAX_PROPERTY_IS_SINGLE
+    PAX_PROPERTY_IS_SINGLE 
 };
 
 class Cheese : public PAX::Property<Pizza> {
     PAX_PROPERTY(Cheese, PAX_PROPERTY_IS_ABSTRACT)
     PAX_PROPERTY_DERIVES(PAX::Property<Pizza>)
-    PAX_PROPERTY_IS_MULTIPLE
+    PAX_PROPERTY_IS_MULTIPLE 
     
     PAX_PROPERTY_DEPENDS_ON(TomatoSauce)
 };
@@ -34,7 +34,7 @@ class Cheese : public PAX::Property<Pizza> {
 class Mozzarella : public Cheese {
     PAX_PROPERTY(Mozzarella, PAX_PROPERTY_IS_CONCRETE)
     PAX_PROPERTY_DERIVES(Cheese)
-    PAX_PROPERTY_IS_SINGLE
+    PAX_PROPERTY_IS_SINGLE 
 };
 
 
