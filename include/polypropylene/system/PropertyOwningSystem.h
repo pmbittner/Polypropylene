@@ -20,7 +20,7 @@ namespace PAX {
         typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * current = nullptr;
 
         inline bool isCurrentValid() {
-            return current->allocated && reinterpret_cast<PropertyType*>(&(current->data))->isActive();
+            return current->allocated;
         }
 
     public:

@@ -37,13 +37,12 @@ namespace PAX {
         static const std::vector<Property<Derived>*> EmptyPropertyVector;
         static AllocationService propertyAllocator;
 
-        EventService _localEventService;
-        bool active = false;
+        EventService localEventService;
 
-        TypeMap<Property<Derived>*> _singleProperties;
-        TypeMap<std::vector<Property<Derived>*>> _multipleProperties;
+        TypeMap<Property<Derived>*> singleProperties;
+        TypeMap<std::vector<Property<Derived>*>> multipleProperties;
 
-        std::vector<Property<Derived>*> _allProperties; // Do we really want to have a copy of all pointers for easy access?
+        std::vector<Property<Derived>*> allProperties; // Do we really want to have a copy of all pointers for easy access?
 
     public:
         Entity() = default;
@@ -69,62 +68,15 @@ namespace PAX {
 
     private:
         bool isValid(Property<Derived>* property) {
+            /*
             if (property->owner)
                 return false;
+            //*/
 
             return property->areDependenciesMetFor(*static_cast<Derived*>(this));
         }
 
-        void registerproperty(Property<Derived>* property) {
-            property->owner = static_cast<Derived*>(this);
-            property->attached(*static_cast<Derived*>(this));
-        }
-
-        void unregisterproperty(Property<Derived>* property) {
-            property->owner = nullptr;
-            property->detached(*static_cast<Derived*>(this));
-        }
-
     public:
-        /**
-         * Marks this Entity and all its properties as active.
-         * This is a custom flag that can be used for enabling custom behaviour.
-         * In video games, this entities can be marked active if they are part of the current scene or world.
-         */
-        void activate() {
-            if (active) return;
-            active = true;
-            auto props = getAllProperties();
-            for (Property<Derived> * p : props) {
-                p->active = true;
-                p->activated();
-            }
-        }
-
-        /**
-         * Marks this Entity and all its properties as inactive.
-         * @ref activate()
-         */
-        void deactivate() {
-            if (!active) return;
-            active = false;
-            auto props = getAllProperties();
-            for (Property<Derived> * p : props) {
-                p->active = false;
-                p->deactivated();
-            }
-        }
-
-        /**
-         * Indicates if this entity together with all its properties is marked as active.
-         * The semantics of this flag are user defined and thereby may be used for any purpose.
-         * @ref activate()
-         * @return True, iff this entity is marked active.
-         */
-        PAX_NODISCARD bool isActive() {
-            return active;
-        }
-
         /**
          * @return the AllocationService that is used for property (de-) allocation for properties for derived entitiy type Derived.
          */
@@ -136,7 +88,7 @@ namespace PAX {
          * @return The internal EventService of this Entity that is used for internal communication between properties.
          */
         PAX_NODISCARD EventService& getEventService() {
-            return _localEventService;
+            return localEventService;
         }
 
         PAX_NODISCARD PrototypeEntityPrefab<Derived> toPrefab() const {
@@ -146,12 +98,8 @@ namespace PAX {
         bool add(Property<Derived>* property) {
             if (isValid(property)) {
                 property->PAX_INTERNAL(addTo)(*static_cast<Derived*>(this));
-                registerproperty(property);
-                _allProperties.push_back(property);
-                if (active) {
-                    property->active = true;
-                    property->activated();
-                }
+                property->attached(*static_cast<Derived*>(this));
+                allProperties.push_back(property);
                 return true;
             }
 
@@ -160,23 +108,19 @@ namespace PAX {
 
         bool remove(Property<Derived>* property) {
             bool ret = property->PAX_INTERNAL(removeFrom)(*static_cast<Derived*>(this));
-            unregisterproperty(property);
-            Util::removeFromVector(_allProperties, property);
-            if (active) {
-                property->active = false;
-                property->deactivated();
-            }
+            property->detached(*static_cast<Derived*>(this));
+            Util::removeFromVector(allProperties, property);
             return ret;
         }
 
         PAX_GENERATE_EntityTemplateHeader(bool, !)
         has() const {
-            return _singleProperties.count(typeid(PropertyType)) > 0;
+            return singleProperties.count(typeid(PropertyType)) > 0;
         }
 
         PAX_GENERATE_EntityTemplateHeader(bool, )
         has() const {
-            return _multipleProperties.count(typeid(PropertyType)) > 0;
+            return multipleProperties.count(typeid(PropertyType)) > 0;
         }
 
         template<class FirstPropertyType, class SecondPropertyType, class... FurtherPropertyTypees>
@@ -194,7 +138,7 @@ namespace PAX {
             bool ret = false;
 
             if (isMultipleHint.value_or(true)) {
-                ret = _multipleProperties.count(type) > 0;
+                ret = multipleProperties.count(type) > 0;
                 if (ret || isMultipleHint.has_value())
                     return ret;
             }
@@ -202,7 +146,7 @@ namespace PAX {
             assert(!ret);
 
             if (!isMultipleHint.value_or(false)) {
-                ret = _singleProperties.count(type) > 0;
+                ret = singleProperties.count(type) > 0;
             }
 
             return ret;
@@ -210,23 +154,23 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(PropertyType*, !)
         get() {
-            const auto& property = _singleProperties.find(typeid(PropertyType));
-            if (property != _singleProperties.end())
+            const auto& property = singleProperties.find(typeid(PropertyType));
+            if (property != singleProperties.end())
                 return static_cast<PropertyType*>(property->second);
             return nullptr;
         }
 
         PAX_GENERATE_EntityTemplateHeader(const std::vector<PropertyType*>&, )
         get() {
-            const auto& properties = _multipleProperties.find(typeid(PropertyType));
-            if (properties != _multipleProperties.end())
+            const auto& properties = multipleProperties.find(typeid(PropertyType));
+            if (properties != multipleProperties.end())
                 return reinterpret_cast<std::vector<PropertyType*>&>(properties->second);
             else
                 return *reinterpret_cast<const std::vector<PropertyType*>*>(&EmptyPropertyVector);
         }
 
         PAX_NODISCARD const std::vector<Property<Derived>*> & getAllProperties() const {
-            return _allProperties;
+            return allProperties;
         }
 
         /**
@@ -236,9 +180,9 @@ namespace PAX {
          * this entity does not contain a property of that type or the type is not single.
          */
         PAX_NODISCARD Property<Derived> * getSingle(const TypeId & type) const {
-            const auto & it = _singleProperties.find(type);
+            const auto & it = singleProperties.find(type);
 
-            if (it != _singleProperties.end()) {
+            if (it != singleProperties.end()) {
                 return it->second;
             }
 
@@ -252,9 +196,9 @@ namespace PAX {
          * empty vector if this entity does not contain a property of that type or the type is not multiple.
          */
         PAX_NODISCARD const std::vector<Property<Derived>*> & getMultiple(const TypeId & type) const {
-            const auto & it = _multipleProperties.find(type);
+            const auto & it = multipleProperties.find(type);
 
-            if (it != _multipleProperties.end()) {
+            if (it != multipleProperties.end()) {
                 return it->second;
             }
 
@@ -281,8 +225,8 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(PropertyType*, !)
         removeAll() {
-            const auto& propertyIt = _singleProperties.contains(typeid(PropertyType));
-            if (propertyIt != _singleProperties.end()) {
+            const auto& propertyIt = singleProperties.contains(typeid(PropertyType));
+            if (propertyIt != singleProperties.end()) {
                 PropertyType* property = static_cast<PropertyType*>(propertyIt->second);
                 if (remove(property))
                     return property;
@@ -293,10 +237,10 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(const std::vector<PropertyType*>&, )
         removeAll() {
-            const auto& propertiesIt = _multipleProperties.contains(typeid(PropertyType));
-            if (propertiesIt != _multipleProperties.end()) {
+            const auto& propertiesIt = multipleProperties.contains(typeid(PropertyType));
+            if (propertiesIt != multipleProperties.end()) {
                 // Copy to be able to return all removed instances
-                auto properties = reinterpret_cast<std::vector<PropertyType*>>(_multipleProperties.get(typeid(PropertyType)));
+                auto properties = reinterpret_cast<std::vector<PropertyType*>>(multipleProperties.get(typeid(PropertyType)));
                 for (PropertyType* property : properties) {
                     if (!remove(property))
                         return EmptyPropertyVector;
@@ -312,29 +256,29 @@ namespace PAX {
         /// DANGER ZONE: Functions for internal use only !!!!!!!!!!!!!!
 
         bool PAX_INTERNAL(addAsMultiple)(const TypeId & type, Property<Derived>* property) {
-            _multipleProperties[type].push_back(property);
+            multipleProperties[type].push_back(property);
             return true;
         }
 
         bool PAX_INTERNAL(addAsSingle)(const TypeId & type, Property<Derived>* property) {
-            if (_singleProperties.count(type)) {
+            if (singleProperties.count(type)) {
                 return false;
             } else {
-                _singleProperties[type] = property;
+                singleProperties[type] = property;
             }
 
             return true;
         }
 
         bool PAX_INTERNAL(removeAsMultiple)(const TypeId & type, Property<Derived>* property) {
-            std::vector<Property<Derived>*> &result = _multipleProperties.at(type);
+            std::vector<Property<Derived>*> &result = multipleProperties.at(type);
             if (!Util::removeFromVector(result, property)) {
                 return false;
             }
 
             // Remove vector if no propertys remain
             if (result.empty()) {
-                _multipleProperties.erase(type);
+                multipleProperties.erase(type);
             }
 
             return true;
@@ -342,10 +286,10 @@ namespace PAX {
 
         bool PAX_INTERNAL(removeAsSingle)(const TypeId & type, Property<Derived>* property) {
             // The given property is not the property, that is registered for the given type.
-            if (_singleProperties.at(type) != property) {
+            if (singleProperties.at(type) != property) {
                 return false;
             } else {
-                return _singleProperties.erase(type) != 0;
+                return singleProperties.erase(type) != 0;
             }
         }
     };

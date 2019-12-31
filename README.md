@@ -73,7 +73,7 @@ It is neither restricted to nor designed for video games only.
 
 - **Object- but Data-Oriented**: Polypropylene is designed for object-oriented programming and thus properties are deliberately allowed to exhibit custom behaviour.
 Nevertheless, as properties are arbitrary classes, they can be implemented as plain old data (POD).
-Hence, **Polypropylene supports both, object- and data-oriented design**.
+The `Property<T>` base class as well as the macros for property specification do not contain / generate any fields but only methods.
 Property allocation is centralised.
 Dedicated allocators can be registered for each property type.
 By default, pool allocators are used but may be replaced by any **custom allocator** on program start.
@@ -122,7 +122,6 @@ Event services may optionally be linked such that events can be exchanged betwee
 
 - **Serialisation**: Entities may be specified entirely in json files.
     (Other formats are not supported yet but can be integrated easily.)
-    
     > margherita.json
     ```json
     {
@@ -134,7 +133,6 @@ Event services may optionally be linked such that events can be exchanged betwee
       }
     }
     ```
-    
     > funghi.json
     ```json
     {
@@ -199,10 +197,7 @@ Event services may optionally be linked such that events can be exchanged betwee
 - **Systems**: Systems can be used for any kinds of (global) behaviour.
   In entity component systems, they are used to manage and execute behaviour on properties.
   For this reason, `PropertyOwningSystems` contain all properties of a given type by managing their allocation with a pool allocator.
-  That allows for fast iteration over all active properties of a certain type.
-  `Entities` and `Properties` have an `active` flag to show if they should be recognised by systems yet.
-  For instance, some properties may be allocated already but not in use.
-  The `active` flag of entities however may be used as needed by the user / developer.
+  That allows for fast iteration over all properties of a certain type.
   ```
   // The system will register itself as the allocator to use for TomatoSauce.
   // Hence, it needs to be created before creating any TomatoSauce.
@@ -210,7 +205,6 @@ Event services may optionally be linked such that events can be exchanged betwee
   
   Pizza p;
   p.add(new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce());
-  p.activate();
   
   for (TomatoSauce * t : tomatoValley) {
     // Here each active TomatoSauce that was allocated with the pizza's allocator can be found.

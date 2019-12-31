@@ -21,10 +21,6 @@ namespace PAX {
         using EntityType = E;
         static constexpr bool IsMultiple() { return true; }
 
-    private:
-        bool active = false;
-        EntityType* owner = nullptr;
-
     protected:
         virtual bool PAX_INTERNAL(addTo)(E & entity) PAX_NON_CONST {
             if (entity.PAX_INTERNAL(addAsMultiple)(typeid(Property<E>), this)) {
@@ -47,22 +43,6 @@ namespace PAX {
         }
 
         /**
-         * Callback that is invoked when the owning entity got activated or this property got attached to an
-         * active entity.
-         * The semantics of activation are user defined, i.e., activation status can be interpreted and used as
-         * needed but does not affect properties or entities behaviour.
-         */
-        virtual void activated() {}
-
-        /**
-         * Callback that is invoked when the owning entity got deactivated or this property got attached to an
-         * inactive entity.
-         * The semantics of activation are user defined, i.e., activation status can be interpreted and used as
-         * needed.
-         */
-        virtual void deactivated() {}
-
-        /**
          * Callback that is invoked when this property gets attached to an entity.
          * @param E The entity this property got attached to.
          */
@@ -76,13 +56,8 @@ namespace PAX {
         virtual void detached(E & entity) {}
 
     public:
-        Property() : owner(nullptr) {}
+        Property() = default;
         virtual ~Property() = default;
-
-        /**
-         * @return The entity this property is attached to. Returns nullptr if this property is not attached to an entity.
-         */
-        PAX_NODISCARD E * getOwner() const { return owner; }
 
         PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
 
@@ -105,12 +80,6 @@ namespace PAX {
          * @return True if all dependencies if this property are met for the given entity.
          */
         PAX_NODISCARD virtual bool areDependenciesMetFor(const E & entity) const { return true; }
-
-        /**
-         *
-         * @return True if this property is active.
-         */
-        PAX_NODISCARD bool isActive() const { return active; }
 
         /**
          * Creates a copy of this property by considering all fields specified by the @ref getMetadata() method.

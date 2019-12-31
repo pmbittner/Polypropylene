@@ -7,3 +7,9 @@ General:
 - type system (as built in the engine?)
 - entity allocation
 (- Log singleton does not allow polymorphism so far)
+- BUG: 1.) Allocate Property p of type T with pool allocator.
+       2.) T * ptr = &p.
+       3.) Deallocate p.
+       4.) allocate Properties of T until there is again a valid property at the memory chunk p was before
+       5.) ptr now points again to a valid property but doesn't know that it is not the same property anymore.
+       // This bug should be rare and only occur on undisciplined pointer use.
