@@ -118,7 +118,7 @@ Event services may optionally be linked such that events can be exchanged betwee
   
     >>> Cheese turns brown ~~~
     ```
-    Furthermore, a simplified specialised **EventHandler** inspired by C# events can be used to register and listen for a specific event types.
+    Furthermore, a simplified specialised **EventHandler** inspired by C# events can be used to register and listen for specific event types.
 
 - **Serialisation**: Entities may be specified entirely in json files.
     (Other formats are not supported yet but can be integrated easily.)
