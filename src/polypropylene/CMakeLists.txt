@@ -51,7 +51,7 @@ set(HEADERS_FOR_CLION
         reflection/VariableRegister.h
 
         stdutils/CollectionUtils.h
-        stdutils/StringUtils.h)
+        stdutils/StringUtils.h ../../include/polypropylene/reflection/Reflectable.h)
 
 set(SOURCE_FILES
         event/Event.cpp

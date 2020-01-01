@@ -5,6 +5,8 @@
 #ifndef POLYPROPYLENE_PROPERTY_H
 #define POLYPROPYLENE_PROPERTY_H
 
+#include "polypropylene/reflection/Reflectable.h"
+
 #include "PropertyFactory.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
@@ -14,7 +16,7 @@ namespace PAX {
     class Entity;
 
     template<class E>
-    class Property {
+    class Property : public Reflectable {
         friend class Entity<E>;
 
     public:
@@ -65,7 +67,7 @@ namespace PAX {
          * @return Reflection information on the fields of this property that should be considered for cloning,
          * (de-)serialisation, and prefabs.
          */
-        PAX_NODISCARD virtual ClassMetadata getMetadata() { return {}; }
+        PAX_NODISCARD ClassMetadata getMetadata() override { return {}; }
 
         /**
          * @return True if multiple instances of this property can be attached to the same entity.
