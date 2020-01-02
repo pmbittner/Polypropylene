@@ -13,11 +13,30 @@
 #define paxfield(field) #field, paxfieldpointer(field)
 
 namespace PAX {
+    using FieldFlag = uint32_t;
+
+    /**
+     * Reflection class to access fields of classes or global variables by name.
+     */
     struct Field {
-        enum Flag : uint32_t {
+        /**
+         * Feel free to extend the possible Flags for fields either by
+         * extending them directly in this file, or specifying them in your
+         * project:
+         *
+         * namespace MyCoolProject {
+         *   // custom additional flags for fields
+         *   constexpr FieldFlag IsPublic = 2;
+         *   constexpr FieldFlag IsConst  = 4;
+         *   constexpr FieldFlag IsFancy  = 8;
+         * }
+         *
+         * You may only use powers of two as values to allow bitwise conjunction of flags:
+         *   PAX::Field::IsMandatory | MyCoolProject::IsPublic
+         */
+        enum Flag : FieldFlag {
             None = 0,
-            IsMandatory = 1,
-            //IsResource = 2 // For future use in engine
+            IsMandatory = 1
         };
 
         TypeHandle type;
@@ -25,6 +44,20 @@ namespace PAX {
         void * data;
         Flag flags;
 
+        /**
+         * Creates a field handle pointing to the concrete variable.
+         * For simple creation you may use the "paxfield" macro as follows:
+         *   int coolInt;
+         *   int mandatoryCoolInt;
+         *
+         *   Field f = Field(paxfield(coolInt));
+         *   Field g = Field(paxfield(mandatoryCoolInt), Field::IsMandatory);
+         *
+         * @param name The name of the field used for its identification. The name may differ from the actual fields name in the code.
+         * @param type A TypeHandle identifying the fields type and size.
+         * @param data A pointer to the field such that it can be read and written to.
+         * @param flags Optional flags for further attribute specification.
+         */
         Field(const std::string & name, const TypeHandle & type, void * data, Flag flags = None);
 
         /**
