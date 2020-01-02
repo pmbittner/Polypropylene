@@ -20,41 +20,6 @@ namespace PAX::Json {
         return VariableResolver::resolveVariables(JsonToString(node[key]), variables);
     }
 
-    /*
-    std::vector<std::string> JsonPropertyContent::getValues(const std::string &key, const VariableRegister & variables) {
-        nlohmann::json & keynode = node[key];
-
-        if (keynode.is_array()) {
-            std::vector<std::string> values;
-            for (auto & it : keynode) {
-                values.push_back(VariableResolver::resolveVariables(JsonToString(it), variables));
-            }
-
-            return values;
-        }
-
-        return {};
-    }
-     //*/
-
-    static void buildVariableHierarchy(VariableHierarchy &h, const nlohmann::json &node) {
-        for (auto &entry : node.items()) {
-            if (entry.value().is_string()) {
-                h.values[entry.key()] = entry.value();
-                //std::cout << "\t" << entry.key() << " -> " << entry.value() << std::endl;
-            } else {
-                h.children[entry.key()] = VariableHierarchy();
-                buildVariableHierarchy(h.children[entry.key()], entry.value());
-            }
-        }
-    }
-
-    VariableHierarchy JsonFieldStorage::getResourceParametersFor(const std::string &name) const {
-        VariableHierarchy params;
-        buildVariableHierarchy(params, node[name]);
-        return params;
-    }
-
     bool JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
         nlohmann::json j = StringToJson(getValue(field.name, variables));
 

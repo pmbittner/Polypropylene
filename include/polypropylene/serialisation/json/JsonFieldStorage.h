@@ -24,7 +24,6 @@ namespace PAX::Json {
         PAX_NODISCARD std::string getValue(const std::string &key, const VariableRegister & variables) const;
 
         PAX_NODISCARD bool has(const std::string &name) const override;
-        PAX_NODISCARD VariableHierarchy getResourceParametersFor(const std::string &name) const override;
         PAX_NODISCARD bool writeTo(Field & field, const VariableRegister &variables) const override;
         bool readFrom(const Field & field) override;
 

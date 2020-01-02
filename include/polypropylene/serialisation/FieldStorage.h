@@ -20,9 +20,8 @@ namespace PAX {
         FieldStorage() = default;
         virtual ~FieldStorage() = 0;
 
-        PAX_NODISCARD virtual bool has(const std::string &name) const = 0;
-        PAX_NODISCARD virtual VariableHierarchy getResourceParametersFor(const std::string &name) const = 0;
-        PAX_NODISCARD virtual bool writeTo(Field &field, const VariableRegister &variables) const = 0;
+        PAX_NODISCARD virtual bool has(const std::string & name) const = 0;
+        PAX_NODISCARD virtual bool writeTo(Field &field, const VariableRegister & variables) const = 0;
         virtual bool readFrom(const Field & field) = 0;
     };
 }
