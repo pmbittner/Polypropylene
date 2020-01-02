@@ -10,7 +10,7 @@
 //Schöne Grüße vom HiWi für deepe Angelegenheiten
 
 namespace PAX {
-    Field::Field(const std::string &name, const PAX::TypeHandle &type, void *data, PAX::Field::Flag flags)
+    Field::Field(const std::string &name, const TypeHandle &type, void *data, FieldFlag flags)
     : name(name), type(type), data(data), flags(flags)
     {
 

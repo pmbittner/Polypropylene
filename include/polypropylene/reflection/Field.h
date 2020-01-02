@@ -24,25 +24,25 @@ namespace PAX {
          * extending them directly in this file, or specifying them in your
          * project:
          *
-         * namespace MyCoolProject {
+         * namespace MyCoolProject::FieldFlags {
          *   // custom additional flags for fields
-         *   constexpr FieldFlag IsPublic = 2;
-         *   constexpr FieldFlag IsConst  = 4;
-         *   constexpr FieldFlag IsFancy  = 8;
+         *   constexpr FieldFlag IsPublic = ::PAX::Field::CustomFlagsBegin;
+         *   constexpr FieldFlag IsConst  = 2 * IsPublic;
+         *   constexpr FieldFlag IsFancy  = 2 * IsConst;
          * }
          *
+         * That way up to 32 flags are supported from which one is already defined by Field (IsMandatory).
          * You may only use powers of two as values to allow bitwise conjunction of flags:
-         *   PAX::Field::IsMandatory | MyCoolProject::IsPublic
+         *   PAX::Field::IsMandatory | MyCoolProject::FieldFlags::IsPublic
          */
-        enum Flag : FieldFlag {
-            None = 0,
-            IsMandatory = 1
-        };
+        constexpr static FieldFlag None = 0;
+        constexpr static FieldFlag IsMandatory = 1;
+        constexpr static FieldFlag CustomFlagsBegin = 2 * IsMandatory;
 
         TypeHandle type;
         std::string name;
         void * data;
-        Flag flags;
+        FieldFlag flags;
 
         /**
          * Creates a field handle pointing to the concrete variable.
@@ -58,7 +58,7 @@ namespace PAX {
          * @param data A pointer to the field such that it can be read and written to.
          * @param flags Optional flags for further attribute specification.
          */
-        Field(const std::string & name, const TypeHandle & type, void * data, Flag flags = None);
+        Field(const std::string & name, const TypeHandle & type, void * data, FieldFlag flags = None);
 
         /**
          * Checks if this field describes the same field as the other field by considering name and type equality.
