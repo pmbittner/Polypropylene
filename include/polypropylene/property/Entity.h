@@ -68,12 +68,23 @@ namespace PAX {
 
     private:
         bool isValid(Property<Derived>* property) {
-            /*
-            if (property->owner)
+            if (property->owner) {
                 return false;
-            //*/
+            }
 
             return property->areDependenciesMetFor(*static_cast<Derived*>(this));
+        }
+
+        inline void registerProperty(Property<Derived>* property) {
+            property->owner = static_cast<Derived*>(this);
+            property->attached(*static_cast<Derived*>(this));
+            allProperties.push_back(property);
+        }
+
+        inline void unregisterProperty(Property<Derived>* property) {
+            property->owner = nullptr;
+            property->detached(*static_cast<Derived*>(this));
+            Util::removeFromVector(allProperties, property);
         }
 
     public:
@@ -98,8 +109,7 @@ namespace PAX {
         bool add(Property<Derived>* property) {
             if (isValid(property)) {
                 property->PAX_INTERNAL(addTo)(*static_cast<Derived*>(this));
-                property->attached(*static_cast<Derived*>(this));
-                allProperties.push_back(property);
+                registerProperty(property);
                 return true;
             }
 
@@ -107,10 +117,12 @@ namespace PAX {
         }
 
         bool remove(Property<Derived>* property) {
-            bool ret = property->PAX_INTERNAL(removeFrom)(*static_cast<Derived*>(this));
-            property->detached(*static_cast<Derived*>(this));
-            Util::removeFromVector(allProperties, property);
-            return ret;
+            if (property->PAX_INTERNAL(removeFrom)(*static_cast<Derived*>(this))) {
+                unregisterProperty(property);
+                return true;
+            }
+
+            return false;
         }
 
         PAX_GENERATE_EntityTemplateHeader(bool, !)

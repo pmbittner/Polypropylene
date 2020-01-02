@@ -23,6 +23,9 @@ namespace PAX {
         using EntityType = E;
         static constexpr bool IsMultiple() { return true; }
 
+    private:
+        EntityType * owner = nullptr;
+
     protected:
         virtual bool PAX_INTERNAL(addTo)(E & entity) PAX_NON_CONST {
             if (entity.PAX_INTERNAL(addAsMultiple)(typeid(Property<E>), this)) {
@@ -50,7 +53,6 @@ namespace PAX {
          */
         virtual void attached(E & entity) {}
 
-
         /**
          * Callback that is invoked when this property gets removed from an entity.
          * @param E The entity this property got removed from.
@@ -61,6 +63,14 @@ namespace PAX {
         Property() = default;
         virtual ~Property() = default;
 
+        /**
+         * @return The entity this property is attached to. Returns nullptr if this property is not attached to an entity.
+         */
+        PAX_NODISCARD E * getOwner() const { return owner; }
+
+        /**
+         * @return A TypeHandle identifying the actual type of the object (i.e., the derived class).
+         */
         PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
 
         /**
