@@ -5,7 +5,7 @@
 #include "Champignon.h"
 
 namespace PAX::Examples {
-    PAX_PROPERTY_SOURCE(Champignon)
+    PAX_PROPERTY_INIT(Champignon) {}
 
     std::string Champignon::yummy() {
         return "Champignon";

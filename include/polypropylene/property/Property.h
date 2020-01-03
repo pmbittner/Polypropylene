@@ -104,16 +104,17 @@ namespace PAX {
             Property<E> * clone = PropertyFactoryRegister<E>::getFactoryFor(getClassType().id)->create();
             ClassMetadata cloneMetadata = clone->getMetadata();
             getMetadata().writeTo(cloneMetadata);
-            clone->created();
+            clone->PAX_INTERNAL(created)();
             return clone;
         }
-        
+
         /**
          * Callback that is invoked when the property was created by a prefab or cloned from another property.
          * Fields declared in Metadata (@ref getMetadata()) can be assumed to be initialised if values for them
          * were specified in the creating object (e.g., prefab).
          */
-        virtual void created() {}
+        // TODO: Can we make this protected?
+        virtual void PAX_INTERNAL(created)() {}
     };
 }
 

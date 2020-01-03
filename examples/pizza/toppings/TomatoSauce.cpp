@@ -6,10 +6,10 @@
 #include "TomatoSauce.h"
 
 namespace PAX::Examples {
-    PAX_PROPERTY_SOURCE(TomatoSauce)
+    PAX_PROPERTY_INIT(TomatoSauce) {}
 
     TomatoSauce::TomatoSauce() = default;
-    TomatoSauce::TomatoSauce(int scoville) : scoville(scoville) {}
+    TomatoSauce::TomatoSauce(int scoville) : scoville(scoville) { init(); }
 
     ClassMetadata TomatoSauce::getMetadata() {
         ClassMetadata m = Super::getMetadata();
