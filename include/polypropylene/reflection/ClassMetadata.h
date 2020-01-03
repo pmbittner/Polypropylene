@@ -19,7 +19,7 @@ namespace PAX {
         ClassMetadata(const ClassMetadata & other);
         ClassMetadata(ClassMetadata && other) noexcept;
 
-        void add(const Field & field);
+        Field& add(Field && field);
         PAX_NODISCARD bool contains(const std::string & name) const;
         PAX_NODISCARD Field & get(const std::string & name);
         PAX_NODISCARD const Field & get(const std::string & name) const;

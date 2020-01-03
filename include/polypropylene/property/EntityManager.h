@@ -42,12 +42,12 @@ namespace PAX {
 
         }
 
-        const std::set<EntityType*> & getEntities() const {
+        PAX_NODISCARD const std::set<EntityType*> & getEntities() const {
             return entities;
         }
 
-        bool add(Entity<EntityType> * entity) {
-            if (entities.insert(static_cast<EntityType *>(entity)).second) {
+        bool add(EntityType * entity) {
+            if (entities.insert(entity).second) {
                 entity->getEventService().setParent(&eventService);
                 EntityAddedEvent<EntityType> e(entity);
                 eventService(e);
@@ -57,8 +57,8 @@ namespace PAX {
             return false;
         }
 
-        bool remove(Entity<EntityType> *entity) {
-            if (entities.erase(static_cast<EntityType *>(entity))) {
+        bool remove(EntityType * entity) {
+            if (entities.erase(entity)) {
                 entity->getEventService().setParent(nullptr);
                 EntityRemovedEvent<EntityType> e(entity);
                 eventService(e);

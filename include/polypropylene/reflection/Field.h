@@ -9,8 +9,10 @@
 #include <polypropylene/definitions/Definitions.h>
 #include <polypropylene/reflection/TypeHandle.h>
 
-#define paxfieldpointer(field) paxtypeof(decltype(field)), &field
-#define paxfield(field) #field, paxfieldpointer(field)
+#define paxfieldalias_flagged(name, field, flag) ::PAX::Field(name, paxtypeof(field), &field, flag)
+#define paxfieldalias(name, field) paxfieldalias_flagged(name, field, ::PAX::Field::NoFlag)
+#define paxfieldof_flagged(field, flag) paxfieldalias_flagged(#field, field, flag)
+#define paxfieldof(field) paxfieldalias(#field, field)
 
 namespace PAX {
     using FieldFlag = uint32_t;
@@ -35,7 +37,7 @@ namespace PAX {
          * You may only use powers of two as values to allow bitwise conjunction of flags:
          *   PAX::Field::IsMandatory | MyCoolProject::FieldFlags::IsPublic
          */
-        constexpr static FieldFlag None = 0;
+        constexpr static FieldFlag NoFlag = 0;
         constexpr static FieldFlag IsMandatory = 1;
         constexpr static FieldFlag CustomFlagsBegin = 2 * IsMandatory;
 
@@ -46,19 +48,19 @@ namespace PAX {
 
         /**
          * Creates a field handle pointing to the concrete variable.
-         * For simple creation you may use the "paxfield" macro as follows:
+         * For simple creation you may use the "paxfieldof" macro as follows:
          *   int coolInt;
          *   int mandatoryCoolInt;
          *
-         *   Field f = Field(paxfield(coolInt));
-         *   Field g = Field(paxfield(mandatoryCoolInt), Field::IsMandatory);
+         *   Field f = paxfieldof(coolInt);
+         *   Field g = paxfieldof_flagged(mandatoryCoolInt, Field::IsMandatory);
          *
          * @param name The name of the field used for its identification. The name may differ from the actual fields name in the code.
          * @param type A TypeHandle identifying the fields type and size.
          * @param data A pointer to the field such that it can be read and written to.
          * @param flags Optional flags for further attribute specification.
          */
-        Field(const std::string & name, const TypeHandle & type, void * data, FieldFlag flags = None);
+        Field(const std::string & name, const TypeHandle & type, void * data, FieldFlag flags = NoFlag);
 
         /**
          * Checks if this field describes the same field as the other field by considering name and type equality.

@@ -20,9 +20,10 @@ namespace PAX {
         return false;
     }
 
-    void ClassMetadata::add(const Field &field) {
+    Field& ClassMetadata::add(Field && field) {
         if (!this->contains(field.name)) {
-            fields.push_back(field);
+            fields.emplace_back(field);
+            return fields.back();
         } else {
             PAX_THROW_RUNTIME_ERROR("Duplicate registration of field " << field.name);
         }
