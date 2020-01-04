@@ -24,7 +24,7 @@ set(HEADERS_FOR_CLION
         memory/allocators/MallocAllocator.h
         memory/allocators/PoolAllocator.h
 
-        property/EntityFwd.h
+        property/ForwardDeclarations.h
         property/Property.h
         property/PropertyAnnotations.h
         property/Entity.h
