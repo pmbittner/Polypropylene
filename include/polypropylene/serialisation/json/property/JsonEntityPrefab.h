@@ -11,6 +11,7 @@
 
 #include <polypropylene/property/Property.h>
 #include <polypropylene/serialisation/json/JsonParser.h>
+#include <polypropylene/stdutils/CollectionUtils.h>
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 #include "polypropylene/serialisation/json/JsonFieldStorage.h"
@@ -176,7 +177,7 @@ namespace PAX {
                 json me;
                 json & propertiesNode = me[DefaultElements::Properties];
 
-                EntityType * e = create({});
+                EntityType * e = EntityPrefab<EntityType>::create({});
                 ClassMetadataSerialiser serialiser({});
                 const std::vector<Property<EntityType>*> & properties = e->getAllProperties();
                 for (Property<EntityType> * p : properties) {
