@@ -9,7 +9,6 @@ set(HEADERS_FOR_CLION
         event/EventHandler.h
         event/EventService.h
 
-        io/FileTypeChecker.h
         io/Path.h
 
         log/Errors.h
@@ -51,7 +50,8 @@ set(HEADERS_FOR_CLION
         reflection/VariableRegister.h
 
         stdutils/CollectionUtils.h
-        stdutils/StringUtils.h ../../include/polypropylene/reflection/Reflectable.h)
+        stdutils/StringUtils.h
+        reflection/Reflectable.h)
 
 set(SOURCE_FILES
         event/Event.cpp
