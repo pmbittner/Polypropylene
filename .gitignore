@@ -7,6 +7,3 @@ __pycache__
 
 # Build
 cmake-build-*
-
-# generated files
-res/pizza/out/*
