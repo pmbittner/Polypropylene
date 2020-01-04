@@ -37,10 +37,10 @@ public: \
     friend ::PAX::PropertyFactory<Typename, EntityType>; \
     static constexpr bool IsAbstract() { return isAbstract; } \
     PAX_NODISCARD const ::PAX::TypeHandle& getClassType() const override; \
+    void PAX_INTERNAL(created)() override; \
 protected: \
     bool PAX_INTERNAL(addTo)(EntityType & e) override; \
     bool PAX_INTERNAL(removeFrom)(EntityType & e) override; \
-    void PAX_INTERNAL(created)() override; \
 private: \
     void init(); \
 

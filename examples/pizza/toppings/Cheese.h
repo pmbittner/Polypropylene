@@ -2,8 +2,8 @@
 // Created by Bittner on 05.12.2019.
 //
 
-#ifndef PROTEUS_CHEESE_H
-#define PROTEUS_CHEESE_H
+#ifndef POLYPROPYLENE_CHEESE_H
+#define POLYPROPYLENE_CHEESE_H
 
 #include "../Topping.h"
 #include "TomatoSauce.h"
@@ -27,4 +27,4 @@ namespace PAX::Examples {
     };
 }
 
-#endif //PROTEUS_CHEESE_H
+#endif //POLYPROPYLENE_CHEESE_H

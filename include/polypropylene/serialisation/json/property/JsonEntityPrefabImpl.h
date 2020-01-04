@@ -40,7 +40,7 @@ namespace PAX::Json {
         ElementParsers.registerParser(
                 DefaultElements::Properties,
                 [&jsonParserRegister](json &node, EntityType & e, const JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
-                    std::vector<Property<EntityType> *> props;
+                    std::vector<PropertyType *> props;
 
                     ClassMetadataSerialiser serialiser(variableRegister);
 
@@ -57,7 +57,7 @@ namespace PAX::Json {
                         const PAX::TypeHandle &propType = propertyFactory->getPropertyType();
                         const bool isPropMultiple = propertyFactory->isPropertyMultiple();
 
-                        Property<EntityType> * property = nullptr;
+                        PropertyType * property = nullptr;
                         ClassMetadataSerialiser::Options options = ClassMetadataSerialiser::Options::None;
 
                         if (!isPropMultiple && e.has(propType.id, isPropMultiple)) {

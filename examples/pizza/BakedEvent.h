@@ -2,8 +2,8 @@
 // Created by Bittner on 06.12.2019.
 //
 
-#ifndef PROTEUS_BAKEDEVENT_H
-#define PROTEUS_BAKEDEVENT_H
+#ifndef POLYPROPYLENE_BAKEDEVENT_H
+#define POLYPROPYLENE_BAKEDEVENT_H
 
 #include "polypropylene/event/Event.h"
 
@@ -13,4 +13,4 @@ namespace PAX::Examples {
     };
 }
 
-#endif //PROTEUS_BAKEDEVENT_H
+#endif //POLYPROPYLENE_BAKEDEVENT_H

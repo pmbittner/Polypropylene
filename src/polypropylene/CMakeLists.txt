@@ -3,6 +3,7 @@ set(POLYPROPYLENE_INCLUDE_DIR ../../include/polypropylene)
 set(HEADERS_FOR_CLION
         Polypropylene.h
         Dependency.h
+        Prefab.h
 
         event/Delegate.h
         event/Event.h
@@ -23,6 +24,7 @@ set(HEADERS_FOR_CLION
         memory/allocators/MallocAllocator.h
         memory/allocators/PoolAllocator.h
 
+        property/EntityFwd.h
         property/Property.h
         property/PropertyAnnotations.h
         property/Entity.h
@@ -30,7 +32,6 @@ set(HEADERS_FOR_CLION
         property/EntityManagerView.h
         property/PropertyDependencies.h
         property/PropertyFactory.h
-        property/EntityPrefab.h
         property/PrototypeEntityPrefab.h
 
         serialisation/FieldStorage.h
@@ -42,6 +43,7 @@ set(HEADERS_FOR_CLION
         system/SystemManager.h
         system/PropertyOwningSystem.h
 
+        reflection/Reflectable.h
         reflection/TemplateTypeToString.h
         reflection/TypeHandle.h
         reflection/TypeMap.h
@@ -50,8 +52,7 @@ set(HEADERS_FOR_CLION
         reflection/VariableRegister.h
 
         stdutils/CollectionUtils.h
-        stdutils/StringUtils.h
-        reflection/Reflectable.h)
+        stdutils/StringUtils.h)
 
 set(SOURCE_FILES
         event/Event.cpp
@@ -60,7 +61,7 @@ set(SOURCE_FILES
         io/Path.cpp
 
         property/Entity.cpp
-        property/EntityPrefab.cpp
+        property/Prefab.cpp
 
         serialisation/ClassMetadataSerialiser.cpp
         serialisation/FieldStorage.cpp

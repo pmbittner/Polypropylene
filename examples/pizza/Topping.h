@@ -2,9 +2,10 @@
 // Created by Bittner on 05.12.2019.
 //
 
-#ifndef PROTEUS_TOPPING_H
-#define PROTEUS_TOPPING_H
+#ifndef POLYPROPYLENE_TOPPING_H
+#define POLYPROPYLENE_TOPPING_H
 
+#include <polypropylene/property/Property.h>
 #include "Pizza.h"
 
 namespace PAX::Examples {
@@ -18,4 +19,4 @@ namespace PAX::Examples {
     };
 }
 
-#endif //PROTEUS_TOPPING_H
+#endif //POLYPROPYLENE_TOPPING_H

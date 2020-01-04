@@ -2,8 +2,8 @@
 // Created by Bittner on 06.12.2019.
 //
 
-#ifndef PROTEUS_GOUDA_H
-#define PROTEUS_GOUDA_H
+#ifndef POLYPROPYLENE_GOUDA_H
+#define POLYPROPYLENE_GOUDA_H
 
 #include "Cheese.h"
 
@@ -18,4 +18,4 @@ namespace PAX::Examples {
     };
 }
 
-#endif //PROTEUS_GOUDA_H
+#endif //POLYPROPYLENE_GOUDA_H

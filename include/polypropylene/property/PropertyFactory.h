@@ -8,25 +8,24 @@
 #include <string>
 #include <unordered_map>
 
+#include "Entity.h"
+
 #include "polypropylene/log/Errors.h"
 
 #include "polypropylene/reflection/TypeMap.h"
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 
-#define PAX_PROPERTY_REGISTER_AS(PropertyType, Name) \
+#define PAX_PROPERTY_REGISTER_AS(TPropertyType, Name) \
 do { \
-    PAX_CONSTEXPR_IF (!PropertyType::IsAbstract()) { \
-        ::PAX::PropertyFactoryRegister<PropertyType::EntityType>::registerFactory<PropertyType>(Name); \
+    PAX_CONSTEXPR_IF (!TPropertyType::IsAbstract()) { \
+        ::PAX::PropertyFactoryRegister<TPropertyType::EntityType>::registerFactory<TPropertyType>(Name); \
     } \
 } while(0)
 
-#define PAX_PROPERTY_REGISTER(PropertyType) PAX_PROPERTY_REGISTER_AS(PropertyType, #PropertyType)
+#define PAX_PROPERTY_REGISTER(TPropertyType) PAX_PROPERTY_REGISTER_AS(TPropertyType, #TPropertyType)
 
 namespace PAX {
-    template<typename C>
-    class Property;
-
-    template<class C>
+    template<class TEntityType>
     class IPropertyFactory {
         std::string name;
 
@@ -36,10 +35,10 @@ namespace PAX {
 
     public:
         /**
-         * Creates a property allocated with the allocator of Entity<C>.
+         * Creates a property allocated with the allocator of Entity<TEntityType>.
          * @return A newly heap-allocated Property.
          */
-        PAX_NODISCARD virtual Property<C> * create() const = 0;
+        PAX_NODISCARD virtual typename TEntityType::PropertyType * create() const = 0;
         PAX_NODISCARD virtual TypeHandle getPropertyType() const = 0;
         PAX_NODISCARD virtual bool isPropertyMultiple() const = 0;
         PAX_NODISCARD const std::string & getPropertyName() const {
@@ -47,19 +46,19 @@ namespace PAX {
         }
     };
 
-    template<class C>
+    template<class TEntityType>
     class PropertyFactoryRegister {
-        using MapType = std::unordered_map<std::string, IPropertyFactory<C> *>;
+        using MapType = std::unordered_map<std::string, IPropertyFactory<TEntityType> *>;
 
         // Use this method to save the map to avoid the Static Initialization Order Fiasko.
-        static std::unordered_map<std::string, IPropertyFactory<C> *> & getNameMap() noexcept {
-            static std::unordered_map<std::string, IPropertyFactory<C> *> map;
+        static std::unordered_map<std::string, IPropertyFactory<TEntityType> *> & getNameMap() noexcept {
+            static std::unordered_map<std::string, IPropertyFactory<TEntityType> *> map;
             return map;
         }
 
         // Use this method to save the map to avoid the Static Initialization Order Fiasko.
-        static UnorderedTypeMap<IPropertyFactory<C> *> & getTypeMap() noexcept {
-            static UnorderedTypeMap<IPropertyFactory<C> *> map;
+        static UnorderedTypeMap<IPropertyFactory<TEntityType> *> & getTypeMap() noexcept {
+            static UnorderedTypeMap<IPropertyFactory<TEntityType> *> map;
             return map;
         }
 
@@ -69,7 +68,7 @@ namespace PAX {
     public:
         virtual ~PropertyFactoryRegister() = default;
 
-        static IPropertyFactory<C> * getFactoryFor(const std::string & name) {
+        static IPropertyFactory<TEntityType> * getFactoryFor(const std::string & name) {
             const auto &map = getNameMap();
             const auto &it = map.find(name);
 
@@ -80,7 +79,7 @@ namespace PAX {
             }
         }
 
-        static IPropertyFactory<C> * getFactoryFor(const TypeId & type) {
+        static IPropertyFactory<TEntityType> * getFactoryFor(const TypeId & type) {
             const auto &map = getTypeMap();
             const auto &it = map.find(type);
 
@@ -91,35 +90,35 @@ namespace PAX {
             }
         }
 
-        template<typename PropertyType>
+        template<typename TPropertyType>
         static void registerFactory(const std::string & name);
     };
 
-    template<typename PropertyType, typename C>
-    class PropertyFactory : public IPropertyFactory<C> {
+    template<typename TPropertyType, typename TEntityType>
+    class PropertyFactory : public IPropertyFactory<TEntityType> {
     public:
-        explicit PropertyFactory(const std::string & name) noexcept : IPropertyFactory<C>(name) {}
+        explicit PropertyFactory(const std::string & name) noexcept : IPropertyFactory<TEntityType>(name) {}
         virtual ~PropertyFactory() = default;
 
-        PAX_NODISCARD PropertyType * create() const override {
-            return new (C::GetPropertyAllocator().template allocate<PropertyType>()) PropertyType();
+        PAX_NODISCARD TPropertyType * create() const override {
+            return new (TEntityType::GetPropertyAllocator().template allocate<TPropertyType>()) TPropertyType();
         }
 
         PAX_NODISCARD TypeHandle getPropertyType() const override {
-            return paxtypeof(PropertyType);
+            return paxtypeof(TPropertyType);
         }
 
         PAX_NODISCARD bool isPropertyMultiple() const override {
-            return PropertyType::IsMultiple();
+            return TPropertyType::IsMultiple();
         }
     };
 
-    template<class C>
-    template<typename PropertyType>
-    void PropertyFactoryRegister<C>::registerFactory(const std::string & name) {
-        static PropertyFactory<PropertyType, C> factory(name);
-        PropertyFactoryRegister<C>::getNameMap()[name] = &factory;
-        PropertyFactoryRegister<C>::getTypeMap()[typeid(PropertyType)] = &factory;
+    template<class TEntityType>
+    template<typename TPropertyType>
+    void PropertyFactoryRegister<TEntityType>::registerFactory(const std::string & name) {
+        static PropertyFactory<TPropertyType, TEntityType> factory(name);
+        PropertyFactoryRegister<TEntityType>::getNameMap()[name] = &factory;
+        PropertyFactoryRegister<TEntityType>::getTypeMap()[typeid(TPropertyType)] = &factory;
     }
 }
 

@@ -2,8 +2,8 @@
 // Created by Bittner on 06.12.2019.
 //
 
-#ifndef PROTEUS_TOMATOSAUCE_H
-#define PROTEUS_TOMATOSAUCE_H
+#ifndef POLYPROPYLENE_TOMATOSAUCE_H
+#define POLYPROPYLENE_TOMATOSAUCE_H
 
 #include "../Topping.h"
 
@@ -28,4 +28,4 @@ namespace PAX::Examples {
     };
 }
 
-#endif //PROTEUS_TOMATOSAUCE_H
+#endif //POLYPROPYLENE_TOMATOSAUCE_H

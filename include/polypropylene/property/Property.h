@@ -7,57 +7,57 @@
 
 #include "polypropylene/reflection/Reflectable.h"
 
+#include "Entity.h"
 #include "PropertyFactory.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
 
 namespace PAX {
-    template<class C>
-    class Entity;
-
-    template<class E>
+    template<class TEntityType>
     class Property : public Reflectable {
-        friend class Entity<E>;
+        friend Entity<TEntityType, typename TEntityType::PropertyType>;
 
     public:
-        using EntityType = E;
+        using EntityType = TEntityType;
         static constexpr bool IsMultiple() { return true; }
 
     private:
-        EntityType * owner = nullptr;
+        TEntityType * owner = nullptr;
 
     protected:
-        virtual bool PAX_INTERNAL(addTo)(E & entity) PAX_NON_CONST {
-            if (entity.PAX_INTERNAL(addAsMultiple)(typeid(Property<E>), this)) {
-                ::PAX::PropertyAttachedEvent<E, Property<E>> event(this, &entity);
+        virtual bool PAX_INTERNAL(addTo)(TEntityType & entity) PAX_NON_CONST { return true; }
+        /*{
+            if (entity.PAX_INTERNAL(addAsMultiple)(typeid(Property<TEntityType>), this)) {
+                ::PAX::PropertyAttachedEvent<TEntityType, Property<TEntityType>> event(this, &entity);
                 entity.getEventService()(event);
                 return true;
             }
 
             return false;
-        }
+        }//*/
 
-        virtual bool PAX_INTERNAL(removeFrom)(E & entity) PAX_NON_CONST {
-            if (entity.PAX_INTERNAL(removeAsMultiple)(typeid(Property<E>), this)) {
-                ::PAX::PropertyDetachedEvent<E, Property<E>> event(this, &entity);
+        virtual bool PAX_INTERNAL(removeFrom)(TEntityType & entity) PAX_NON_CONST { return true; }
+        /*{
+            if (entity.PAX_INTERNAL(removeAsMultiple)(typeid(Property<TEntityType>), this)) {
+                ::PAX::PropertyDetachedEvent<TEntityType, Property<TEntityType>> event(this, &entity);
                 entity.getEventService()(event);
                 return true;
             }
 
             return false;
-        }
+        }//*/
 
         /**
          * Callback that is invoked when this property gets attached to an entity.
-         * @param E The entity this property got attached to.
+         * @param TEntityType The entity this property got attached to.
          */
-        virtual void attached(E & entity) {}
+        virtual void attached(TEntityType & entity) {}
 
         /**
          * Callback that is invoked when this property gets removed from an entity.
-         * @param E The entity this property got removed from.
+         * @param TEntityType The entity this property got removed from.
          */
-        virtual void detached(E & entity) {}
+        virtual void detached(TEntityType & entity) {}
 
     public:
         Property() = default;
@@ -66,7 +66,7 @@ namespace PAX {
         /**
          * @return The entity this property is attached to. Returns nullptr if this property is not attached to an entity.
          */
-        PAX_NODISCARD E * getOwner() const { return owner; }
+        PAX_NODISCARD TEntityType * getOwner() const { return owner; }
 
         /**
          * @return A TypeHandle identifying the actual type of the object (i.e., the derived class).
@@ -91,17 +91,20 @@ namespace PAX {
          * @param entity The entity this property should be attached to.
          * @return True if all dependencies if this property are met for the given entity.
          */
-        PAX_NODISCARD virtual bool areDependenciesMetFor(const E & entity) const { return true; }
+        PAX_NODISCARD virtual bool areDependenciesMetFor(const TEntityType & entity) const { return true; }
 
         /**
          * Creates a copy of this property by considering all fields specified by the @ref getMetadata() method.
          * @return A clone of this property.
          */
-        PAX_NODISCARD virtual Property<E> * clone() {
+        PAX_NODISCARD virtual typename TEntityType::PropertyType * clone() {
+            // Theoretically, the return type does not have to be TEntityType::PropertyType.
+            // However, it is the only return type making sense because no other types of properties can be added to EntityType.
+
             // TODO: It would be nice if we can make this method const.
             //       This is not trivial however because getMetadata()
             //       is not const because of all the pointers we retrieve from there.
-            Property<E> * clone = PropertyFactoryRegister<E>::getFactoryFor(getClassType().id)->create();
+            TEntityType::PropertyType * clone = PropertyFactoryRegister<TEntityType>::getFactoryFor(getClassType().id)->create();
             ClassMetadata cloneMetadata = clone->getMetadata();
             getMetadata().writeTo(cloneMetadata);
             clone->PAX_INTERNAL(created)();
@@ -113,7 +116,6 @@ namespace PAX {
          * Fields declared in Metadata (@ref getMetadata()) can be assumed to be initialised if values for them
          * were specified in the creating object (e.g., prefab).
          */
-        // TODO: Can we make this protected?
         virtual void PAX_INTERNAL(created)() {}
     };
 }

@@ -6,15 +6,13 @@
 #define POLYPROPYLENE_PROPERTYDEPENDENCIES_H
 
 #include "../Dependency.h"
+#include "ForwardDeclarations.h"
 
 namespace PAX {
-    template<class C>
-    class Entity;
-
     template<class EntityType, class... Properties>
     class PropertyDependencies : public Dependency<EntityType> {
     public:
-        virtual bool met(const EntityType & entity) const override {
+        PAX_NODISCARD bool met(const EntityType & entity) const override {
             return entity.template has<Properties...>();
         }
     };

@@ -2,8 +2,8 @@
 // Created by Bittner on 06.12.2019.
 //
 
-#ifndef PROTEUS_CHAMPIGNON_H
-#define PROTEUS_CHAMPIGNON_H
+#ifndef POLYPROPYLENE_CHAMPIGNON_H
+#define POLYPROPYLENE_CHAMPIGNON_H
 
 #include "../Topping.h"
 
@@ -18,4 +18,4 @@ namespace PAX::Examples {
     };
 }
 
-#endif //PROTEUS_CHAMPIGNON_H
+#endif //POLYPROPYLENE_CHAMPIGNON_H

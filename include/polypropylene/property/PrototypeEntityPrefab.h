@@ -6,30 +6,37 @@
 #define POLYPROPYLENE_PROTOTYPEENTITYPREFAB_H
 
 #include <vector>
+#include "polypropylene/Prefab.h"
 #include "Property.h"
-#include "EntityPrefab.h"
 
 namespace PAX {
-    template<class EntityType>
-    class PrototypeEntityPrefab : public EntityPrefab<EntityType> {
-        std::vector<Property<EntityType>*> prototypes;
+    template<class TEntityType>
+    class PrototypeEntityPrefab : public Prefab<TEntityType> {
+        using PropertyType = typename TEntityType::PropertyType;
+        std::vector<PropertyType *> prototypes;
 
     public:
-        explicit PrototypeEntityPrefab(const Entity<EntityType> & prototype) {
-            const std::vector<Property<EntityType>*> & prototypeProperties = prototype.getAllProperties();
-            for (Property<EntityType> * original : prototypeProperties) {
+        explicit PrototypeEntityPrefab(const TEntityType & prototype) {
+            const std::vector<PropertyType *> & prototypeProperties = prototype.getAllProperties();
+            for (PropertyType * original : prototypeProperties) {
                 prototypes.emplace_back(original->clone());
             }
         }
 
-        PrototypeEntityPrefab(const PrototypeEntityPrefab<EntityType> & other) = default;
+        PrototypeEntityPrefab(const PrototypeEntityPrefab<TEntityType> & other) = default;
 
-        void addMyContentTo(EntityType & entity, const VariableRegister & variableRegister) override {
-            for (Property<EntityType> * prototype : prototypes) {
-                entity.add(prototype->clone());
+        void addMyContentTo(TEntityType & entity, const VariableRegister & variableRegister) override {
+            for (PropertyType * prototype : prototypes) {
+                PropertyType * copy = prototype->clone();
+                entity.add(copy);
             }
         }
     };
+
+    template<class TDerived, class TPropertyType>
+    PrototypeEntityPrefab<TDerived> Entity<TDerived, TPropertyType>::toPrefab() const {
+        return PrototypeEntityPrefab<TDerived>(*static_cast<const TDerived*>(this));
+    }
 }
 
 #endif //POLYPROPYLENE_PROTOTYPEENTITYPREFAB_H

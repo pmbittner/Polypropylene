@@ -9,7 +9,6 @@
 #include "definitions/OSDetection.h"
 #include "definitions/Definitions.h"
 
-#include "polypropylene/property/Entity.h"
-#include "polypropylene/property/EntityPrefab.h"
+#include "polypropylene/property/Property.h"
 
 #endif //POLYPROPYLENE_MAININCLUDES_H

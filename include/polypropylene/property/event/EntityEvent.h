@@ -6,11 +6,9 @@
 #define POLYPROPYLENE_ENTITYEVENT_H
 
 #include <polypropylene/event/Event.h>
+#include <polypropylene/property/ForwardDeclarations.h>
 
 namespace PAX {
-    template<typename C>
-    class Entity;
-
     template<typename EntityType>
     struct EntityEvent : public Event {
     public:
