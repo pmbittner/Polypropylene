@@ -115,6 +115,7 @@ namespace PAX {
                     : Prefab<EntityType>(), rootNode(j), path(path) {}
 
             explicit JsonEntityPrefab(Prefab<EntityType> & other) {
+                // TODO: Check if other is a JsonEntityPrefab
                 json & propertiesNode = rootNode[DefaultElements::Properties];
 
                 EntityType * e = other.create({});
