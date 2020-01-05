@@ -1,4 +1,4 @@
-set(POLYPROPYLENE_INCLUDE_DIR ../../include/polypropylene)
+set(POLYPROPYLENE_INCLUDE_DIR ../include/polypropylene)
 
 set(HEADERS_FOR_CLION
         Polypropylene.h
