@@ -83,7 +83,7 @@ Polyproylene contains a pool and a malloc allocator implementation so far.
 - **Standalone**: Polypropylene does not have any additional dependencies to other libraries except for the C++17 standard.
 Support for older C++ versions is planned.
 
-- **Platform-Independent**: Polypropylene is tested on Windows with MSVC and on Linux with GCC but should build with Clang, too.
+- **Platform-Independent**: Polypropylene is tested on Windows with MSVC and on Linux with GCC and Clang.
 
 Polypropylene further contains the following features:
 
