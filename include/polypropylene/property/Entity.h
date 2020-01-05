@@ -82,13 +82,19 @@ namespace PAX {
             property->owner = static_cast<TDerived*>(this);
             property->attached(*static_cast<TDerived*>(this));
             allProperties.push_back(property);
+            onPropertyAdded(property);
         }
 
         inline void unregisterProperty(TPropertyType* property) {
             property->owner = nullptr;
             property->detached(*static_cast<TDerived*>(this));
             Util::removeFromVector(allProperties, property);
+            onPropertyRemoved(property);
         }
+
+    protected:
+        virtual void onPropertyAdded(TPropertyType * property) {};
+        virtual void onPropertyRemoved(TPropertyType * property) {};
 
     public:
         /**
