@@ -1,0 +1,2 @@
+add_executable(pizzasnippet main.cpp)
+target_link_libraries(pizzasnippet polypropylene)

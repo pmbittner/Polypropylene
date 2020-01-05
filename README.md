@@ -233,7 +233,8 @@ By default, all options are activated (set to ON):
 
 ## Code Examples
 
-The pizza example is exemplified in further detail in `examples/pizza`.
+The small pizza example from the top of this readme file can be found in `examples/pizzasnippet/`.
+It is exemplified in further detail in `examples/pizza/`.
 We suggest heading to the `main.cpp` for getting an entry point and quick start.
 
 We plan to publish examples of usage of Polypropylene in video game development but this requires more code polishing, yet.
