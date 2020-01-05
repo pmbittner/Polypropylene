@@ -6,17 +6,18 @@
 #define POLYPROPYLENE_TOPPING_H
 
 #include <polypropylene/property/Property.h>
-#include "Pizza.h"
 
 namespace PAX::Examples {
+    class Pizza;
+
     class Topping : public PAX::Property<Pizza> {
-        PAX_PROPERTY(Topping, PAX_PROPERTY_IS_ABSTRACT)
-        PAX_PROPERTY_DERIVES(::PAX::Property<Pizza>)
-        PAX_PROPERTY_IS_MULTIPLE
+        PAX_ROOT_PROPERTY(Topping, Pizza, PAX_PROPERTY_IS_ABSTRACT)
 
     public:
         virtual std::string yummy() = 0;
     };
 }
+
+#include "Pizza.h"
 
 #endif //POLYPROPYLENE_TOPPING_H

@@ -41,6 +41,7 @@ namespace PAX {
         PAX_NODISCARD virtual typename TEntityType::PropertyType * create() const = 0;
         PAX_NODISCARD virtual TypeHandle getPropertyType() const = 0;
         PAX_NODISCARD virtual bool isPropertyMultiple() const = 0;
+
         PAX_NODISCARD const std::string & getPropertyName() const {
             return name;
         }
@@ -88,6 +89,21 @@ namespace PAX {
             } else {
                 PAX_THROW_RUNTIME_ERROR("No factory is registered for the type \"" << type.name() << "\"!");
             }
+        }
+
+        /**
+         * Creates a copy of the given property by considering all fields specified by the @ref getMetadata() method.
+         * @param propertyToClone The property that should be cloned.
+         * @return A clone of this property.
+         */
+        PAX_NODISCARD static typename TEntityType::PropertyType * clone(typename TEntityType::PropertyType * propertyToClone) {
+            // Theoretically, the return type does not have to be TEntityType::PropertyType.
+            // However, it is the only return type making sense because no other types of properties can be added to TEntityType.
+            typename TEntityType::PropertyType * clone = PropertyFactoryRegister<TEntityType>::getFactoryFor(propertyToClone->getClassType().id)->create();
+            ClassMetadata cloneMetadata = clone->getMetadata();
+            propertyToClone->getMetadata().writeTo(cloneMetadata);
+            clone->PAX_INTERNAL(created)();
+            return clone;
         }
 
         template<typename TPropertyType>

@@ -58,6 +58,11 @@ private:
 #define PAX_PROPERTY_IS_MULTIPLE PAX_PROPERTY_SETMULTIPLE(true)
 #define PAX_PROPERTY_IS_SINGLE PAX_PROPERTY_SETMULTIPLE(false)
 
+#define PAX_ROOT_PROPERTY(Typename, EntityName, isAbstract) \
+PAX_PROPERTY(Typename, isAbstract) \
+PAX_PROPERTY_DERIVES(::PAX::Property<EntityName>) \
+PAX_PROPERTY_IS_MULTIPLE
+
 
 /// Optional
 

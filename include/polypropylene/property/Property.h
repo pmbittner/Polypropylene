@@ -5,9 +5,8 @@
 #ifndef POLYPROPYLENE_PROPERTY_H
 #define POLYPROPYLENE_PROPERTY_H
 
+#include "ForwardDeclarations.h"
 #include "polypropylene/reflection/Reflectable.h"
-
-#include "Entity.h"
 #include "PropertyFactory.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
@@ -15,7 +14,8 @@
 namespace PAX {
     template<class TEntityType>
     class Property : public Reflectable {
-        friend Entity<TEntityType, typename TEntityType::PropertyType>;
+        template<class, class>
+        friend class Entity;
 
     public:
         using EntityType = TEntityType;
@@ -26,26 +26,7 @@ namespace PAX {
 
     protected:
         virtual bool PAX_INTERNAL(addTo)(TEntityType & entity) PAX_NON_CONST { return true; }
-        /*{
-            if (entity.PAX_INTERNAL(addAsMultiple)(typeid(Property<TEntityType>), this)) {
-                ::PAX::PropertyAttachedEvent<TEntityType, Property<TEntityType>> event(this, &entity);
-                entity.getEventService()(event);
-                return true;
-            }
-
-            return false;
-        }//*/
-
         virtual bool PAX_INTERNAL(removeFrom)(TEntityType & entity) PAX_NON_CONST { return true; }
-        /*{
-            if (entity.PAX_INTERNAL(removeAsMultiple)(typeid(Property<TEntityType>), this)) {
-                ::PAX::PropertyDetachedEvent<TEntityType, Property<TEntityType>> event(this, &entity);
-                entity.getEventService()(event);
-                return true;
-            }
-
-            return false;
-        }//*/
 
         /**
          * Callback that is invoked when this property gets attached to an entity.
@@ -92,24 +73,6 @@ namespace PAX {
          * @return True if all dependencies if this property are met for the given entity.
          */
         PAX_NODISCARD virtual bool areDependenciesMetFor(const TEntityType & entity) const { return true; }
-
-        /**
-         * Creates a copy of this property by considering all fields specified by the @ref getMetadata() method.
-         * @return A clone of this property.
-         */
-        PAX_NODISCARD virtual typename TEntityType::PropertyType * clone() {
-            // Theoretically, the return type does not have to be TEntityType::PropertyType.
-            // However, it is the only return type making sense because no other types of properties can be added to EntityType.
-
-            // TODO: It would be nice if we can make this method const.
-            //       This is not trivial however because getMetadata()
-            //       is not const because of all the pointers we retrieve from there.
-            typename TEntityType::PropertyType * clone = PropertyFactoryRegister<TEntityType>::getFactoryFor(getClassType().id)->create();
-            ClassMetadata cloneMetadata = clone->getMetadata();
-            getMetadata().writeTo(cloneMetadata);
-            clone->PAX_INTERNAL(created)();
-            return clone;
-        }
 
         /**
          * Callback that is invoked when the property was created by a prefab or cloned from another property.

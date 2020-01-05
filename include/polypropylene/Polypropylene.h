@@ -10,5 +10,6 @@
 #include "definitions/Definitions.h"
 
 #include "polypropylene/property/Property.h"
+#include "polypropylene/property/Entity.h"
 
 #endif //POLYPROPYLENE_MAININCLUDES_H

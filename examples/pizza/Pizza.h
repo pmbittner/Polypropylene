@@ -6,10 +6,9 @@
 #define POLYPROPYLENE_PIZZA_H
 
 #include <polypropylene/property/Entity.h>
+#include "Topping.h"
 
 namespace PAX::Examples {
-    class Topping;
-
     class Pizza : public PAX::Entity<Pizza, Topping> {
     public:
         void yummy();
