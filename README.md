@@ -42,9 +42,10 @@ During development several issues arose that were not addressed by existing ECS 
     pizza.add(new TomatoSauce()); // otherwise we cannot add cheese
     pizza.add(new Mozzarella());
     
+    // no dynamic_casts here
     Mozzarella * mozzarella = pizza.get<Mozzarella>();
     const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // contains our Mozzarella only
-
+    
 
 **Opposed to existing Entity-Component Systems and Dynamic Mixin Implementations**, Polypropylene offers the following features:
 
