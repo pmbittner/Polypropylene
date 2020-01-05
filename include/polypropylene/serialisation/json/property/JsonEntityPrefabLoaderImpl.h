@@ -8,6 +8,7 @@
 #define POLYPROPYLENE_JSONENTITYPREFABLOADERIMPL_H
 
 #include "JsonEntityPrefabLoader.h"
+#include "../JsonLoader.h"
 #include "../Json.h"
 
 namespace PAX::Json {
