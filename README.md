@@ -79,7 +79,9 @@ Dedicated allocators can be registered for each property type.
 By default, pool allocators are used but may be replaced by any **custom allocator** on program start.
 Polyproylene contains a pool and a malloc allocator implementation so far.
 
-[//]: # The `Property<T>` base class as well as the macros for property specification do not contain / generate any fields but only methods.
+<!---
+The `Property<T>` base class as well as the macros for property specification do not contain / generate any fields but only methods.
+-->
 
 - **Standalone**: Polypropylene does not have any additional dependencies to other libraries except for the C++17 standard.
 Support for older C++ versions is planned.
