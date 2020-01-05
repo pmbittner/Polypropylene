@@ -136,7 +136,7 @@ namespace PAX {
             virtual ~JsonEntityPrefab() = default;
 
             Path resolvePath(const std::string & str) {
-                Path p = Path(VariableResolver::resolveVariables(str, Prefab::PreDefinedVariables));
+                Path p = Path(VariableResolver::resolveVariables(str, IPrefab::PreDefinedVariables));
 
                 if (p.isRelative()) {
                     p = getPath().getDirectory() + p;

@@ -18,12 +18,12 @@
 // We have to create this workaround, because MSVC can't handle constexpr functions in enable_if.
 #ifdef PAX_COMPILER_MSVC
 #define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
-template <class TPropertyType, bool mult = TPropertyType::IsMultiple()> \
+template <class TParamPropertyType, bool mult = TParamPropertyType::IsMultiple()> \
 typename std::enable_if<neg mult, rettype>::type
 #else
 #define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
-template <class TPropertyType> \
-typename std::enable_if<neg TPropertyType::IsMultiple(), rettype>::type
+template <class TParamPropertyType> \
+typename std::enable_if<neg TParamPropertyType::IsMultiple(), rettype>::type
 #endif
 
 namespace PAX {
@@ -133,12 +133,12 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(bool, !)
         has() const {
-            return singleProperties.count(typeid(TPropertyType)) > 0;
+            return singleProperties.count(typeid(TParamPropertyType)) > 0;
         }
 
         PAX_GENERATE_EntityTemplateHeader(bool, )
         has() const {
-            return multipleProperties.count(typeid(TPropertyType)) > 0;
+            return multipleProperties.count(typeid(TParamPropertyType)) > 0;
         }
 
         template<class FirstTPropertyType, class SecondTPropertyType, class... FurtherTPropertyTypees>
@@ -170,21 +170,21 @@ namespace PAX {
             return ret;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(TPropertyType*, !)
+        PAX_GENERATE_EntityTemplateHeader(TParamPropertyType*, !)
         get() {
-            const auto& property = singleProperties.find(typeid(TPropertyType));
+            const auto& property = singleProperties.find(typeid(TParamPropertyType));
             if (property != singleProperties.end())
-                return static_cast<TPropertyType*>(property->second);
+                return static_cast<TParamPropertyType*>(property->second);
             return nullptr;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(const std::vector<TPropertyType*>&, )
+        PAX_GENERATE_EntityTemplateHeader(const std::vector<TParamPropertyType*>&, )
         get() {
-            const auto& properties = multipleProperties.find(typeid(TPropertyType));
+            const auto& properties = multipleProperties.find(typeid(TParamPropertyType));
             if (properties != multipleProperties.end())
-                return reinterpret_cast<std::vector<TPropertyType*>&>(properties->second);
+                return reinterpret_cast<std::vector<TParamPropertyType*>&>(properties->second);
             else
-                return *reinterpret_cast<const std::vector<TPropertyType*>*>(&EmptyPropertyVector);
+                return *reinterpret_cast<const std::vector<TParamPropertyType*>*>(&EmptyPropertyVector);
         }
 
         PAX_NODISCARD const std::vector<TPropertyType*> & getAllProperties() const {
@@ -241,11 +241,11 @@ namespace PAX {
             return props;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(TPropertyType*, !)
+        PAX_GENERATE_EntityTemplateHeader(TParamPropertyType*, !)
         removeAll() {
-            const auto& propertyIt = singleProperties.contains(typeid(TPropertyType));
+            const auto& propertyIt = singleProperties.contains(typeid(TParamPropertyType));
             if (propertyIt != singleProperties.end()) {
-                TPropertyType* property = static_cast<TPropertyType*>(propertyIt->second);
+                TParamPropertyType* property = static_cast<TParamPropertyType*>(propertyIt->second);
                 if (remove(property))
                     return property;
             }
@@ -253,13 +253,13 @@ namespace PAX {
             return nullptr;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(const std::vector<TPropertyType*>&, )
+        PAX_GENERATE_EntityTemplateHeader(const std::vector<TParamPropertyType*>&, )
         removeAll() {
-            const auto& propertiesIt = multipleProperties.contains(typeid(TPropertyType));
+            const auto& propertiesIt = multipleProperties.contains(typeid(TParamPropertyType));
             if (propertiesIt != multipleProperties.end()) {
                 // Copy to be able to return all removed instances
-                auto properties = reinterpret_cast<std::vector<TPropertyType*>>(multipleProperties.get(typeid(TPropertyType)));
-                for (TPropertyType* property : properties) {
+                auto properties = reinterpret_cast<std::vector<TParamPropertyType*>>(multipleProperties.get(typeid(TParamPropertyType)));
+                for (TParamPropertyType* property : properties) {
                     if (!remove(property))
                         return EmptyPropertyVector;
                 }
