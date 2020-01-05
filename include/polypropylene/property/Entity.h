@@ -54,7 +54,7 @@ namespace PAX {
          * Deletes all properties.
          */
         virtual ~Entity() {
-            std::vector<TPropertyType*> myProperties = getAllProperties();
+            std::vector<TPropertyType*> myProperties = getProperties();
             AllocationService & allocator = GetPropertyAllocator();
 
             while (!myProperties.empty()) {
@@ -122,7 +122,7 @@ namespace PAX {
         }
 
         bool remove(TPropertyType* property) {
-            // static_cast is necessary for the same reason @ref add
+            // static_cast is necessary for the same reason described in method @ref add.
             if (static_cast<Property<TDerived>*>(property)->PAX_INTERNAL(removeFrom)(*static_cast<TDerived*>(this))) {
                 unregisterProperty(property);
                 return true;
@@ -187,7 +187,7 @@ namespace PAX {
                 return *reinterpret_cast<const std::vector<TParamPropertyType*>*>(&EmptyPropertyVector);
         }
 
-        PAX_NODISCARD const std::vector<TPropertyType*> & getAllProperties() const {
+        PAX_NODISCARD const std::vector<TPropertyType*> & getProperties() const {
             return allProperties;
         }
 

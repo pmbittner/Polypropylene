@@ -17,7 +17,7 @@ namespace PAX {
 
     public:
         explicit PrototypeEntityPrefab(const TEntityType & prototype) {
-            const std::vector<PropertyType *> & prototypeProperties = prototype.getAllProperties();
+            const std::vector<PropertyType *> & prototypeProperties = prototype.getProperties();
             for (PropertyType * original : prototypeProperties) {
                 prototypes.emplace_back(original->clone());
             }
