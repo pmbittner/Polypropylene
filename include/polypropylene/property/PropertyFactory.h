@@ -8,8 +8,6 @@
 #include <string>
 #include <unordered_map>
 
-#include "Entity.h"
-
 #include "polypropylene/log/Errors.h"
 
 #include "polypropylene/reflection/TypeMap.h"

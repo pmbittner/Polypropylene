@@ -7,7 +7,7 @@
 
 #include <vector>
 #include "polypropylene/Prefab.h"
-#include "Property.h"
+#include "PropertyFactory.h"
 
 namespace PAX {
     template<class TEntityType>

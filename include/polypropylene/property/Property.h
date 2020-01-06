@@ -7,7 +7,6 @@
 
 #include "ForwardDeclarations.h"
 #include "polypropylene/reflection/Reflectable.h"
-#include "PropertyFactory.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
 

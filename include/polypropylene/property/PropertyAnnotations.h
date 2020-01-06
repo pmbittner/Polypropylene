@@ -6,6 +6,7 @@
 #define POLYPROPYLENE_PROPERTYANNOTATIONS_H
 
 #include "PropertyDependencies.h"
+#include "PropertyFactory.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
 
