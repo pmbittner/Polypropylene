@@ -1,4 +1,4 @@
 path_classifiers:
   test:
-    - exclude: include/polypropylene/serialisation/json/Json.h
-    - exclude: include/polypropylene/serialisation/json/JsonFwd.h
+    - exclude: "include/polypropylene/serialisation/json/Json.h"
+    - exclude: "include/polypropylene/serialisation/json/JsonFwd.h"
