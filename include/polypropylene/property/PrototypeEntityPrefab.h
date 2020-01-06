@@ -7,7 +7,7 @@
 
 #include <vector>
 #include "polypropylene/Prefab.h"
-#include "PropertyFactory.h"
+#include "Clone.h"
 
 namespace PAX {
     template<class TEntityType>
@@ -19,7 +19,7 @@ namespace PAX {
         explicit PrototypeEntityPrefab(const TEntityType & prototype) {
             const std::vector<PropertyType *> & prototypeProperties = prototype.getProperties();
             for (PropertyType * original : prototypeProperties) {
-                prototypes.emplace_back(PropertyFactoryRegister<TEntityType>::clone(original));
+                prototypes.emplace_back(Clone<TEntityType>(original));
             }
         }
 
@@ -27,7 +27,7 @@ namespace PAX {
 
         void addMyContentTo(TEntityType & entity, const VariableRegister & variableRegister) override {
             for (PropertyType * prototype : prototypes) {
-                PropertyType * copy = PropertyFactoryRegister<TEntityType>::clone(prototype);
+                PropertyType * copy = Clone<TEntityType>(prototype);
                 entity.add(copy);
             }
         }

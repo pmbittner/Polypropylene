@@ -24,6 +24,7 @@ set(HEADERS_FOR_CLION
         memory/allocators/MallocAllocator.h
         memory/allocators/PoolAllocator.h
 
+        property/Clone.h
         property/ForwardDeclarations.h
         property/Property.h
         property/PropertyAnnotations.h
