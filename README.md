@@ -21,6 +21,9 @@ During development several issues arose that were not addressed by existing ECS 
         PAX_PROPERTY(TomatoSauce, PAX_PROPERTY_IS_CONCRETE)
         PAX_PROPERTY_DERIVES(PAX::Property<Pizza>)
         PAX_PROPERTY_IS_SINGLE
+        
+    public:
+        int scoville = 0;
     };
     
     class Cheese : public PAX::Property<Pizza> {
@@ -43,6 +46,7 @@ During development several issues arose that were not addressed by existing ECS 
     pizza.add(new Mozzarella());
     
     // no dynamic_casts here
+    pizza.get<TomatoSauce>()->scoville = 100; // We want it hot!
     Mozzarella * mozzarella = pizza.get<Mozzarella>();
     const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // contains our Mozzarella only
     
