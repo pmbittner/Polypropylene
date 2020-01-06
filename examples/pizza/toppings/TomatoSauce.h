@@ -13,7 +13,7 @@ namespace PAX::Examples {
         PAX_PROPERTY_DERIVES(Topping)
         PAX_PROPERTY_IS_SINGLE
 
-        int scoville = 0;
+        unsigned int scoville = 0;
 
         /**
          * Although we require scoville to be set, we provide a private default constructor for deserialisation (Prefabs).
