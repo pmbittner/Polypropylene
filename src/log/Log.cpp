@@ -5,10 +5,22 @@
 #include <polypropylene/log/Log.h>
 #include <iostream>
 #include <chrono>
-#include <ctime>
 #include <sstream>
 
 namespace PAX {
+    namespace Time {
+        // Thanks to kjellkod: https://kjellkod.wordpress.com/2013/01/22/exploring-c11-part-2-localtime-and-time-again/
+        static std::tm threadsafe_localtime(const std::time_t &time) {
+            std::tm tm_snapshot{};
+#if PAX_OS_WIN
+            localtime_s(&tm_snapshot, &time);
+#else
+            localtime_r(&time, &tm_snapshot); // POSIX
+#endif
+            return tm_snapshot;
+        }
+    }
+
     Log Log::instance = Log();
 
     std::ostream * Log::getStreamFor(PAX::Log::Level level) {
@@ -32,9 +44,9 @@ namespace PAX {
 
     std::string Log::timestamp() {
         std::time_t t = std::time(nullptr);
-        std::tm* now = std::localtime(&t);
+        std::tm now = Time::threadsafe_localtime(t);
         std::stringstream s;
-        s << 1900 + now->tm_year << "/" << 1 + now->tm_mon << "/" << now->tm_mday << " " << now->tm_hour << ":" << now->tm_min << ":" << now->tm_sec;
+        s << 1900 + now.tm_year << "/" << 1 + now.tm_mon << "/" << now.tm_mday << " " << now.tm_hour << ":" << now.tm_min << ":" << now.tm_sec;
         return s.str();
     }
 
