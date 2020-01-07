@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/context:cpp)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/alerts/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2c602e50b99464fbdd4caab644cd3d0)](https://www.codacy.com/manual/PaulAtTUBS/Polypropylene?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PaulAtTUBS/Polypropylene&amp;utm_campaign=Badge_Grade)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3539/badge)](https://bestpractices.coreinfrastructure.org/projects/3539)
 
 Polypropylene is a C++17 library for dynamic object definition by composition of properties.
@@ -248,8 +249,8 @@ We made certain features, such as loading from json files, optional such that yo
 The following cmake options allow compile time customisation.
 By default, all options are activated (set to ON):
 
-- `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][1] for loading and writing `EntityPrefabs` from and to json files.
-- `POLYPROPYLENE_WITH_EXAMPLES`: Specifies if examples should be built or not.
+-   `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][1] for loading and writing `EntityPrefabs` from and to json files.
+-   `POLYPROPYLENE_WITH_EXAMPLES`: Specifies if examples should be built or not.
 
 ## Code Examples
 
