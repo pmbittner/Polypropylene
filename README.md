@@ -181,7 +181,7 @@ Polypropylene further contains the following features:
     Upon pizza creation, this value can be specified arbitrarily.
     That way, customers are able to be delivered pizza as hot as they like:
     ```C++
-    std::cout << "How spicy do you like you pizza (in scoville)?\n";
+    std::cout << "How spicy do you like your pizza (in scoville)?\n";
     std::string spicyness;
     std::cin >> spicyness;
     
