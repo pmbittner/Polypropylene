@@ -2,17 +2,18 @@
 // Created by Bittner on 03.04.2019.
 //
 
+#include <polypropylene/definitions/OSDetection.h>
 #include <polypropylene/log/Log.h>
 #include <iostream>
-#include <chrono>
 #include <sstream>
+#include <ctime>
 
 namespace PAX {
     namespace Time {
         // Thanks to kjellkod: https://kjellkod.wordpress.com/2013/01/22/exploring-c11-part-2-localtime-and-time-again/
         static std::tm threadsafe_localtime(const std::time_t &time) {
             std::tm tm_snapshot{};
-#if PAX_OS_WIN
+#ifdef PAX_OS_WIN
             localtime_s(&tm_snapshot, &time);
 #else
             localtime_r(&time, &tm_snapshot); // POSIX
