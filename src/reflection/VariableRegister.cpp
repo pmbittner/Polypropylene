@@ -21,8 +21,8 @@ namespace PAX {
                 // terminate since we are left in an infinite loop otherwise
                 break;
             } else {
-                std::size_t varNameIndex  = varDecIndex + strlen(VariableDeclarationBegin);
-                std::size_t varNamelength = varDecEndIndex - strlen(VariableDeclarationEnd) - varNameIndex + 1;
+                std::size_t varNameIndex  = varDecIndex + std::strlen(VariableDeclarationBegin);
+                std::size_t varNamelength = varDecEndIndex - std::strlen(VariableDeclarationEnd) - varNameIndex + 1;
                 std::string varName = result.substr(varNameIndex, varNamelength);
                 std::string varValue;
 
@@ -33,7 +33,7 @@ namespace PAX {
 
                 result = result.replace(
                         varDecIndex,
-                        varNamelength + strlen(VariableDeclarationBegin) + strlen(VariableDeclarationEnd),
+                        varNamelength + std::strlen(VariableDeclarationBegin) + std::strlen(VariableDeclarationEnd),
                         varValue
                 );
             }

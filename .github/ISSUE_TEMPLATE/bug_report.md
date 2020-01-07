@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: "[BUG]"
+title: ""
 labels: bug
 assignees: PaulAtTUBS
 
@@ -17,8 +17,8 @@ Steps to reproduce the behavior and code examples.
 A clear and concise description of what you expected to happen.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Compiler: [e.g. gcc, MSVC]
+- OS: (e.g. iOS)
+- Compiler: (e.g. gcc, MSVC)
 
 **Additional context**
 Add any other context about the problem here.
