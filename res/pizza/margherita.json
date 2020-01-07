@@ -2,7 +2,7 @@
   "Properties": {
     "PAX::Examples::Mozzarella": {},
     "PAX::Examples::TomatoSauce": {
-      "scoville": "${spicyness}"
+      "scoville": "${hotness}"
     }
   }
 }

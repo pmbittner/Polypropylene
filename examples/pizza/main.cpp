@@ -56,30 +56,30 @@ int main(int argc, char** argv) {
 #endif
 
     /// EXAMPLE
-    std::cout << "How spicy do you like you pizza (in scoville)?\n";
+    std::cout << "How hot do you like your pizza (in scoville)?\n";
 #ifdef PAX_WITH_JSON
-    std::string spicyness;
-    std::cin >> spicyness;
+    std::string hotness;
+    std::cin >> hotness;
 
     JsonEntityPrefab<Pizza> prefab = prefabLoader.load("res/pizza/funghi.json");
-    Pizza * pizzaFunghi = prefab.create({{"spicyness", spicyness}});
+    Pizza * pizzaFunghi = prefab.create({{"hotness", hotness}});
 #else
-    int spicyness;
-    std::cin >> spicyness;
+    int hotness;
+    std::cin >> hotness;
 
     Pizza * pizzaFunghi = new Pizza();
 
     /// Ideally, the allocation service is used for allocating memory of properties.
     /// Using the allocation service is optional.
     /// It can be used with placement new:
-    ///   new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce(spicyness)
-    /// Notice that using the allocation service has benefits though:
+    ///   new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce(hotness)
+    /// Using the allocation service has benefits the following benefits:
     ///   - PropertyOwningSystems only operate on properties allocated by the allocation service.
     ///     Manually allocated properties as done here won't be recognised.
     ///   - Entities take ownership of properties added to them. Deleting an entity also deletes
     ///     all contained properties but only those that were allocated with the allocation service.
     ///     Thus, beware of memory leaks as customly allocated properties have to be deleted manually!
-    TomatoSauce tomatoSauce(spicyness);
+    TomatoSauce tomatoSauce(hotness);
     Mozzarella mozzarella;
     Champignon champignon;
 
@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
     }
 
 #ifdef PAX_WITH_JSON
-    Path outPath = "res/pizza/out/funghiWith" + spicyness + "scoville.json";
+    Path outPath = "res/pizza/out/funghiWith" + hotness + "scoville.json";
     PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
     JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
     prefabLoader.write(asJson, outPath);

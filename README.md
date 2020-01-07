@@ -176,16 +176,16 @@ Polypropylene further contains the following features:
     To customise the individual instances created by a prefab, custom parameters may be specified.
     For example, the scoville of the TomatoSauce can be made variable by replacing it in the json file by:
     ```json
-    "scoville": "${spicyness}"
+    "scoville": "${hotness}"
     ```
     Upon pizza creation, this value can be specified arbitrarily.
     That way, customers are able to be delivered pizza as hot as they like:
     ```C++
-    std::cout << "How spicy do you like your pizza (in scoville)?\n";
-    std::string spicyness;
-    std::cin >> spicyness;
+    std::cout << "How hot do you like your pizza (in scoville)?\n";
+    std::string hotness;
+    std::cin >> hotness;
     
-    Pizza * pizzaFunghi = prefab->create({{"spicyness", spicyness}});
+    Pizza * pizzaFunghi = prefab->create({{"hotness", hotness}});
     ```
     As C++ does not provide reflection information, properties can provide metadata by their own for de-/serialisation:
     ```C++
