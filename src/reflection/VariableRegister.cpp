@@ -2,12 +2,13 @@
 // Created by Bittner on 07.03.2019.
 //
 
-#include <cstring>
-
 #include <polypropylene/reflection/VariableRegister.h>
 
 namespace PAX {
     std::string VariableResolver::resolveVariables(const std::string & str, const VariableRegister & variables) {
+        const std::size_t VariableDeclarationBeginLen = std::string(VariableDeclarationBegin).size();
+        const std::size_t VariableDeclarationEndLen = std::string(VariableDeclarationEnd).size();
+
         std::string result = str;
 
         // str[varDecIndex] == VariableDeclaration
@@ -21,8 +22,8 @@ namespace PAX {
                 // terminate since we are left in an infinite loop otherwise
                 break;
             } else {
-                std::size_t varNameIndex  = varDecIndex + std::strlen(VariableDeclarationBegin);
-                std::size_t varNamelength = varDecEndIndex - std::strlen(VariableDeclarationEnd) - varNameIndex + 1;
+                std::size_t varNameIndex  = varDecIndex + VariableDeclarationBeginLen;
+                std::size_t varNamelength = varDecEndIndex - VariableDeclarationEndLen - varNameIndex + 1;
                 std::string varName = result.substr(varNameIndex, varNamelength);
                 std::string varValue;
 
@@ -33,7 +34,7 @@ namespace PAX {
 
                 result = result.replace(
                         varDecIndex,
-                        varNamelength + std::strlen(VariableDeclarationBegin) + std::strlen(VariableDeclarationEnd),
+                        varNamelength + VariableDeclarationBeginLen + VariableDeclarationEndLen,
                         varValue
                 );
             }
