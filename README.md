@@ -273,6 +273,9 @@ Such additional constraints could be implemented by using techniques from softwa
 -   Dependencies are not considered upon property removal, yet.
  When removing a property, dependencies of other properties may break.
 
+-   Make PoolAllocator dynamic: Currently, the pool allocator has a fixed size of 1024 elements.
+Making it dynamically growable (e.g., with paging), saves memory and would allow for "arbitrarily" many allocated elements.
+
 -   Support for Older C++ Standards Than 17: Therefore, we need a custom implementation of `std::optional`.
 We have to see if that would pay off.
 
