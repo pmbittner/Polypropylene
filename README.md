@@ -179,7 +179,7 @@ Polypropylene further contains the following features:
     "scoville": "${hotness}"
     ```
     Upon pizza creation, this value can be specified arbitrarily.
-    That way, customers are able to be delivered pizza as hot as they like:
+    That way, customers are able to be delivered pizza as hot as they like :fire::
     ```C++
     std::cout << "How hot do you like your pizza (in scoville)?\n";
     std::string hotness;
@@ -280,14 +280,14 @@ Making it dynamically growable (e.g., with paging), saves memory and would allow
 We have to see if that would pay off.
 
 ## Feedback
-I welcome any constructive critism or questions.
-Feel free to open issues or pull-requests here on GitHub.
+I welcome any constructive critism, questions, and bug reports.
+Feel free to open issues or pull-requests here on GitHub. :blush:
 
 ## Naming Conventions and "Where does the name come from?"
 Polypropylene is a backronym for *POLYmorphism aware PROPertY Library for mutablE dyNamic objEcts*.
 As this is a rather long name, we kept our short and memorisable inter-project namespace `PAX`.
 
-## Are You Hungry For Pizza Now?
-At least we are ...
+## Are You Hungry For Pizza :pizza: Now?
+At least we are ... :yum:
 
 [1]: https://github.com/nlohmann/json
