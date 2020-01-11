@@ -276,6 +276,8 @@ Such additional constraints could be implemented by using techniques from softwa
 -   Make PoolAllocator dynamic: Currently, the pool allocator has a fixed size of 1024 elements.
 Making it dynamically growable (e.g., with paging), saves memory and would allow for "arbitrarily" many allocated elements.
 
+-   Ordering of properties with multiplicity `PAX_PROPERTY_IS_MULTIPLE` such that the vector returned by `Entity::get` is sorted.
+
 -   Support for Older C++ Standards Than 17: Therefore, we need a custom implementation of `std::optional`.
 We have to see if that would pay off.
 
