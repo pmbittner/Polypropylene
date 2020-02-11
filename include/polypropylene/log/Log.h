@@ -7,6 +7,7 @@
 
 #include "../definitions/OSDetection.h"
 #include "../definitions/Definitions.h"
+#include "../stdutils/StringUtils.h"
 #include <ostream>
 #include <map>
 
@@ -46,6 +47,13 @@ namespace PAX {
 
         std::ostream & stream(Level level, const char * functionName = nullptr, const char * fileName = nullptr, int line = 0);
         std::ostream & stream_raw(Level level);
+    };
+
+    // Allow parsing Log::Levels from strings.
+    template<>
+    class TryParser<std::string, Log::Level> {
+    public:
+        PAX_NODISCARD static Log::Level tryParse(const std::string & str);
     };
 
 // TODO: What about __func__ ?

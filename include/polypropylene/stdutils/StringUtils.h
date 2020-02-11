@@ -50,6 +50,8 @@ namespace PAX {
         }
     }
 
+    /// Note: This macro cannot be used if 'type' is in a namespace (eg., MyApp::MyType) because it must not be
+    ///       recognised as a preprocessor token.
 #define PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(type) \
             template<> \
             class TryParser<std::string, type> { \
