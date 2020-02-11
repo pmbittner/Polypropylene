@@ -24,6 +24,12 @@ namespace PAX {
         }
     };
 
+    template<>
+    class TryParser<nlohmann::json, Path> {
+    public:
+        PAX_NODISCARD static Path tryParse(const nlohmann::json & f);
+    };
+
     namespace Json {
         class IJsonParser {
         public:
@@ -77,7 +83,10 @@ namespace PAX {
 
             PAX_NODISCARD bool loadIntoJson(const Field & field, nlohmann::json & j) const override {
                 if (field.type == paxtypeof(T)) {
-                    j.emplace(field.name, *static_cast<T*>(field.data));
+                    T* data = static_cast<T*>(field.data);
+                    std::stringstream stream;
+                    stream << *data;
+                    j.emplace(field.name, stream.str());
                     return true;
                 }
 
