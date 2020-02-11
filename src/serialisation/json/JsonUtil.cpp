@@ -24,4 +24,13 @@ namespace PAX {
             return nlohmann::json::parse(s);
         }
     }
+
+    Path JsonToPath(const nlohmann::json & j) {
+        const auto & it = j.find("Path");
+        if (it != j.end()) {
+            return Path(JsonToString(it.value()));
+        }
+
+        return Path(JsonToString(j));
+    }
 }
