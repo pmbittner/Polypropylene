@@ -7,6 +7,7 @@
 
 #ifdef PAX_WITH_JSON
 #include "JsonFwd.h"
+#include "polypropylene/io/Path.h"
 
 namespace PAX {
     template<typename... Args>
@@ -18,6 +19,7 @@ namespace PAX {
     };
 
     std::string JsonToString(const nlohmann::json & j);
+    Path JsonToPath(const nlohmann::json & j);
     nlohmann::json StringToJson(const std::string & s);
 }
 
