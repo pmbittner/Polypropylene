@@ -12,7 +12,7 @@
 #include <locale>
 
 #include "polypropylene/serialisation/TryParser.h"
-#include "polypropylene/log/Log.h"
+#include "polypropylene/log/Errors.h"
 
 namespace PAX {
     namespace String {
@@ -44,7 +44,7 @@ namespace PAX {
         template<typename T>
         T tryParse(const std::string &str) {
             if (str.empty()) {
-                PAX_LOG(Log::Level::Warn, "String is empty!");
+                PAX_THROW_RUNTIME_ERROR("String is empty!");
             }
             return TryParser<std::string, T>::tryParse(str);
         }
@@ -71,5 +71,11 @@ namespace PAX {
     PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(unsigned long long)
     PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(float)
     PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(double)
+
+    template<>
+    class TryParser<std::string, Log::Level> {
+    public:
+        PAX_NODISCARD static Log::Level tryParse(const std::string & str);
+    };
 }
 #endif //POLYPROPYLENE_STRINGUTILS_H

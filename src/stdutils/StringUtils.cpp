@@ -128,4 +128,21 @@ namespace PAX {
     double TryParser<std::string, double>::tryParse(const std::string &str) {
         return std::stod(str);
     }
+
+    Log::Level TryParser<std::string, Log::Level>::tryParse(const std::string & str) {
+        std::string lvl = str;
+        String::toLower(lvl);
+
+        if (lvl == "err" || lvl == "error" || lvl == "1") {
+            return Log::Level::Error;
+        } else if (lvl == "warn" || lvl == "warning" || lvl == "2") {
+            return Log::Level::Warn;
+        } else if (lvl == "dbg" || lvl == "debug" || lvl == "3") {
+            return Log::Level::Debug;
+        } else if (lvl == "verbose" || lvl == "4") {
+            return Log::Level::Verbose;
+        }
+
+        return Log::Level::None;
+    }
 }

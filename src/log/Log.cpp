@@ -63,23 +63,6 @@ namespace PAX {
     std::ostream & Log::stream_raw(Level level) {
         return *getStreamFor(level);
     }
-
-    Log::Level TryParser<std::string, Log::Level>::tryParse(const std::string & str) {
-        std::string lvl = str;
-        String::toLower(lvl);
-
-        if (lvl == "err" || lvl == "error" || lvl == "1") {
-            return Log::Level::Error;
-        } else if (lvl == "warn" || lvl == "warning" || lvl == "2") {
-            return Log::Level::Warn;
-        } else if (lvl == "dbg" || lvl == "debug" || lvl == "3") {
-            return Log::Level::Debug;
-        } else if (lvl == "verbose" || lvl == "4") {
-            return Log::Level::Verbose;
-        }
-
-        return Log::Level::None;
-    }
 }
 
 std::ostream& operator<<(std::ostream& os, const ::PAX::Log::Level & level) {
