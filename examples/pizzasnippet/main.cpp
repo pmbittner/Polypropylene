@@ -25,9 +25,9 @@ class Mozzarella : public Cheese {
     PAX_PROPERTY_IS_SINGLE
 };
 
-PAX_PROPERTY_INIT(TomatoSauce) {}
-PAX_PROPERTY_INIT(Cheese) {}
-PAX_PROPERTY_INIT(Mozzarella) {}
+PAX_PROPERTY_IMPL(TomatoSauce)
+PAX_PROPERTY_IMPL(Cheese)
+PAX_PROPERTY_IMPL(Mozzarella)
 
 int main() {
     Pizza pizza;

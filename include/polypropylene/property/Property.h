@@ -78,7 +78,7 @@ namespace PAX {
          * Fields declared in Metadata (@ref getMetadata()) can be assumed to be initialised if values for them
          * were specified in the creating object (e.g., prefab).
          */
-        virtual void PAX_INTERNAL(created)() {}
+        virtual void created() {}
     };
 }
 

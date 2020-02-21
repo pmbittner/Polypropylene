@@ -5,7 +5,7 @@
 #include "Cheese.h"
 
 namespace PAX::Examples {
-    PAX_PROPERTY_INIT(Cheese) {}
+    PAX_PROPERTY_IMPL(Cheese)
 
     std::string Cheese::yummy() {
         return "Cheesyyyyyyy";

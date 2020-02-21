@@ -5,5 +5,5 @@
 #include "Topping.h"
 
 namespace PAX::Examples {
-    PAX_PROPERTY_INIT(Topping) {}
+    PAX_PROPERTY_IMPL(Topping)
 }

@@ -23,7 +23,7 @@ namespace PAX {
             = PropertyFactoryRegister<TEntityType>::getFactoryFor(propertyToClone->getClassType().id)->create();
         ClassMetadata cloneMetadata = clone->getMetadata();
         propertyToClone->getMetadata().writeTo(cloneMetadata);
-        clone->PAX_INTERNAL(created)();
+        clone->created();
         return clone;
     }
 }

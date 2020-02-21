@@ -84,7 +84,7 @@ namespace PAX::Json {
 
                         for (auto it = props.begin(); it != props.end(); ++it) {
                             if ((*it)->areDependenciesMetFor(e)) {
-                                (*it)->PAX_INTERNAL(created)();
+                                (*it)->created();
                                 e.add(*it);
                                 props.erase(it);
                                 break;
