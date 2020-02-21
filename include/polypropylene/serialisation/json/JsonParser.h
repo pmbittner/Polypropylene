@@ -98,6 +98,8 @@ namespace PAX {
         PAX_NODISCARD T tryParse(const nlohmann::json &j) {
             return TryParser<nlohmann::json, T>::tryParse(j);
         }
+
+        bool assertPresence(const nlohmann::json & j, const std::string & childName, bool crashOnError = true);
     }
 }
 

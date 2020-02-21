@@ -52,5 +52,15 @@ namespace PAX {
 
             PAX_THROW_RUNTIME_ERROR("No IJsonParser registered for type: " << type.name());
         }
+
+        bool assertPresence(const nlohmann::json & j, const std::string & childName, bool crashOnError) {
+            if (j.count(childName) > 0) return true;
+
+            if (crashOnError) {
+                PAX_THROW_RUNTIME_ERROR("Missing variable \"" << childName << "\" in " << JsonToString(j) << "!");
+            } else {
+                return false;
+            }
+        }
     }
 }
