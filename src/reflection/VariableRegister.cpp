@@ -15,7 +15,7 @@ namespace PAX {
         std::size_t varDecIndex = result.find(VariableDeclarationBegin);
         while (varDecIndex != std::string::npos) {
             // finds first occurence and hence the end of our var
-            std::size_t varDecEndIndex = result.find(VariableDeclarationEnd);
+            std::size_t varDecEndIndex = result.find(VariableDeclarationEnd, varDecIndex);
 
             if (varDecEndIndex == std::string::npos) {
                 PAX_LOG(Log::Level::Warn, "Variable declaration end missing in " << str.c_str());
