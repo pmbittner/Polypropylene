@@ -12,6 +12,11 @@ namespace PAX::Json {
     void JsonEntityPrefab<EntityType>::initialize(JsonParserRegister & jsonParserRegister) {
         GlobalParsers = &jsonParserRegister;
 
+        ParseOrder = {
+                DefaultElements::Inherits,
+                DefaultElements::Properties
+        };
+
         ElementParsers.registerParser(
                 DefaultElements::Inherits,
                 [](json &node, EntityType &e, JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {

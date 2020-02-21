@@ -110,6 +110,7 @@ namespace PAX {
 
         public:
             static JsonEntityPrefabElementParserRegister<EntityType> ElementParsers;
+            static std::vector<std::string> ParseOrder;
 
             explicit JsonEntityPrefab(const json & j, const Path & path)
                     : Prefab<EntityType>(), rootNode(j), path(path) {}
@@ -157,19 +158,14 @@ namespace PAX {
                 composedVariableRegister.insert(Prefab<EntityType>::PreDefinedVariables.begin(),
                                                 Prefab<EntityType>::PreDefinedVariables.end());
 
-                std::vector<std::string> parseOrder = {
-                        DefaultElements::Inherits,
-                        DefaultElements::Properties
-                };
-
-                for (const std::string & name : parseOrder) {
+                for (const std::string & name : ParseOrder) {
                     if (rootNode.count(name) > 0) {
                         parse(rootNode, name, e, composedVariableRegister);
                     }
                 }
 
                 for (auto &el : rootNode.items()) {
-                    if (!Util::vectorContains(parseOrder, el.key())) {
+                    if (!Util::vectorContains(ParseOrder, el.key())) {
                         parse(rootNode, el.key(), e, composedVariableRegister);
                     }
                 }
@@ -201,6 +197,9 @@ namespace PAX {
 
         template<typename EntityType>
         JsonParserRegister * JsonEntityPrefab<EntityType>::GlobalParsers = nullptr;
+
+        template<typename EntityType>
+        std::vector<std::string> JsonEntityPrefab<EntityType>::ParseOrder;
 
         template<typename EntityType>
         JsonEntityPrefabElementParserRegister<EntityType> JsonEntityPrefab<EntityType>::ElementParsers;
