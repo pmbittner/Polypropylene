@@ -28,6 +28,8 @@ namespace PAX::Json {
         bool readFrom(const Field & field) override;
 
         void clear();
+
+        PAX_NODISCARD std::string toString() const override;
     };
 }
 

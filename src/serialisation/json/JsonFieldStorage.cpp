@@ -21,16 +21,19 @@ namespace PAX::Json {
     }
 
     bool JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
-        nlohmann::json j = StringToJson(getValue(field.name, variables));
+        if (!has(field.name)) {
+            PAX_LOG(Log::Level::Warn, "Json object\n" << JsonToString(node) << "\ndoes not have a value for " << field.name << "!");
+            return false;
+        }
 
         const IJsonParser * parser = parsers.getParserFor(field.type.id);
         if (parser) {
-            return parser->loadIntoField(j, field);
+            return parser->loadIntoField(StringToJson(getValue(field.name, variables)), field);
         } else {
             PAX_THROW_RUNTIME_ERROR("Could not write to field of type \"" << field.type.name() << "\" because no IJsonParser is registered for it!");
         }
 
-        return true;
+        return false;
     }
 
     bool JsonFieldStorage::readFrom(const Field & field) {
@@ -43,10 +46,14 @@ namespace PAX::Json {
             PAX_THROW_RUNTIME_ERROR("Could not read field of type \"" << field.type.name() << "\" because no IJsonParser is registered for it!");
         }
 
-        return true;
+        return false;
     }
 
     void JsonFieldStorage::clear() {
         node.clear();
+    }
+
+    std::string JsonFieldStorage::toString() const {
+        return JsonToString(node);
     }
 }

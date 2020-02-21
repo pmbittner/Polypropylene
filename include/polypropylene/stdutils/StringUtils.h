@@ -46,6 +46,7 @@ namespace PAX {
             if (str.empty()) {
                 PAX_THROW_RUNTIME_ERROR("String is empty!");
             }
+
             return TryParser<std::string, T>::tryParse(str);
         }
     }
