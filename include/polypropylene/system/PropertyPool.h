@@ -2,8 +2,8 @@
 // Created by Paul on 13.08.2019.
 //
 
-#ifndef POLYPROPYLENE_PROPERTYOWNINGSYSTEM_H
-#define POLYPROPYLENE_PROPERTYOWNINGSYSTEM_H
+#ifndef POLYPROPYLENE_PROPERTYPOOL_H
+#define POLYPROPYLENE_PROPERTYPOOL_H
 
 #include <polypropylene/memory/AllocationService.h>
 #include "System.h"
@@ -15,7 +15,7 @@ namespace PAX {
      * @tparam PropertyType The type of property this iterator iterates over.
      */
     template<typename PropertyType>
-    struct PropertyOwningSystemIterator {
+    struct PropertyPoolIterator {
     private:
         typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * current = nullptr;
 
@@ -24,7 +24,7 @@ namespace PAX {
         }
 
     public:
-        explicit PropertyOwningSystemIterator(typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * pos)
+        explicit PropertyPoolIterator(typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * pos)
                 : current(pos)
         {
             if (!isCurrentValid()) {
@@ -32,13 +32,13 @@ namespace PAX {
             }
         }
 
-        PropertyOwningSystemIterator & operator=(const PropertyOwningSystemIterator & other) = default;
+        PropertyPoolIterator & operator=(const PropertyPoolIterator & other) = default;
 
-        inline bool operator==(const PropertyOwningSystemIterator & other) {
+        inline bool operator==(const PropertyPoolIterator & other) {
             return current == other.current;
         }
 
-        inline bool operator!=(const PropertyOwningSystemIterator & other) {
+        inline bool operator!=(const PropertyPoolIterator & other) {
             return !operator==(other);
         }
 
@@ -46,7 +46,7 @@ namespace PAX {
             return reinterpret_cast<PropertyType*>(&(current->data));
         }
 
-        PropertyOwningSystemIterator & operator++() {
+        PropertyPoolIterator & operator++() {
             do {
                 ++current;
             } while (!isCurrentValid());
@@ -65,24 +65,23 @@ namespace PAX {
      * For the specified property type a pool allocator is registered in the allocation service of the corresponding
      * entity.
      */
-    template<class ManagerType, class PropertyType>
-    class PropertyOwningSystem : public System<ManagerType> {
+    template<class PropertyType>
+    class PropertyPool {
         PoolAllocator<sizeof(PropertyType)> allocator;
 
     public:
-        PropertyOwningSystem() = default;
+        PropertyPool() = default;
 
-        void initialize(ManagerType * manager) override {
-            System<ManagerType>::initialize(manager);
+        void initialize() {
             AllocationService & allocationService = PropertyType::EntityType::GetPropertyAllocator();
             allocationService.registerAllocator(typeid(PropertyType), &allocator);
         }
 
-        PropertyOwningSystemIterator<PropertyType> begin() { return allocator.getMemory(); }
-        PropertyOwningSystemIterator<PropertyType> end() { return allocator.getMemory() + allocator.getCapacity(); }
+        PropertyPoolIterator<PropertyType> begin() { return allocator.getMemory(); }
+        PropertyPoolIterator<PropertyType> end() { return allocator.getMemory() + allocator.getCapacity(); }
         //PropertyOwningSystemIterator<PropertyType> begin() const { return Iterator(allocator.getMemory()); }
         //PropertyOwningSystemIterator<PropertyType> end() const { Iterator(allocator.getMemory() + allocator.getCapacity()); }
     };
 }
 
-#endif //POLYPROPYLENE_PROPERTYOWNINGSYSTEM_H
+#endif //POLYPROPYLENE_PROPERTYPOOL_H
