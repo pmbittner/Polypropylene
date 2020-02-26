@@ -19,9 +19,14 @@ namespace PAX {
         std::set<std::unique_ptr<System<Derived>>> systems;
         bool initialized = false;
 
+    protected:
+        const std::set<std::unique_ptr<System<Derived>>> & getSystems() {
+            return systems;
+        }
+
     public:
         SystemManager() = default;
-        ~SystemManager() = 0;
+        virtual ~SystemManager() = 0;
 
         virtual void initialize() {
             assert(!initialized);
