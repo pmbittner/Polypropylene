@@ -1,5 +1,6 @@
 # Project data
 .idea
+.vscode
 vs
 
 # Python temp files
@@ -7,3 +8,4 @@ __pycache__
 
 # Build
 cmake-build-*
+build
