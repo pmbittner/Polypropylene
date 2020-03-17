@@ -6,7 +6,7 @@
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/context:cpp)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/alerts/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2c602e50b99464fbdd4caab644cd3d0)](https://www.codacy.com/manual/PaulAtTUBS/Polypropylene?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PaulAtTUBS/Polypropylene&amp;utm_campaign=Badge_Grade)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3539/badge)](https://bestpractices.coreinfrastructure.org/projects/3539)
+<!--[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3539/badge)](https://bestpractices.coreinfrastructure.org/projects/3539)-->
 
 Polypropylene is a C++17 library for dynamic object definition by composition of properties.
 Properties add state and functionality to objects similar to mixins but are composed dynamically during runtime.
@@ -255,6 +255,8 @@ It is exemplified in further detail in `examples/pizza/`.
 We suggest heading to the `main.cpp` for getting an entry point and quick start.
 
 We plan to publish examples of usage of Polypropylene in video game development but this requires more code polishing, yet.
+
+For further instructions, please have a look at our [wiki](https://github.com/PaulAtTUBS/Polypropylene/wiki).
 
 ## Future Plans and Open Issues
 -   Type System: Identifying entities by the properties they implement.
