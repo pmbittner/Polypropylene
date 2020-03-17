@@ -22,8 +22,8 @@ namespace PAX {
     public:
         Delegate(void* callee, void (*method)(void*, Args...)) : callee(callee), method(method) {}
 
-        bool operator==(const Delegate& other) {
-            return callee == other.callee && method == other.method;
+        friend bool operator==(Delegate const& lhs, Delegate const& rhs) {
+            return (lhs.callee == rhs.callee) && (lhs.method == rhs.method);
         }
     };
 }
