@@ -17,15 +17,15 @@ namespace PAX {
     template<class T>
     class TryParser<nlohmann::json, T> {
     public:
-        PAX_NODISCARD static T tryParse(const nlohmann::json & f) {
-            return ::PAX::String::tryParse<T>(JsonToString(f));
+        PAX_NODISCARD static T tryParse(const nlohmann::json & j) {
+            return ::PAX::String::tryParse<T>(JsonToString(j));
         }
     };
 
     template<>
     class TryParser<nlohmann::json, Path> {
     public:
-        PAX_NODISCARD static Path tryParse(const nlohmann::json & f);
+        PAX_NODISCARD static Path tryParse(const nlohmann::json & j);
     };
 
     namespace Json {

@@ -6,8 +6,8 @@
 #include <polypropylene/log/Errors.h>
 
 namespace PAX {
-    Path TryParser<nlohmann::json, Path>::tryParse(const nlohmann::json &f) {
-        return JsonToPath(f);
+    Path TryParser<nlohmann::json, Path>::tryParse(const nlohmann::json & j) {
+        return JsonToPath(j);
     }
 
     namespace Json {
