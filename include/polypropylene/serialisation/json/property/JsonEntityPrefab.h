@@ -10,7 +10,7 @@
 #include <polypropylene/io/Path.h>
 
 #include <polypropylene/property/Property.h>
-#include <polypropylene/serialisation/json/JsonParser.h>
+#include <polypropylene/serialisation/json/JsonFieldWriter.h>
 #include <polypropylene/stdutils/CollectionUtils.h>
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
@@ -90,7 +90,7 @@ namespace PAX {
             using json = nlohmann::json;
             using PropertyType = typename EntityType::PropertyType;
 
-            static JsonParserRegister * GlobalParsers;
+            static JsonFieldWriterRegister * GlobalWriters;
 
             std::vector<JsonEntityPrefab<EntityType>> parentPrefabs;
             json rootNode;
@@ -126,7 +126,7 @@ namespace PAX {
                 for (PropertyType * property : properties) {
                     IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(property->getClassType().id);
                     json & propertyNode = propertiesNode[factory->getPropertyName()];
-                    JsonFieldStorage storage(propertyNode, *GlobalParsers);
+                    JsonFieldStorage storage(propertyNode, *GlobalWriters);
                     serialiser.setStorage(&storage);
                     serialiser.readFromMetadata(property->getMetadata());
                     serialiser.setStorage(nullptr);
@@ -147,7 +147,7 @@ namespace PAX {
                 return p;
             }
 
-            static void initialize(JsonParserRegister & jsonParserRegister);
+            static void initialize(JsonFieldWriterRegister & jsonFieldWriterRegister);
 
             void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {
                 // Compose given variables with the predefined ones.
@@ -181,7 +181,7 @@ namespace PAX {
                 for (PropertyType * p : properties) {
                     IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(p->getClassType().id);
                     json & propertyNode = propertiesNode[factory->getPropertyName()];
-                    JsonFieldStorage storage(propertyNode, *GlobalParsers);
+                    JsonFieldStorage storage(propertyNode, *GlobalWriters);
                     serialiser.setStorage(&storage);
                     ClassMetadata m = p->getMetadata();
                     serialiser.readFromMetadata(m);
@@ -196,7 +196,7 @@ namespace PAX {
         };
 
         template<typename EntityType>
-        JsonParserRegister * JsonEntityPrefab<EntityType>::GlobalParsers = nullptr;
+        JsonFieldWriterRegister * JsonEntityPrefab<EntityType>::GlobalWriters = nullptr;
 
         template<typename EntityType>
         std::vector<std::string> JsonEntityPrefab<EntityType>::ParseOrder;

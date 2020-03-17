@@ -8,9 +8,12 @@
 #ifdef PAX_WITH_JSON
 
 #include <polypropylene/io/Path.h>
-#include "JsonFwd.h"
+#include "polypropylene/serialisation/json/nlohmann/JsonFwd.h"
 
 namespace PAX::Json {
+    /**
+     * Loads and writes json files from and to disk.
+     */
     class JsonLoader {
     public:
         PAX_NODISCARD nlohmann::json load(const Path & path) const;

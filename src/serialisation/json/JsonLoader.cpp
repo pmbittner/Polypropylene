@@ -3,7 +3,7 @@
 //
 
 #include <polypropylene/serialisation/json/JsonLoader.h>
-#include <polypropylene/serialisation/json/Json.h>
+#include <polypropylene/serialisation/json/nlohmann/Json.h>
 #include <polypropylene/log/Log.h>
 #include <fstream>
 #include <iomanip>

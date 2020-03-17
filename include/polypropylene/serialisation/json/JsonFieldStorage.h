@@ -9,16 +9,16 @@
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 // TODO: Find a way to include JsonFwd.h here instead of Json.h
-#include "polypropylene/serialisation/json/Json.h"
-#include "polypropylene/serialisation/json/JsonParser.h"
+#include "polypropylene/serialisation/json/nlohmann/Json.h"
+#include "polypropylene/serialisation/json/JsonFieldWriterRegister.h"
 
 namespace PAX::Json {
     class JsonFieldStorage : public FieldStorage {
         nlohmann::json & node;
-        const JsonParserRegister & parsers;
+        const JsonFieldWriterRegister & writers;
 
     public:
-        explicit JsonFieldStorage(nlohmann::json &node, const JsonParserRegister & jsonParserRegister);
+        explicit JsonFieldStorage(nlohmann::json &node, const JsonFieldWriterRegister & jsonFieldWriterRegister);
         ~JsonFieldStorage() override;
 
         PAX_NODISCARD std::string getValue(const std::string &key, const VariableRegister & variables) const;

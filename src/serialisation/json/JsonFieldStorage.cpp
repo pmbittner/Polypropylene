@@ -7,8 +7,8 @@
 #include "polypropylene/log/Errors.h"
 
 namespace PAX::Json {
-    JsonFieldStorage::JsonFieldStorage(nlohmann::json &node, const JsonParserRegister & jsonParserRegister)
-            : FieldStorage(), node(node), parsers(jsonParserRegister) {}
+    JsonFieldStorage::JsonFieldStorage(nlohmann::json &node, const JsonFieldWriterRegister & jsonFieldWriterRegister)
+            : FieldStorage(), node(node), writers(jsonFieldWriterRegister) {}
 
     JsonFieldStorage::~JsonFieldStorage() = default;
 
@@ -26,11 +26,11 @@ namespace PAX::Json {
             return false;
         }
 
-        const IJsonParser * parser = parsers.getParserFor(field.type.id);
-        if (parser) {
-            return parser->loadIntoField(StringToJson(getValue(field.name, variables)), field);
+        const IJsonFieldWriter * writer = writers.getWriterFor(field.type.id);
+        if (writer) {
+            return writer->loadIntoField(StringToJson(getValue(field.name, variables)), field);
         } else {
-            PAX_THROW_RUNTIME_ERROR("Could not write to field of type \"" << field.type.name() << "\" because no IJsonParser is registered for it!");
+            PAX_THROW_RUNTIME_ERROR("Could not write to field of type \"" << field.type.name() << "\" because no IJsonFieldWriter is registered for it!");
         }
 
         return false;
@@ -39,11 +39,11 @@ namespace PAX::Json {
     bool JsonFieldStorage::readFrom(const Field & field) {
         clear();
 
-        const IJsonParser * parser = parsers.getParserFor(field.type.id);
-        if (parser) {
-            return parser->loadIntoJson(field, node);
+        const IJsonFieldWriter * writer = writers.getWriterFor(field.type.id);
+        if (writer) {
+            return writer->loadIntoJson(field, node);
         } else {
-            PAX_THROW_RUNTIME_ERROR("Could not read field of type \"" << field.type.name() << "\" because no IJsonParser is registered for it!");
+            PAX_THROW_RUNTIME_ERROR("Could not read field of type \"" << field.type.name() << "\" because no IJsonFieldWriter is registered for it!");
         }
 
         return false;

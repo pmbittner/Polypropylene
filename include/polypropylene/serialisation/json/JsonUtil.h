@@ -6,7 +6,7 @@
 #define POLYPROPYLENE_JSONUTIL_H
 
 #ifdef PAX_WITH_JSON
-#include "JsonFwd.h"
+#include "polypropylene/serialisation/json/nlohmann/JsonFwd.h"
 #include "polypropylene/io/Path.h"
 
 namespace PAX {

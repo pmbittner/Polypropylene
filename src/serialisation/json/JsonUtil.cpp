@@ -4,7 +4,7 @@
 
 #include <sstream>
 #include <polypropylene/serialisation/json/JsonUtil.h>
-#include <polypropylene/serialisation/json/Json.h>
+#include <polypropylene/serialisation/json/nlohmann/Json.h>
 
 namespace PAX {
     std::string JsonToString(const nlohmann::json & j) {

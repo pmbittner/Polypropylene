@@ -9,7 +9,7 @@
 
 #include "JsonEntityPrefabLoader.h"
 #include "../JsonLoader.h"
-#include "../Json.h"
+#include "polypropylene/serialisation/json/nlohmann/Json.h"
 
 namespace PAX::Json {
     template<typename EntityType>

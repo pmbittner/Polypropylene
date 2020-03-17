@@ -39,7 +39,6 @@ set(HEADERS_FOR_CLION
         serialisation/FieldStorage.h
         serialisation/ClassMetadataSerialiser.h
         serialisation/TryParser.h
-        serialisation/json/JsonFwd.h
 
         reflection/Reflectable.h
         reflection/TemplateTypeToString.h
@@ -79,17 +78,21 @@ if (POLYPROPYLENE_WITH_JSON)
             serialisation/json/JsonParser.h
             serialisation/json/JsonUtil.h
             serialisation/json/JsonFieldStorage.h
+            serialisation/json/nlohmann/JsonFwd.h
 
             serialisation/json/property/JsonEntityPrefab.h
             serialisation/json/property/JsonEntityPrefabLoader.h
             serialisation/json/property/JsonEntityPrefabLoaderImpl.h
-            serialisation/json/property/JsonEntityPrefabImpl.h)
+            serialisation/json/property/JsonEntityPrefabImpl.h
+            serialisation/json/JsonFieldWriter.h
+            serialisation/json/JsonFieldWriterRegister.h)
 
     set(SOURCE_FILES ${SOURCE_FILES}
             serialisation/json/JsonUtil.cpp
             serialisation/json/JsonLoader.cpp
             serialisation/json/JsonParser.cpp
-            serialisation/json/JsonFieldStorage.cpp)
+            serialisation/json/JsonFieldStorage.cpp
+            serialisation/json/JsonFieldWriterRegister.cpp)
 endif(POLYPROPYLENE_WITH_JSON)
 
 PAXPREPEND(HEADERS_FOR_CLION ${POLYPROPYLENE_INCLUDE_DIR} ${HEADERS_FOR_CLION})

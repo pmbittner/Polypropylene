@@ -8,7 +8,7 @@
 #ifdef PAX_WITH_JSON
 
 #include <polypropylene/io/Path.h>
-#include "../JsonFwd.h"
+#include "polypropylene/serialisation/json/nlohmann/JsonFwd.h"
 
 namespace PAX::Json {
     template<typename EntityType>
