@@ -33,7 +33,7 @@ namespace PAX {
         }
 
         template<class T>
-        inline bool vectorContains(std::vector<T> &vector, const T &element) {
+        inline bool vectorContains(const std::vector<T> &vector, const T &element) {
             return std::find(vector.begin(), vector.end(), element) != vector.end();
         }
     }
