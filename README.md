@@ -92,11 +92,6 @@ Dedicated allocators can be registered for each property type.
 By default, pool allocators are used but may be replaced by any **custom allocator** on program start.
 Polyproylene contains a pool and a malloc allocator implementation so far.
 
-<!---
-The `Property<T>` base class as well as the macros for property specification do not contain / generate any fields but
-only methods.
--->
-
 -   **Standalone**: Polypropylene does not have any additional dependencies to other libraries except for the C++17
 standard.
 Support for older C++ versions is planned.
@@ -215,7 +210,7 @@ Polypropylene further contains the following features:
     EntityManagerView<Pizza, Mozzarella, Salami> salamiView(manager);
     const std::vector<Pizza*> & pizzasThatAreAtLeastPizzaSalami = salamiView.getEntities();
     ```
-
+<!--
 -   **Systems**: Systems can be used for any kinds of (global) behaviour.
     In entity component systems, they are used to manage and execute behaviour on properties.
     For this reason, `PropertyOwningSystems` contain all properties of a given type by managing their allocation with a pool allocator.
@@ -232,6 +227,7 @@ Polypropylene further contains the following features:
         // Here each active TomatoSauce that was allocated with the pizza's allocator can be found.
     }
     ```
+-->
 
 ## Further Utilities
 -   **Logging**: Polypropylene records errors and warnings with a custom logger.

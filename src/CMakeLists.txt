@@ -21,6 +21,7 @@ set(HEADERS_FOR_CLION
 
         memory/Allocator.h
         memory/AllocationService.h
+        memory/PropertyPool.h
         memory/allocators/MallocAllocator.h
         memory/allocators/PoolAllocator.h
 
@@ -39,10 +40,6 @@ set(HEADERS_FOR_CLION
         serialisation/ClassMetadataSerialiser.h
         serialisation/TryParser.h
         serialisation/json/JsonFwd.h
-
-        system/System.h
-        system/SystemManager.h
-        system/PropertyOwningSystem.h
 
         reflection/Reflectable.h
         reflection/TemplateTypeToString.h
@@ -66,8 +63,6 @@ set(SOURCE_FILES
 
         serialisation/ClassMetadataSerialiser.cpp
         serialisation/FieldStorage.cpp
-
-        system/System.cpp
 
         stdutils/StringUtils.cpp
 
