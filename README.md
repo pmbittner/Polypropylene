@@ -3,6 +3,7 @@
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
 [![Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Official documentation](https://img.shields.io/badge/Documentation-Read-green.svg)](https://github.com/PaulAtTUBS/Polypropylene/wiki)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/context:cpp)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/alerts/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2c602e50b99464fbdd4caab644cd3d0)](https://www.codacy.com/manual/PaulAtTUBS/Polypropylene?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PaulAtTUBS/Polypropylene&amp;utm_campaign=Badge_Grade)
