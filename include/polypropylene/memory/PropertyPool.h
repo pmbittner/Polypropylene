@@ -6,7 +6,6 @@
 #define POLYPROPYLENE_PROPERTYPOOL_H
 
 #include <polypropylene/memory/AllocationService.h>
-#include "paxcore/system/System.h"
 #include "polypropylene/memory/allocators/PoolAllocator.h"
 
 namespace PAX {
@@ -28,7 +27,7 @@ namespace PAX {
         typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * current = nullptr;
 
     public:
-        explicit PropertyPoolIterator(typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * pos)
+        PAX_IMPLICIT PropertyPoolIterator(typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * pos)
                 : current(pos), validator()
         {
             if (!validator.isValid(current)) {
@@ -74,6 +73,8 @@ namespace PAX {
         PoolAllocator<sizeof(PropertyType)> allocator;
 
     public:
+        using Iterator = IteratorType;
+
         PropertyPool() = default;
 
         void initialize() {
@@ -81,8 +82,8 @@ namespace PAX {
             allocationService.registerAllocator(typeid(PropertyType), &allocator);
         }
 
-        IteratorType begin() { return allocator.getMemory(); }
-        IteratorType end() { return allocator.getMemory() + allocator.getCapacity(); }
+        Iterator begin() { return allocator.getMemory(); }
+        Iterator end() { return allocator.getMemory() + allocator.getCapacity(); }
         //PropertyOwningSystemIterator<PropertyType> begin() const { return Iterator(allocator.getMemory()); }
         //PropertyOwningSystemIterator<PropertyType> end() const { Iterator(allocator.getMemory() + allocator.getCapacity()); }
     };
