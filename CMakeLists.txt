@@ -6,15 +6,8 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 option(POLYPROPYLENE_WITH_EXAMPLES "Build examples" ON)
 option(POLYPROPYLENE_WITH_JSON "Enable entity prefab loading from json files" ON)
 
-### DETECT COMPILER #####################################
-include(cmake/PaxCompilerDetection.cmake)
-
-### DETECT ARCHITECTURE #################################
-include(cmake/PaxArchitectureDetection.cmake)
-
 ### FLAGS ###############################################
-include(cmake/PaxFlagsDefinition.cmake)
-set(CMAKE_CXX_STANDARD ${PAX_CXX_STANDARD})
+set(CMAKE_CXX_STANDARD 17)
 message("CMAKE_CXX_STANDARD is ${CMAKE_CXX_STANDARD}")
 include(cmake/Prepend.cmake)
 
