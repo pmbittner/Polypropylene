@@ -13,14 +13,14 @@
 if (value == nullptr) { \
     std::stringstream s; \
     s << __VA_ARGS__; \
-    PAX_LOG(PAX::Log::Level::Error, s.str()); \
+    PAX_LOG(::PAX::Log::Level::Error, s.str()); \
     throw std::invalid_argument(s.str()); \
 }} while(0)
 
 #define PAX_THROW_RUNTIME_ERROR(...) do { \
     std::stringstream s; \
     s << __VA_ARGS__; \
-    PAX_LOG(PAX::Log::Level::Error, s.str()); \
+    PAX_LOG(::PAX::Log::Level::Error, s.str()); \
     throw std::runtime_error(s.str()); \
 } while(0)
 
