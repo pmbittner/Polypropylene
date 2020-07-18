@@ -267,7 +267,7 @@ A mechanism for manual or even automatic type specification has to be implemente
 -   Enhancing Dependency Specification: Currently, properties are allowed to depend on other property types.
 Entities however may only be allowed to contain certain combinations (configurations) of properties.
 For instance, two property types could be exclusive to each other as they implement respectively contradicting data or behaviour.
-Such additional constraints could be implemented by using techniques from software product line engineering, especially feature models.
+Such additional constraints could be implemented by using techniques from software product-line engineering, especially feature models.
 
 -   Dependencies are not considered upon property removal, yet.
  When removing a property, dependencies of other properties may break.
@@ -287,6 +287,20 @@ Feel free to open issues or pull-requests here on GitHub. :blush:
 ## Naming Conventions and "Where does the name come from?"
 Polypropylene is a backronym for *POLYmorphism aware PROPertY Library for mutablE dyNamic objEcts*.
 As this is a rather long name, we kept our short and memorisable inter-project namespace `PAX`.
+
+## Related Work
+If we could not get your interest in using our library, there are other great projects which you might want to check out.
+
+Entity Component Systems:
+- [entityx](https://github.com/alecthomas/entityx) - A fast, type-safe C++ Entity-Component system 
+- [entt](https://github.com/skypjack/entt) - Gaming meets modern C++ - a fast and reliable entity component system (ECS) and much more 
+
+Dynamic Mixins:
+- [dynamix](https://github.com/iboB/dynamix) - A new take on polymorphism in C++ 
+- [libciabatta](https://github.com/atomgalaxy/libciabatta) - The C++ Mixin Support Library: Sandwich Mixins all the way 
+- [dyno](https://github.com/ldionne/dyno) - Runtime polymorphism done right 
+
+Did I forget your library? Please open an issue of pull-request!
 
 ## Are You Hungry For Pizza :pizza: Now?
 At least we are ... :yum:
