@@ -301,7 +301,7 @@ Dynamic Mixins:
 - [libciabatta](https://github.com/atomgalaxy/libciabatta) - The C++ Mixin Support Library: Sandwich Mixins all the way 
 - [dyno](https://github.com/ldionne/dyno) - Runtime polymorphism done right 
 
-Did I forget your library? Please open an issue of pull-request!
+Did I forget your library? Please open an issue or pull-request!
 
 ## Are You Hungry For Pizza :pizza: Now?
 At least we are ... :yum:
