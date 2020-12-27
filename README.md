@@ -191,7 +191,7 @@ Polypropylene further contains the following features:
         return m;
     }
     ```
-    Prefabs can also be created from entities with `Enity::toPrefab()`.
+    Prefabs can also be created from entities with `Entity::toPrefab()`.
     This will return a prefab that allows instantiating copies of the original entity at the point in time the prefab was created.
     Thus, any entity can be copied and the state of entities can be saved.
     Furthermore, **prefabs can be stored to json files**.
