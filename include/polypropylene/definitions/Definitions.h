@@ -5,6 +5,8 @@
 #ifndef POLYPROPYLENE_DEFINITIONS_H
 #define POLYPROPYLENE_DEFINITIONS_H
 
+#include "CXXVersionDetection.h"
+
 #define PAX_NON_CONST
 #define PAX_IMPLICIT
 
@@ -14,7 +16,7 @@
 #define PAX_UNREFERENCED_PARAMETER(P) (P);
 #endif
 
-#if PAX_CXX_STANDARD >= 17
+#if PAX_CXX_STANDARD >= 2017
 #define PAX_CONSTEXPR_IF if constexpr
 #define PAX_NODISCARD [[nodiscard]]
 #else

@@ -17,6 +17,7 @@ set(HEADERS_FOR_CLION
         log/Errors.h
         log/Log.h
 
+        definitions/CXXVersionDetection.h
         definitions/CompilerDetection.h
         definitions/Definitions.h
         definitions/OSDetection.h

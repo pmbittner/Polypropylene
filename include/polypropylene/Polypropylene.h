@@ -5,7 +5,6 @@
 #ifndef POLYPROPYLENE_MAININCLUDES_H
 #define POLYPROPYLENE_MAININCLUDES_H
 
-#include "definitions/CompilerDetection.h"
 #include "definitions/OSDetection.h"
 #include "definitions/Definitions.h"
 

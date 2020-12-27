@@ -11,6 +11,12 @@ set(CMAKE_CXX_STANDARD 17)
 message("CMAKE_CXX_STANDARD is ${CMAKE_CXX_STANDARD}")
 include(cmake/Prepend.cmake)
 
+# If compiled with MSVC, we add a compiler flag that indicates that we want to use the __cplusplus macro.
+# We use this macro to determine the current C++ version.
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /Zc:__cplusplus")
+endif()
+
 if (${CMAKE_BUILD_TYPE} MATCHES Release)
     add_definitions(-DPAX_BUILD_TYPE_RELEASE)
     message("BUILD TYPE is Release")
