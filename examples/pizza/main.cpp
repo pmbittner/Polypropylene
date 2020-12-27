@@ -44,6 +44,8 @@ int main(int argc, char** argv) {
     using namespace PAX;
     using namespace PAX::Examples;
 
+    PAX_LOG(PAX::Log::Level::Info, "Running Pizza Example");
+
     /// INITIAL SETUP
     registerPropertyTypes();
 
