@@ -238,7 +238,7 @@ Polypropylene further contains the following features:
 
 -   **Path**: Struct for platform agnostic path specification, simplification, and navigation.
 
--   Inclusion of the [nlohmann::json library][1] for loading json files.
+-   Inclusion of the [nlohmann::json library][nlohmannjson] for loading json files.
 
 ## Customisations for Compile Time Minimisation
 To obtain reflection information, we frequently use templates and macros.
@@ -246,24 +246,24 @@ We made certain features, such as loading from json files, optional such that yo
 The following cmake options allow compile time customisation.
 By default, all options are activated (set to ON):
 
--   `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][1] for loading and writing `EntityPrefabs` from and to json files.
+-   `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][nlohmannjson] for loading and writing `EntityPrefabs` from and to json files.
 -   `POLYPROPYLENE_WITH_EXAMPLES`: Specifies if examples should be built or not.
 
 ## Code Examples
 
-The small pizza example from the top of this readme file can be found in [`examples/pizzasnippet/`](https://github.com/PaulAtTUBS/Polypropylene/tree/master/examples/pizzasnippet).
-It is exemplified in further detail in [`examples/pizza/`](https://github.com/PaulAtTUBS/Polypropylene/tree/master/examples/pizza).
-We suggest heading to the [`main.cpp`](https://github.com/PaulAtTUBS/Polypropylene/blob/master/examples/pizza/main.cpp) for getting an entry point and quick start.
+The small pizza example from the top of this readme file can be found in [`examples/pizzasnippet/`][example_pizzasnippet].
+It is exemplified in further detail in [`examples/pizza/`][example_pizza].
+We suggest heading to the [`main.cpp`][example_pizza_main] for getting an entry point and quick start.
 
-An extensive example for the usage of Polypropylene can be found in the game engine [PaxEngine3](https://github.com/PaulAtTUBS/PaxEngine3).
-In PaxEngine3, both [Game Objects](include/paxcore/gameentity/GameEntity.h) and [Game Worlds](include/paxcore/world/World.h) are implemented as Entities of Polypropylene.
+An extensive example for the usage of Polypropylene can be found in the game engine [PaxEngine3][pax3].
+In PaxEngine3, both [Game Objects][pax3_gameobject] and [Game Worlds][pax3_gameworld] are implemented as Entities of Polypropylene.
 
-For further instructions, please have a look at our [wiki](https://github.com/PaulAtTUBS/Polypropylene/wiki).
+For further instructions, please have a look at our [wiki].
 
 ## Future Plans and Open Issues
 -   Type System: Identifying entities by the properties they implement.
 For example, a `Pizza` with `TomatoSauce`, `Mozzarella`, and `Champignons` could be identified as `PizzaFunghi`.
-A mechanism for manual or even automatic type specification has to be implemented.
+A mechanism for manual or even automatic type specification could be implemented.
 
 -   Enhancing Dependency Specification: Currently, properties are allowed to depend on other property types.
 Entities however may only be allowed to contain certain combinations (configurations) of properties.
@@ -306,4 +306,14 @@ Did I forget your library? Please open an issue or pull-request!
 ## Are You Hungry For Pizza :pizza: Now?
 At least we are ... :yum:
 
-[1]: https://github.com/nlohmann/json
+[nlohmannjson]: https://github.com/nlohmann/json
+
+[wiki]: https://github.com/pmbittner/Polypropylene/wiki
+
+[example_pizzasnippet]: examples/pizzasnippet
+[example_pizza]: examples/pizza
+[example_pizza_main]: examples/pizza/main.cpp
+
+[pax3]: https://github.com/pmbittner/PaxEngine3
+[pax3_gameobject]: https://github.com/pmbittner/PaxEngine3/blob/master/include/paxcore/gameentity/GameEntity.h
+[pax3_gameworld]: https://github.com/pmbittner/PaxEngine3/blob/master/include/paxcore/world/World.h
