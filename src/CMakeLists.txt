@@ -3,7 +3,9 @@ set(POLYPROPYLENE_INCLUDE_DIR ../include/polypropylene)
 set(HEADERS_FOR_CLION
         Polypropylene.h
         Dependency.h
-        Prefab.h
+
+        prefab/Prefab.h
+        prefab/CompositePrefab.h
 
         event/Delegate.h
         event/Event.h

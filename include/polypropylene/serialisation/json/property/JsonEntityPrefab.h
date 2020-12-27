@@ -5,7 +5,7 @@
 #ifndef POLYPROPYLENE_JSONENTITYPREFAB_H
 #define POLYPROPYLENE_JSONENTITYPREFAB_H
 
-#include <polypropylene/Prefab.h>
+#include <polypropylene/prefab/Prefab.h>
 #include <polypropylene/serialisation/json/JsonUtil.h>
 #include <polypropylene/io/Path.h>
 

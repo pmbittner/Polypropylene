@@ -6,7 +6,7 @@
 #define POLYPROPYLENE_PROTOTYPEENTITYPREFAB_H
 
 #include <vector>
-#include "polypropylene/Prefab.h"
+#include "polypropylene/prefab/Prefab.h"
 #include "Clone.h"
 
 namespace PAX {

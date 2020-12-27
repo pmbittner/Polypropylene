@@ -20,7 +20,7 @@ namespace PAX {
     /**
      * Prefabs create new entities with a pre-defined set of properties.
      * Each entity created by an prefab can be considered equal.
-     * Prefabs my inherit from each other when supported by the concrete prefab implementation.
+     * Prefabs may inherit from each other when supported by the concrete prefab implementation.
      *
      * @tparam T The concrete type to instantiate (i.e., the derived class)
      */
