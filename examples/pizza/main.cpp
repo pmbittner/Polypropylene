@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 
     JsonFieldWriterRegister writerRegister; /// contains parsers from nlohmann::json to fields
     JsonEntityPrefabLoader<Pizza> prefabLoader; /// loads json files from disk to EntityPrefab<Pizza>
-    JsonEntityPrefab<Pizza>::initialize(writerRegister);
+    JsonEntityPrefab<Pizza>::initialize(&writerRegister);
 #endif
 
     /// EXAMPLE

@@ -147,7 +147,7 @@ namespace PAX {
                 return p;
             }
 
-            static void initialize(JsonFieldWriterRegister & jsonFieldWriterRegister);
+            static void initialize(JsonFieldWriterRegister * jsonFieldWriterRegister);
 
             void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {
                 // Compose given variables with the predefined ones.
