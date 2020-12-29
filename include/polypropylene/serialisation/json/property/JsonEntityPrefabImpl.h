@@ -9,8 +9,8 @@
 
 namespace PAX::Json {
     template<typename EntityType>
-    void JsonEntityPrefab<EntityType>::initialize(JsonFieldWriterRegister * jsonFieldWriterRegister) {
-        GlobalWriters = jsonFieldWriterRegister;
+    void JsonEntityPrefab<EntityType>::initialize(JsonFieldWriterRegister & jsonFieldWriterRegister) {
+        GlobalWriters = &jsonFieldWriterRegister;
 
         ParseOrder = {
                 DefaultElements::Inherits,
@@ -54,7 +54,7 @@ namespace PAX::Json {
                         IPropertyFactory<EntityType> *propertyFactory = PropertyFactoryRegister<EntityType>::getFactoryFor(
                                 propTypeName);
 
-                        JsonFieldStorage storage(el.value(), *jsonFieldWriterRegister);
+                        JsonFieldStorage storage(el.value(), jsonFieldWriterRegister);
                         serialiser.setStorage(&storage);
 
                         // If the entity already has properties of the given type we won't create a new one
