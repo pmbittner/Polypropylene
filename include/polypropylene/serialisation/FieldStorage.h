@@ -20,8 +20,28 @@ namespace PAX {
         FieldStorage() = default;
         virtual ~FieldStorage() = 0;
 
+        /**
+         * @return True, iff this storage has a field with the given name.
+         */
         PAX_NODISCARD virtual bool has(const std::string & name) const = 0;
+
+        /**
+         * Writes to the given field, the value that is stored in this storage for the given field's name.
+         * The inverse operation is readFrom.
+         * @param field The field that should be written to. It is identified by its name.
+         * @param variables A register of variables that may be used by values for fields in this storage.
+         * @return True, iff a value was written to the given field.
+         *         False, there is no value for the given field in this storage or there is a type mismatch.
+         */
         PAX_NODISCARD virtual bool writeTo(Field &field, const VariableRegister & variables) const = 0;
+
+        /**
+         * Stores the value from the given field in this storage under the given field's name.
+         * This method does not take ownership.
+         * The inverse operation is writeTo.
+         * @param field The field to serialize (i.e., to store in this storage).
+         * @return True, iff the field could be stored in this FieldStorage.
+         */
         virtual bool readFrom(const Field & field) = 0;
 
         PAX_NODISCARD virtual std::string toString() const = 0;

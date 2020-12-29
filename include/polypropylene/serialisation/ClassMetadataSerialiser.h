@@ -26,8 +26,26 @@ namespace PAX {
         explicit ClassMetadataSerialiser(const VariableRegister & variables);
         virtual ~ClassMetadataSerialiser() = default;
 
+        /**
+         * Sets the fieldstorage from and to which ClassMetadata should be read or written.
+         * Does not take ownership of the given fieldstorage.
+         * @param fieldStorage The fieldstorage to write and read classmetadata to/from.
+         */
         void setStorage(FieldStorage * fieldStorage);
+
+        /**
+         * Writes all data in this object's field storage to the given class metadata.
+         * Inverse operation is readFromMetadata.
+         * @param metadata The metadata that should be written to.
+         * @param options Options to configure writing process.
+         *                For example, with IgnoreMandatoryFlags no mandatory fields in the given metadata will be written to.
+         */
         void writeToMetadata(ClassMetadata & metadata, Options options = None) const;
+
+        /**
+         * Reads all fields from the given ClassMetadata and stores them in the internal FieldStorage.
+         * @param metadata Metadata that should be serialized into the FieldStorage of this object.
+         */
         void readFromMetadata(const ClassMetadata & metadata);
     };
 }

@@ -18,7 +18,7 @@ namespace PAX
         for (Field & field : metadata.getFields()) {
             bool writeSuccessful = fieldStorage->writeTo(field, variables);
             if (!writeSuccessful && (field.flags & Field::IsMandatory) && !(options & IgnoreMandatoryFlags)) {
-                PAX_THROW_RUNTIME_ERROR("No value for field \"" << field.name << "\" defined in " << fieldStorage->toString() << "!");
+                PAX_THROW_RUNTIME_ERROR("No value for mandatory field \"" << field.name << "\" defined in " << fieldStorage->toString() << "!");
             }
         }
     }
