@@ -12,13 +12,21 @@
 #include "polypropylene/reflection/TypeMap.h"
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
 
+// Instead of 'if constexpr' we could use PAX_CONSTEXPR_IF here
+// but the following won't compile without 'constexpr'.
 #define PAX_PROPERTY_REGISTER_AS(TPropertyType, Name) \
-do { \
-    PAX_CONSTEXPR_IF (!TPropertyType::IsAbstract()) { \
+do {                                                  \
+    if constexpr (!TPropertyType::IsAbstract()) {     \
         ::PAX::PropertyFactoryRegister<TPropertyType::EntityType>::registerFactory<TPropertyType>(Name); \
     } \
 } while(0)
 
+/**
+ * Registers the given property type at the property factory.
+ * This has to be done for each property that should be used within
+ * prefabs and serialization.
+ * This can be done once on program start (e.g., at the beginning of the main function).
+ */
 #define PAX_PROPERTY_REGISTER(TPropertyType) PAX_PROPERTY_REGISTER_AS(TPropertyType, #TPropertyType)
 
 namespace PAX {
