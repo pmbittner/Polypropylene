@@ -13,7 +13,20 @@
 // TODO: Try to avoid this
 #include "polypropylene/serialisation/json/nlohmann/Json.h"
 
-namespace PAX {
+#define PAX_DECLARE_JSONPARSER_FOR(type) \
+namespace PAX { \
+    template<> \
+    class TryParser<nlohmann::json, type> { \
+    public: \
+        PAX_NODISCARD static type tryParse(const nlohmann::json &); \
+    }; \
+}
+
+#define PAX_IMPLEMENT_JSONPARSER_FOR(type) \
+    type PAX::TryParser<nlohmann::json, type>::tryParse(const nlohmann::json & json)
+
+
+        namespace PAX {
     template<class T>
     class TryParser<nlohmann::json, T> {
     public:

@@ -14,7 +14,7 @@ namespace PAX {
     class JsonElementParser {
     protected:
     public:
-        virtual ~JsonElementParser() {};
+        virtual ~JsonElementParser() = default;
         virtual void parse(nlohmann::json &, Args...) = 0;
     };
 
