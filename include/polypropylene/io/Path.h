@@ -34,15 +34,42 @@ namespace PAX {
         PAX_IMPLICIT Path(const std::string& path);
         Path(const Path& other);
 
-        /// A Path is considered to be a file, if it contains a dot, indicating a file ending, after the last slash/backslash.
+        /**
+         * A Path is considered to be a file, if it contains a dot, indicating a file ending, after the last slash/backslash.
+         * @return True, iff this file points to a file.
+         */
         PAX_NODISCARD bool isFile() const;
+
+        /**
+         * Inverse of isFile.
+         * @return True, iff this file points to a directory.
+         */
         PAX_NODISCARD bool isDirectory() const;
         PAX_NODISCARD bool isAbsolute() const;
         PAX_NODISCARD bool isRelative() const;
+
+        /**
+         * @return The directoy of this path.
+         *         If this path points to a file, this will return the directory, the file is located in.
+         *         If this path points to a directory, returns a copy of this path.
+         */
         PAX_NODISCARD Path getDirectory() const;
+
+        /**
+         * Converts this path to a relative directory with respect to the given root directory.
+         * Example:
+         *     Path("/usr/bin/blob.txt").toRelative("/usr") == Path("/bin/blob.txt")
+         * Returns a copy of this path if this path is already relative (discarding the given root directory).
+         * @param root Directory from which this path should be made relative.
+         * @return This path as a relative directory.
+         */
         PAX_NODISCARD Path toRelative(const Path & root) const;
         PAX_NODISCARD Path toAbsolute() const;
 
+        /**
+         * Converts all slashes to the current platform's separator.
+         * For Windows, this will be `\` and on unix this will be `/`.
+         */
         void convertToCurrentPlatform();
         void convertToWin();
         void convertToUnix();
@@ -77,7 +104,6 @@ namespace PAX {
         Path& operator+=(const char* path);
         Path& operator+=(const std::string& path);
 
-        // I do not know yet, if I want to support these.
         Path operator+(const Path& other) const;
         Path& operator+=(const Path& other);
     };
