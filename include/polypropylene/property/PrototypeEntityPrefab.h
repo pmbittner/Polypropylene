@@ -23,6 +23,15 @@ namespace PAX {
             }
         }
 
+        ~PrototypeEntityPrefab() override {
+            AllocationService & allocationService = TEntityType::GetAllocationService();
+            for (Property<TEntityType> * p : prototypes) {
+                TypeHandle pType = p->getClassType();
+                p->~Property<TEntityType>();
+                allocationService.free(pType.id, p);
+            }
+        }
+
         PrototypeEntityPrefab(const PrototypeEntityPrefab<TEntityType> & other) = default;
 
         void addMyContentTo(TEntityType & entity, const VariableRegister & variableRegister) override {
