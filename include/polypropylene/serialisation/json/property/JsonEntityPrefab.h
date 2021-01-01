@@ -132,7 +132,7 @@ namespace PAX {
                     serialiser.setStorage(nullptr);
                 }
 
-                delete e;
+                EntityType::GetAllocationService().template deleteAndFree<EntityType>(e);
             }
 
             virtual ~JsonEntityPrefab() = default;
@@ -186,7 +186,7 @@ namespace PAX {
                     ClassMetadata m = p->getMetadata();
                     serialiser.readFromMetadata(m);
                 }
-                delete e;
+                EntityType::GetAllocationService().template deleteAndFree<EntityType>(e);
                 return me;
             }
 

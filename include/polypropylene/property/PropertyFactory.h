@@ -107,7 +107,7 @@ namespace PAX {
         virtual ~PropertyFactory() = default;
 
         PAX_NODISCARD TPropertyType * create() const override {
-            return new (TEntityType::GetPropertyAllocator().template allocate<TPropertyType>()) TPropertyType();
+            return new (TEntityType::GetAllocationService().template allocate<TPropertyType>()) TPropertyType();
         }
 
         PAX_NODISCARD TypeHandle getPropertyType() const override {

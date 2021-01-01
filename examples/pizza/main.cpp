@@ -5,11 +5,11 @@
 #include <iostream>
 
 #include "polypropylene/Polypropylene.h"
+#include "polypropylene/memory/PropertyPool.h"
 
 #ifdef PAX_WITH_JSON
 #include "polypropylene/serialisation/json/JsonLoader.h"
 #include "polypropylene/serialisation/json/property/JsonEntityPrefabLoader.h"
-#include "polypropylene/serialisation/json/JsonParser.h"
 #endif
 
 #include "Pizza.h"
@@ -58,6 +58,13 @@ int main(int argc, char** argv) {
 #endif
 
     /// EXAMPLE
+
+    /// Create and register a property pool for champignons.
+    /// The pool will hold all allocated instances of champignons.
+    /// It's usage is optional.
+    PropertyPool<Champignon> champignonPool;
+    champignonPool.initialize();
+
     std::cout << "How hot do you like your pizza (in scoville)?\n";
 #ifdef PAX_WITH_JSON
     std::string hotness;
@@ -71,28 +78,34 @@ int main(int argc, char** argv) {
 
     Pizza * pizzaFunghi = new Pizza();
 
-    /// Ideally, the allocation service is used for allocating memory of properties.
-    /// Using the allocation service is optional.
-    /// It can be used with placement new:
-    ///   new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce(hotness)
-    /// Using the allocation service has benefits the following benefits:
-    ///   - PropertyOwningSystems only operate on properties allocated by the allocation service.
-    ///     Manually allocated properties as done here won't be recognised.
-    ///   - Entities take ownership of properties added to them. Deleting an entity also deletes
-    ///     all contained properties but only those that were allocated with the allocation service.
-    ///     Thus, beware of memory leaks as customly allocated properties have to be deleted manually!
+    /// Either allocate properties where and how you like ...
     TomatoSauce tomatoSauce(hotness);
     Mozzarella mozzarella;
-    Champignon champignon;
+    /// ... or (optionally) use the allocation service.
+    /// Using the allocation service has the following benefits:
+    /// - PropertyPools only know the properties allocated by the allocation service.
+    ///   Manually allocated properties as done here won't be recognised.
+    /// - Entities take ownership of properties added to them. Deleting an entity also deletes
+    ///   all contained properties but only those that were allocated with the allocation service.
+    ///   Thus, beware of memory leaks as customly allocated properties have to be deleted manually!
+    /// PropertyFactories and Prefabs always use the allocation service.
+    Champignon * champignon = new (Pizza::GetAllocationService().allocate<Champignon>()) Champignon();
 
     /// Add TomatoSauce first because Cheeses (e.g., Mozzarella) depend on it.
     pizzaFunghi->add(&tomatoSauce);
     pizzaFunghi->add(&mozzarella);
-    pizzaFunghi->add(&champignon);
+    pizzaFunghi->add(champignon);
 #endif
 
     pizzaFunghi->yummy();
     pizzaFunghi->bake();
+
+    /// Let's take a look at all allocated champignons.
+    PAX_LOG(Log::Level::Info, "List of allocated champignons:");
+    for (Champignon * c : champignonPool) {
+        PAX_LOG(Log::Level::Info, "    " << c);
+        assert(c->getOwner() == pizzaFunghi);
+    }
 
     /// example for property access via templates
     {
@@ -111,13 +124,21 @@ int main(int argc, char** argv) {
     }
 
 #ifdef PAX_WITH_JSON
-    Path outPath = "res/pizza/out/funghiWith" + hotness + "scoville.json";
-    PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
-    JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
-    prefabLoader.write(asJson, outPath);
+    /// Export pizzaFunghi as json.
+    { /// Open a scope here to remove the temporary prefabs we create.
+        Path outPath = "res/pizza/out/funghiWith" + hotness + "scoville.json";
+        PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
+        JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
+        prefabLoader.write(asJson, outPath);
+    }
 #endif
 
+#ifdef PAX_WITH_JSON
+    /// Entities created with prefabs (or with the allocation service) have to be deleted via the allocation service.
+    Pizza::GetAllocationService().deleteAndFree<Pizza>(pizzaFunghi);
+#else
     delete pizzaFunghi;
+#endif
 
     return 0;
 }

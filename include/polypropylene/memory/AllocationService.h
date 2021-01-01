@@ -14,6 +14,12 @@
 #include "allocators/PoolAllocator.h"
 
 namespace PAX {
+    /**
+     * Central service for managing allocation and deallocation of arbitrary types.
+     * In Polypropylene, the AllocationService is used for allocating and deallocating properties.
+     * For each type, a custom allocator can be registered.
+     * By default, a PoolAllocator will be registered for each type lazily.
+     */
     class AllocationService {
         TypeMap<IAllocator*> allocators;
         std::vector<void*> allocatedObjects;
@@ -21,11 +27,16 @@ namespace PAX {
     public:
         AllocationService() = default;
 
+        /**
+         * Registers the given allocator for (de-) allocating objects of the given type.
+         * Does not take ownership.
+         */
         void registerAllocator(const TypeId & type, IAllocator * allocator) {
             allocators[type] = allocator;
         }
 
         size_t unregisterAllocator(const TypeId & type) {
+            // TODO: Return allocator to avoid memory leak
             return allocators.erase(type);
         }
 
@@ -39,7 +50,7 @@ namespace PAX {
         PAX_NODISCARD void * allocate() {
             Allocator<sizeof(T)> * allocator = nullptr;
 
-            const auto & allocIt = allocators.find(typeid(T));
+            const auto & allocIt = allocators.find(paxtypeid(T));
             if (allocIt != allocators.end()) {
                 allocator = dynamic_cast<Allocator<sizeof(T)>*>(allocIt->second);
                 if (!allocator) {
@@ -48,9 +59,9 @@ namespace PAX {
             }
 
             if (!allocator){
-                // TODO: Avoid new: Allocator for allocator lul
+                // TODO: This is a potential memory leak. Store this value somewhere.
                 allocator = new PoolAllocator<sizeof(T)>();
-                registerAllocator(typeid(T), allocator);
+                registerAllocator(paxtypeid(T), allocator);
             }
 
             void * mem = allocator->allocate();
@@ -66,6 +77,12 @@ namespace PAX {
             }
 
             return false;
+        }
+
+        template<typename T>
+        bool deleteAndFree(T * t) {
+            t->~T();
+            return free(paxtypeid(T), t);
         }
     };
 }

@@ -222,7 +222,7 @@ Polypropylene further contains the following features:
     PropertyOwningSystem<Pizza, TomatoSauce> tomatoValley;
     
     Pizza p;
-    p.add(new (Pizza::GetPropertyAllocator().allocate<TomatoSauce>()) TomatoSauce());
+    p.add(new (Pizza::GetAllocationService().allocate<TomatoSauce>()) TomatoSauce());
     
     for (TomatoSauce * t : tomatoValley) {
         // Here each active TomatoSauce that was allocated with the pizza's allocator can be found.

@@ -63,7 +63,7 @@ namespace PAX {
      * A PropertyPool registers itself as the default allocator for properties of the given type.
      * Iterating over the pool yields all active properties that are currently in use.
      * Note that only properties allocated via the allocation service of the corresponding entity
-     * (@ref Entity<T>::GetPropertyAllocator()) are known to this pool (i.e., in it).
+     * (@ref Entity<T>::GetAllocationService()) are known to this pool (i.e., in it).
      * @tparam PropertyType The type of properties that should be allocated by this pool.
      * For the specified property type a pool allocator is registered in the allocation service of the corresponding
      * entity.
@@ -78,7 +78,7 @@ namespace PAX {
         PropertyPool() = default;
 
         void initialize() {
-            AllocationService & allocationService = PropertyType::EntityType::GetPropertyAllocator();
+            AllocationService & allocationService = PropertyType::EntityType::GetAllocationService();
             allocationService.registerAllocator(paxtypeid(PropertyType), &allocator);
         }
 

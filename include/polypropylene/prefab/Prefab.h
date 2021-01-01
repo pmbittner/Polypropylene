@@ -20,9 +20,13 @@ namespace PAX {
     /**
      * Prefabs create new entities with a pre-defined set of properties.
      * Each entity created by an prefab can be considered equal.
-     * Prefabs may inherit from each other when supported by the concrete prefab implementation.
+     * Prefabs may be composed via CompositePrefab.
      *
-     * @tparam T The concrete type to instantiate (i.e., the derived class)
+     * @tparam T The concrete type to instantiate (i.e., the derived class).
+     *           Requirements for T are:
+     *             - default constructor (i.e. T() is defined).
+     *             - a static method "AllocationService& T::GetAllocationService()" that returns an allocation service.
+     *           These requirements are met by the Entity class (see property/Entity.h).
      */
     template<class T>
     class Prefab : public virtual IPrefab {
@@ -36,8 +40,7 @@ namespace PAX {
          * @return returns a new entity of this prefab.
          */
         PAX_NODISCARD virtual T * create(const VariableRegister & variableRegister) {
-            // TODO: Agree on global Allocator for T!
-            T * e = new T();
+            T * e = new (T::GetAllocationService().template allocate<T>()) T();
             addMyContentTo(*e, variableRegister);
             return e;
         }

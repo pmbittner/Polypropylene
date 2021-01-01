@@ -59,7 +59,7 @@ namespace PAX {
          */
         virtual ~Entity() {
             std::vector<TRootProperty*> myProperties = getProperties();
-            AllocationService & allocator = GetPropertyAllocator();
+            AllocationService & allocator = GetAllocationService();
 
             while (!myProperties.empty()) {
                 Property<TDerived> * victim = myProperties.back();
@@ -68,7 +68,7 @@ namespace PAX {
                 if (allocator.hasAllocated(victim)) {
                     TypeHandle victimType = victim->getClassType();
                     victim->~Property<TDerived>();
-                    GetPropertyAllocator().free(victimType.id, victim);
+                    GetAllocationService().free(victimType.id, victim);
                 }
             }
         }
@@ -102,9 +102,9 @@ namespace PAX {
 
     public:
         /**
-         * @return the AllocationService that is used for property (de-) allocation for properties for derived entitiy type TDerived.
+         * @return the AllocationService that is used for entity and property (de-) allocation for derived entitiy type TDerived.
          */
-        PAX_NODISCARD static AllocationService& GetPropertyAllocator() {
+        PAX_NODISCARD static AllocationService& GetAllocationService() {
             return propertyAllocator;
         }
 
