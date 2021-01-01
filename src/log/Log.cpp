@@ -33,14 +33,18 @@ namespace PAX {
     }
 
     Log::Log() : nullStream(&nullBuffer) {
-        outstreams[Level::None] = &nullStream;
+        setStreamForLevel(Level::None, nullStream);
 
-        outstreams[Level::Error] = &std::cerr;
-        outstreams[Level::Warn] = &std::cerr;
+        setStreamForLevel(Level::Error, std::cerr);
+        setStreamForLevel(Level::Warn, std::cerr);
 
-        outstreams[Level::Info] = &std::cout;
-        outstreams[Level::Debug] = &std::cout;
-        outstreams[Level::Verbose] = &std::cout;
+        setStreamForLevel(Level::Info, std::cout);
+        setStreamForLevel(Level::Debug, std::cout);
+        setStreamForLevel(Level::Verbose, std::cout);
+    }
+
+    void Log::setStreamForLevel(Level level, std::ostream & stream) {
+        outstreams[level] = &stream;
     }
 
     std::string Log::timestamp() {
