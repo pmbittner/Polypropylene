@@ -3,14 +3,13 @@
 //
 
 #include "Pizza.h"
-#include "Topping.h"
 #include "BakedEvent.h"
 
 namespace PAX::Examples {
     void Pizza::yummy() {
-        std::string message = "Pizza:\n";
+        std::string message = "Pizza has:\n";
         for (Topping * t : get<Topping>()) {
-            message += "  " + t->yummy() + "\n";
+            message += "  - " + t->yummy() + "\n";
         }
 
         PAX_LOG(PAX::Log::Level::Info, message);
