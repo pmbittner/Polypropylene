@@ -17,7 +17,7 @@ namespace PAX {
     };
 
     /**
-     * Iterator for pool allocators used for PropertyOwningSystems.
+     * Iterator for pool allocators.
      * @tparam PropertyType The type of property this iterator iterates over.
      */
     template<typename PropertyType, typename ValidatorType = DefaultChunkValidator<PropertyType>>
@@ -59,12 +59,12 @@ namespace PAX {
     };
 
     /**
-     * Owning systems own all properties of a given type and manage their allocation.
-     * Iterating over the system yields all active properties that are currently in use.
+     * Convenience class for easy access to all allocated properties of the given type.
+     * A PropertyPool registers itself as the default allocator for properties of the given type.
+     * Iterating over the pool yields all active properties that are currently in use.
      * Note that only properties allocated via the allocation service of the corresponding entity
-     * (@ref Entity<T>::GetPropertyAllocator()) are owned by and known to this system.
-     * @tparam ManagerType The manager type to which this system can be added to.
-     * @tparam PropertyType The type of properties that should be allocated by this system.
+     * (@ref Entity<T>::GetPropertyAllocator()) are known to this pool (i.e., in it).
+     * @tparam PropertyType The type of properties that should be allocated by this pool.
      * For the specified property type a pool allocator is registered in the allocation service of the corresponding
      * entity.
      */
@@ -79,7 +79,7 @@ namespace PAX {
 
         void initialize() {
             AllocationService & allocationService = PropertyType::EntityType::GetPropertyAllocator();
-            allocationService.registerAllocator(typeid(PropertyType), &allocator);
+            allocationService.registerAllocator(paxtypeid(PropertyType), &allocator);
         }
 
         Iterator begin() { return allocator.getMemory(); }
