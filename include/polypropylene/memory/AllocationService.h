@@ -23,11 +23,18 @@ namespace PAX {
     // TODO: Create a source file.
     class AllocationService {
         TypeMap<IAllocator*> allocators;
+        std::vector<IAllocator*> defaultAllocators;
         // Use unordered_set here?
         std::vector<void*> allocatedObjects;
 
     public:
         AllocationService() = default;
+
+        virtual ~AllocationService() {
+            for (IAllocator * a : defaultAllocators) {
+                delete a;
+            }
+        }
 
         /**
          * Registers the given allocator for (de-) allocating objects of the given type.
@@ -60,9 +67,9 @@ namespace PAX {
                 }
             }
 
-            if (!allocator){
-                // TODO: This is a potential memory leak. Store this value somewhere.
+            if (!allocator) {
                 allocator = new PoolAllocator<sizeof(T)>();
+                defaultAllocators.push_back(allocator);
                 registerAllocator(paxtypeid(T), allocator);
             }
 
