@@ -70,6 +70,8 @@ set(SOURCE_FILES
 
         log/Log.cpp
 
+        memory/AllocationService.cpp
+
         reflection/ClassMetadata.cpp
         reflection/Field.cpp
         reflection/VariableRegister.cpp
