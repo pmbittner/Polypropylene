@@ -9,13 +9,15 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2c602e50b99464fbdd4caab644cd3d0)](https://www.codacy.com/manual/PaulAtTUBS/Polypropylene?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PaulAtTUBS/Polypropylene&amp;utm_campaign=Badge_Grade)
 <!--[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3539/badge)](https://bestpractices.coreinfrastructure.org/projects/3539)-->
 
-Polypropylene is a C++17 library for dynamic object definition by composition of properties.
-Properties add state and functionality to objects similar to mixins but are composed dynamically during runtime.
-Polypropylene started as an [*Entity-Component System (ECS)*][gppcomp] but grew more general and flexible soon.
+Polypropylene is a C++17 library for fine-granular separation of concerns on the level of objects.
+It allows defining objects dynamically by composition of properties.
+Properties add state and functionality to objects similar to mixins but are composed during runtime.
+Polypropylene started as an [*Entity-Component System (ECS)*][gppcomp] but grew more general and flexible.
 An ECS is a design pattern mostly used in video game engineering where objects are required to change behaviour and shape frequently and arbitrarily.
 Thereby, an object (i.e., an *Entity*) is purely defined as a composition of individual components.
-We refer to *Components* as *Properties* because Polypropylene is not a pure ECS anymore but a general-purpose library.
-During development several issues arose that were not addressed by existing ECS so far.
+We refer to *Components* as *Properties* to emphasize that Polypropylene is not limited to but can be used as an ECS.
+During development several issues arose that were not addressed by existing ECS' so far.
+Below you find a small excerpt on how to define entities and properties in Polypropylene:
 
 ```C++
 class Pizza : public PAX::Entity<Pizza> {};
@@ -51,7 +53,7 @@ pizza.add(new Mozzarella());
 // no dynamic_casts here
 pizza.get<TomatoSauce>()->scoville = 3000; // put Tabasco in ;)
 Mozzarella * mozzarella = pizza.get<Mozzarella>();
-const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // contains our Mozzarella only
+const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // There might be multiple cheese types apart from mozzarella, so we get a vector.
 ```
 
 **Opposed to existing Entity-Component Systems and Dynamic Mixin Implementations**, Polypropylene offers the following
@@ -59,6 +61,7 @@ features:
 
 -   **Polymorphism Awareness**: Properties added to an entity are identified by each of their polymorphic types.
 A property can be retrieved from an entity not only by its direct type but also by any of its super types.
+In the above example, the `cheeses` vector also contains the `mozzarella` that was added to the `pizza` because class `Mozzarella` derives `Cheese`.
 **No runtime type checks**, such as `dynamic_cast`, are necessary for property insertion, deletion, and retrieval.
 Those operations have constant runtime (i.e. O(1)) as they depend on the length of the inheritance chain only.
 As reflection is unavailable in C++, the parent property type has to be specified explicitly via `PAX_PROPERTY_DERIVES`.
@@ -66,7 +69,7 @@ As reflection is unavailable in C++, the parent property type has to be specifie
 -   **Property Multiplicity**: Entities may or may not contain several properties of the same type.
 For each property type, its multiplicity (`PAX_PROPERTY_IS_SINGLE` or `PAX_PROPERTY_IS_MULTIPLE`) specifies whether the
 same entity is allowed to contain multiple or only a single property of that type.
-For example, arbitrarily different kinds of `Cheese` may be put onto your `Pizza` whereas any concrete `Cheese`, such as
+For example, arbitrarily different types of `Cheese` may be put onto your `Pizza` whereas any concrete `Cheese`, such as
 `Mozzarella`, occurs only once.
 Multiplicity is also considered upon retrieving objects as either the single instance or a list of contained properties
 is returned.
@@ -76,7 +79,7 @@ A property can only be added to an entity if all its dependencies are met.
 Thus, properties can always assume that at least one property of each depending type is present in their entity.
 In our example, `Cheese` can only be added to the `Pizza` if it contains `TomatoSauce`.
 
-... and thereby is:
+Apart from that, Polypropylene is:
 
 -   **General**: Polypropylene is **general-purpose library**, useful and usable in any C++ project where objects are
 required to alter arbitrarily during runtime or dynamic types are necessary.
@@ -87,15 +90,14 @@ It is neither restricted to nor designed for video games only.
 
 -   **Object- but Data-Oriented**: Polypropylene is designed for object-oriented programming and thus properties are
 deliberately allowed to exhibit custom behaviour.
-Nevertheless, as properties are arbitrary classes, they can be implemented as plain old data (POD).
+Nevertheless, as properties are arbitrary classes, they can be implemented as plain old data (POD) for a strict ECS implementation.
 Property allocation is centralised.
 Dedicated allocators can be registered for each property type.
-By default, pool allocators are used but may be replaced by any **custom allocator** on program start.
-Polyproylene contains a pool and a malloc allocator implementation so far.
+By default, pool allocators are used but may be replaced by any **custom allocator** by implementing the [`Allocator<size_t>`][allocator] interface.
+Polypropylene comes with a default implementation for a pool and a malloc allocator.
 
 -   **Standalone**: Polypropylene does not have any additional dependencies to other libraries except for the C++17
-standard.
-Support for older C++ versions is planned.
+standard and [nlohmann::json][nlohmannjson] which is bundled with Polypropylene (and may be excluded from compilation).
 
 -   **Platform-Independent**: Polypropylene is tested on Windows with MSVC and on Linux with GCC and Clang.
 
@@ -103,7 +105,7 @@ Polypropylene further contains the following features:
 
 -   **Event Service**: Communication between properties is enabled by an event service per entity.
     Properties can emit and receive events similar to the publisher-subscriber design pattern.
-    The event service is also used for `PropertyAdded-` and `PropertyRemovedEvents`.
+    Entities will send `PropertyAdded-` and `PropertyRemovedEvents` to their event service upon adding or removing properties, respectively.
     Event services may optionally be linked such that events can be exchanged between entities or even throughout the whole program.
     ```C++
     class Pizza : public PAX::Entity<Pizza> {
@@ -136,7 +138,7 @@ Polypropylene further contains the following features:
     Furthermore, a simplified specialised **EventHandler** inspired by C# events can be used to register and listen for specific event types.
 
 -   **Serialisation**: Entities may be specified entirely in json files.
-    (Other formats are not supported yet but can be integrated easily.)
+    (Other formats are not supported yet but can be integrated.)
     > margherita.json
     
     ```json
@@ -162,7 +164,7 @@ Polypropylene further contains the following features:
       }
     }
     ```
-    From such files so called **prefabs** are created.
+    From such files so called [**prefabs**][prefab] are created.
     A prefab represents the kind of entity described in the json file.
     It allows instantiating arbitrary amounts of the corresponding entity:
     ```C++
@@ -170,7 +172,7 @@ Polypropylene further contains the following features:
     Pizza * pizzaFunghi = prefab.create({});
     ```
     To customise the individual instances created by a prefab, custom parameters may be specified.
-    For example, the scoville of the TomatoSauce can be made variable by replacing it in the json file by:
+    For example, the scoville of the `TomatoSauce` can be made variable in the json file by introducing a variable name:
     ```json
     "scoville": "${hotness}"
     ```
@@ -194,10 +196,18 @@ Polypropylene further contains the following features:
     Prefabs can also be created from entities with `Entity::toPrefab()`.
     This will return a prefab that allows instantiating copies of the original entity at the point in time the prefab was created.
     Thus, any entity can be copied and the state of entities can be saved.
-    Furthermore, **prefabs can be stored to json files**.
+    Furthermore, **prefabs can be stored to json files**, as done in our [pizza example][example_pizza_main]:
+    ```C++
+    Path outPath = "res/pizza/out/funghiWith" + hotness + "scoville.json";
+        PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
+        JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
+        prefabLoader.write(asJson, outPath);
+    ```
 
--   **Views**: Managing collections of entities can be done with `EntityManagers`.
-    `EntityManagers` link the event services of all contained entities such that a central `EventService` receives and broadcasts the events of all entities.
+-   **EntityManagers and -Views**: Managing collections of entities can be done with `EntityManagers`.
+    `EntityManagers` link the event services of all contained entities to their own central `EventService`.
+    Thus, you can listen to all events broadcasted by the entities of an `EntityManager` at one place.
+
     `EntityManagerViews` provide a filtered view on all entities in a given `EntityManager`:
     ```C++
     EntityManager<Pizza> manager;
@@ -308,9 +318,13 @@ At least we are ... :yum:
 
 [gppcomp]: http://gameprogrammingpatterns.com/component.html
 
+[allocator]: include/polypropylene/memory/Allocator.h
+
 [nlohmannjson]: https://github.com/nlohmann/json
 
 [wiki]: https://github.com/pmbittner/Polypropylene/wiki
+
+[prefab]: include/polypropylene/prefab/Prefab.h
 
 [example_pizzasnippet]: examples/pizzasnippet
 [example_pizza]: examples/pizza
