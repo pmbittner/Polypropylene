@@ -10,7 +10,7 @@
 #include "JsonUtil.h"
 #include "polypropylene/stdutils/StringUtils.h"
 
-// TODO: Try to avoid this
+// TODO: Find a way to include JsonFwd.h here instead of Json.h
 #include "polypropylene/serialisation/json/nlohmann/Json.h"
 
 /**

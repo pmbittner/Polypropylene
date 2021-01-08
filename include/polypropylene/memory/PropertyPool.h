@@ -84,8 +84,6 @@ namespace PAX {
 
         Iterator begin() { return allocator.getMemory(); }
         Iterator end() { return allocator.getMemory() + allocator.getCapacity(); }
-        //PropertyOwningSystemIterator<PropertyType> begin() const { return Iterator(allocator.getMemory()); }
-        //PropertyOwningSystemIterator<PropertyType> end() const { Iterator(allocator.getMemory() + allocator.getCapacity()); }
     };
 }
 

@@ -20,8 +20,10 @@ namespace PAX {
      * For each type, a custom allocator can be registered.
      * By default, a PoolAllocator will be registered for each type lazily.
      */
+    // TODO: Create a source file.
     class AllocationService {
         TypeMap<IAllocator*> allocators;
+        // Use unordered_set here?
         std::vector<void*> allocatedObjects;
 
     public:
