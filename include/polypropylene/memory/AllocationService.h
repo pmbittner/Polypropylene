@@ -24,7 +24,6 @@ namespace PAX {
     class AllocationService {
         TypeMap<IAllocator*> allocators;
         std::vector<IAllocator*> defaultAllocators;
-        // Use unordered_set here?
         std::vector<void*> allocatedObjects;
 
     public:
@@ -44,13 +43,29 @@ namespace PAX {
             allocators[type] = allocator;
         }
 
-        size_t unregisterAllocator(const TypeId & type) {
-            // TODO: Return allocator to avoid memory leak
-            return allocators.erase(type);
+        /**
+         * Removes the allocator that is registered for the given type
+         * from this AllocationService and returns it.
+         * @param type The type for which the current allocator should be removed.
+         * @return The removed allocator.
+         *         Ownership might transfer to the owner if this was one of
+         *         the default allocators.
+         *         Returns nullptr if this AllocationService does not contain
+         *         any allocator for the given type.
+         */
+        IAllocator * unregisterAllocator(const TypeId & type) {
+            auto iterator = allocators.find(type);
+            if (iterator != allocators.end()) {
+                IAllocator * elementToRemove = iterator->second;
+                allocators.erase(iterator);
+                return elementToRemove;
+            }
+
+            return nullptr;
         }
 
         bool hasAllocated(void * object) {
-            // TODO: Maybe we find a better way for detecting this than caching all pointers.
+            // TODO: Maybe we find a better way for detecting this than caching all pointers in a vector.
             return Util::vectorContains(allocatedObjects, object);
         }
 
