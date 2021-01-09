@@ -5,19 +5,19 @@
 #include <polypropylene/memory/allocators/MallocAllocator.h>
 
 namespace PAX {
-    MallocAllocator::MallocAllocator(size_t chunksize)
-    : chunksize(chunksize)
+    MallocAllocator::MallocAllocator(size_t elementSize)
+    : elementSize(elementSize)
     {}
 
     void * MallocAllocator::allocate() {
-        return malloc(chunksize);
+        return malloc(elementSize);
     }
 
-    void MallocAllocator::destroy(void * data) {
-        free(data);
+    void MallocAllocator::free(void * data) {
+        ::free(data);
     }
 
     size_t MallocAllocator::getAllocationSize() {
-        return chunksize;
+        return elementSize;
     }
 }

@@ -144,7 +144,7 @@ namespace PAX {
             }
         };
 
-        void destroy(void * data) override {
+        void free(void * data) override {
             memunit * mem = fromData(data);
             const Index i = indexOf(mem);
 

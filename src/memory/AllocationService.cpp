@@ -39,7 +39,7 @@ namespace PAX {
     bool AllocationService::free(const TypeId &type, void * object) {
         const auto& allocator = allocators.find(type);
         if (allocator != allocators.end() && Util::removeFromVector(allocatedObjects, object)) {
-            allocator->second->destroy(object);
+            allocator->second->free(object);
             return true;
         }
 

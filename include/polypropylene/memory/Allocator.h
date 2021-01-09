@@ -10,7 +10,7 @@ namespace PAX {
     public:
         virtual ~IAllocator() = default;
         virtual void* allocate() = 0;
-        virtual void destroy(void * data) = 0;
+        virtual void free(void * data) = 0;
         virtual size_t getAllocationSize() = 0;
     };
 }

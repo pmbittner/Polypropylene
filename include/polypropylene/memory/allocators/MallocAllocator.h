@@ -13,13 +13,13 @@ namespace PAX {
      * Allocator that simply mallocs or frees single elements.
      */
     class MallocAllocator : public IAllocator {
-        const size_t chunksize;
+        const size_t elementSize;
 
     public:
-        MallocAllocator(size_t chunksize);
+        MallocAllocator(size_t elementSize);
 
         void* allocate() override;
-        void destroy(void * data) override;
+        void free(void * data) override;
         size_t getAllocationSize() override;
     };
 }
