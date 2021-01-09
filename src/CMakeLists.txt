@@ -72,6 +72,7 @@ set(SOURCE_FILES
 
         memory/AllocationService.cpp
         memory/allocators/MallocAllocator.cpp
+        memory/allocators/PoolAllocator.cpp
 
         reflection/ClassMetadata.cpp
         reflection/Field.cpp
