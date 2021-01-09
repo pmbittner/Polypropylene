@@ -72,33 +72,29 @@ namespace PAX {
 
         /**
          * Allocates memory for the given type.
-         * The returned pointer will be of size sizeof(T).
+         * The returned pointer will be of size 't.size'.
          * This method is designed to be used with placement new.
-         *   AllocationService * s = ...;
-         *   T * t = new (s->allocate<T>()) T(some, arguments);
+         * Given some type T then you would use this method as follows:
+         *   AllocationService & s = ...;
+         *   T * t = new (s.allocate(paxtypeof(T))) T(some, arguments);
          * @tparam T The type for which memory should be allocated.
-         * @return A pointer to new memory of size sizeof(T).
+         * @return A pointer to new memory of size 't.size'.
          */
-        template<class T>
-        PAX_NODISCARD void * allocate() {
-            // TODO: Can we avoid the template of this method?
-            //       We could when not registering default allocators here.
-            constexpr size_t TSize = sizeof(T);
-            const TypeId tType = paxtypeid(T);
+        PAX_NODISCARD void * allocate(TypeHandle t) {
             std::shared_ptr<IAllocator> allocator = nullptr;
 
-            const auto & allocIt = allocators.find(tType);
+            const auto & allocIt = allocators.find(t.id);
             if (allocIt != allocators.end()) {
                 allocator = allocIt->second;
 
-                if (allocator->getAllocationSize() != TSize) {
-                    PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << typeid(T).name() << " does not allocate data of size_t " << TSize << "!");
+                if (allocator->getAllocationSize() != t.size) {
+                    PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << t.id.name() << " does not allocate data of size_t " << t.size << "!");
                 }
             }
 
             if (!allocator) {
-                allocator = std::make_shared<PoolAllocator<TSize>>();
-                registerAllocator(tType, allocator);
+                allocator = std::make_shared<PoolAllocator>(t.size);
+                registerAllocator(t.id, allocator);
             }
 
             void * mem = allocator->allocate();

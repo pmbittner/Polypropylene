@@ -9,10 +9,9 @@
 #include "polypropylene/memory/allocators/PoolAllocator.h"
 
 namespace PAX {
-    template<typename PropertyType>
     struct DefaultChunkValidator {
-        bool isValid(typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * chunk) {
-            return chunk->allocated;
+        static bool isValid(const PoolAllocator & pool, PoolAllocator::Index i) {
+            return pool.getChunkInfo(i)->allocated;
         }
     };
 
@@ -20,17 +19,17 @@ namespace PAX {
      * Iterator for pool allocators.
      * @tparam PropertyType The type of property this iterator iterates over.
      */
-    template<typename PropertyType, typename ValidatorType = DefaultChunkValidator<PropertyType>>
+    template<typename PropertyType, typename ValidatorType = DefaultChunkValidator>
     struct PropertyPoolIterator {
     private:
-        ValidatorType validator;
-        typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * current = nullptr;
+        PoolAllocator & pool;
+        PoolAllocator::Index current;
 
     public:
-        PAX_IMPLICIT PropertyPoolIterator(typename PoolAllocator<sizeof(PropertyType)>::MemoryChunk * pos)
-                : current(pos), validator()
+        PropertyPoolIterator(PoolAllocator & pool, PoolAllocator::Index pos)
+                : pool(pool), current(pos)
         {
-            if (!validator.isValid(current)) {
+            if (!ValidatorType::isValid(pool, current)) {
                 this->operator++();
             }
         }
@@ -46,14 +45,14 @@ namespace PAX {
         }
 
         PropertyType * operator*() {
-            return reinterpret_cast<PropertyType*>(&(current->data));
+            return reinterpret_cast<PropertyType*>(pool.getData(current));
         }
 
         PropertyPoolIterator & operator++() {
+            // Step over all invalid memory chunks.
             do {
                 ++current;
-            } while (!validator.isValid(current));
-
+            } while (!ValidatorType::isValid(pool, current));
             return *this;
         }
     };
@@ -68,14 +67,12 @@ namespace PAX {
      * For the specified property type a pool allocator is registered in the allocation service of the corresponding
      * entity.
      */
-    template<class PropertyType, class IteratorType = PropertyPoolIterator<PropertyType>>
+    template<class PropertyType, class Iterator = PropertyPoolIterator<PropertyType>>
     class PropertyPool {
         static constexpr size_t PropSize = sizeof(PropertyType);
-        std::shared_ptr<PoolAllocator<PropSize>> allocator;
+        std::shared_ptr<PoolAllocator> pool;
 
     public:
-        using Iterator = IteratorType;
-
         PropertyPool() {
             const TypeId propType = paxtypeid(PropertyType);
             AllocationService & allocationService = PropertyType::EntityType::GetAllocationService();
@@ -84,23 +81,23 @@ namespace PAX {
             // If there is already an allocator registered for our property type ...
             if (existingAllocator) {
                 // ... See if it is a PoolAllocator.
-                allocator = std::dynamic_pointer_cast<PoolAllocator<PropSize>>(existingAllocator);
-                if (!allocator) {
+                pool = std::dynamic_pointer_cast<PoolAllocator>(existingAllocator);
+                if (!pool) {
                     // If it is not, remove it because we will replace it.
                     allocationService.unregisterAllocator(propType);
                 }
             }
 
             // If we couldn't reuse an existing allocator.
-            if (!allocator) {
+            if (!pool) {
                 // create one
-                allocator = std::make_shared<PoolAllocator<PropSize>>();
-                allocationService.registerAllocator(propType, allocator);
+                pool = std::make_shared<PoolAllocator>(PropSize);
+                allocationService.registerAllocator(propType, pool);
             }
         }
 
-        Iterator begin() { return allocator->getMemory(); }
-        Iterator end() { return allocator->getMemory() + allocator->getCapacity(); }
+        Iterator begin() { return Iterator(*pool.get(), 0); }
+        Iterator end() { return Iterator(*pool.get(), pool->getCapacity()); }
     };
 }
 
