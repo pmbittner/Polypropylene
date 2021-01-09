@@ -14,6 +14,7 @@ namespace PAX {
     /// It can neither grow nor shrink.
     /// \tparam ElementSize The size in bytes an allocatable element should have.
     template<size_t ElementSize>
+    // TODO: Can we avoid the template?
     class PoolAllocator : public Allocator<ElementSize> {
     public:
         static constexpr size_t Initial_Size = 1024;
@@ -47,10 +48,14 @@ namespace PAX {
             clear();
         }
 
+        PoolAllocator(const PAX::PoolAllocator<ElementSize> && other) {
+            memory = other.memory;
+            freeChunks.stack = other.freeChunks.stack;
+            clear();
+        }
+
         PoolAllocator(const PoolAllocator & other) = delete;
-        PoolAllocator(const PoolAllocator&& other) = delete;
         PoolAllocator & operator=(const PoolAllocator & other) = delete;
-        PoolAllocator & operator=(const PoolAllocator&& other) = delete;
 
         ~PoolAllocator() override {
             if (numberOfAllocations > 0) {
