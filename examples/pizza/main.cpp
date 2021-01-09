@@ -130,6 +130,8 @@ int main(int argc, char** argv) {
         PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
         JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
         prefabLoader.write(asJson, outPath);
+
+        PAX_LOG(Log::Level::Info, "Your pizza was delivered to '" << outPath << "'.");
     }
 #endif
 
