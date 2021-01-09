@@ -11,18 +11,16 @@
 namespace PAX {
     /**
      * Allocator that simply mallocs or frees single elements.
-     * @tparam ElementSize
      */
-    template<size_t ElementSize>
-    class MallocAllocator : public Allocator<ElementSize> {
-    public:
-        void* allocate() override {
-            return malloc(ElementSize);
-        }
+    class MallocAllocator : public IAllocator {
+        const size_t chunksize;
 
-        void destroy(void * data) override {
-            free(data);
-        }
+    public:
+        MallocAllocator(size_t chunksize);
+
+        void* allocate() override;
+        void destroy(void * data) override;
+        size_t getAllocationSize() override;
     };
 }
 

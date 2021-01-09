@@ -71,6 +71,7 @@ set(SOURCE_FILES
         log/Log.cpp
 
         memory/AllocationService.cpp
+        memory/allocators/MallocAllocator.cpp
 
         reflection/ClassMetadata.cpp
         reflection/Field.cpp
