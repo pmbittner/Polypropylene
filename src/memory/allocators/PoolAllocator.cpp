@@ -5,6 +5,15 @@
 #include <polypropylene/memory/allocators/PoolAllocator.h>
 
 namespace PAX {
+#ifdef PAX_BUILD_TYPE_DEBUG
+    #define PAX_POOL_ASSERTVALIDINDEX(i) \
+        if ((i) < 0 || capacity <= (i)) { \
+            PAX_THROW_RUNTIME_ERROR("Index out of bounds. Can be in [0, " << getCapacity() << "] but was " << (i) << "!"); \
+        }
+#else
+    #define PAX_POOL_ASSERTVALIDINDEX(i)
+#endif
+
     size_t PoolAllocator::ChunkSize() const {
         return MetaDataSize + elementSize;
     }
@@ -28,11 +37,12 @@ namespace PAX {
         return reinterpret_cast<ChunkInfo*>(chunk);
     }
 
-    PoolAllocator::Index PoolAllocator::indexOf(memunit *m) const {
+    PoolAllocator::Index PoolAllocator::indexOf(const memunit * m) const {
         return Index((m - memory) / ChunkSize());
     }
 
     PoolAllocator::memunit * PoolAllocator::memAtIndex(Index index) const {
+        PAX_POOL_ASSERTVALIDINDEX(index)
         return memory + size_t(index * ChunkSize());
     }
 
@@ -40,10 +50,9 @@ namespace PAX {
       elementSize(elementSize),
       capacity(capacity),
       numberOfAllocations(0),
-      freeChunks()
+      freeChunks(capacity)
     {
         memory = new memunit[MemorySize()];
-        freeChunks.stack = new Index[capacity];
         clear();
     }
 
@@ -56,12 +65,31 @@ namespace PAX {
     {
     }
 
-    PoolAllocator::IndexStack::IndexStack() : topIndex(0), stack(nullptr) {}
+    PoolAllocator::~PoolAllocator() {
+        if (numberOfAllocations > 0) {
+            PAX_LOG(PAX::Log::Level::Warn, "Deleting PoolAllocator although there are still " << numberOfAllocations << " elements allocated!");
+        }
+
+        delete[] memory;
+    }
+
+    PoolAllocator::IndexStack::IndexStack(Index capacity) :
+      capacity(capacity),
+      topIndex(0)
+    {
+        stack = new Index[capacity];
+    }
+
     PoolAllocator::IndexStack::IndexStack(IndexStack && other) noexcept :
+      capacity(other.capacity),
       topIndex(other.topIndex),
       stack(other.stack)
     {
 
+    }
+
+    PoolAllocator::IndexStack::~IndexStack() {
+        delete[] stack;
     }
 
     PoolAllocator::Index PoolAllocator::IndexStack::pop() {
@@ -71,6 +99,10 @@ namespace PAX {
     }
 
     void PoolAllocator::IndexStack::push(Index val) {
+        if (full()) {
+            PAX_THROW_RUNTIME_ERROR("Memory overflow");
+        }
+
         // Decrement the topIndex to make space for our new val.
         --topIndex;
         // Insert such that the stack is sorted and the smallest index stays at the stack top.
@@ -85,13 +117,12 @@ namespace PAX {
         stack[posToInsertFreeIndex] = val;
     }
 
-    PoolAllocator::~PoolAllocator() {
-        if (numberOfAllocations > 0) {
-            PAX_LOG(PAX::Log::Level::Warn, "Deleting PoolAllocator although there are still " << numberOfAllocations << " elements allocated!");
-        }
+    bool PoolAllocator::IndexStack::empty() const {
+        return topIndex >= capacity;
+    }
 
-        delete[] memory;
-        delete[] freeChunks.stack;
+    bool PoolAllocator::IndexStack::full() const {
+        return topIndex <= 0;
     }
 
     void PoolAllocator::clearFreeChunksStack() {
@@ -102,12 +133,8 @@ namespace PAX {
         }
     }
 
-    bool PoolAllocator::areFreeChunksAvailable() const {
-        return freeChunks.topIndex < capacity;
-    }
-
     void * PoolAllocator::allocate() {
-        if (areFreeChunksAvailable()) {
+        if (!freeChunks.empty()) {
             ++numberOfAllocations;
             ChunkInfo * ourChunkInfo = getChunkInfo(freeChunks.pop());
             ourChunkInfo->allocated = true;
@@ -152,14 +179,18 @@ namespace PAX {
     }
 
     PoolAllocator::ChunkInfo * PoolAllocator::getChunkInfo(Index index) const {
+        PAX_POOL_ASSERTVALIDINDEX(index)
         return InfoFor(memAtIndex(index));
     }
 
     void * PoolAllocator::getData(Index index) const {
+        PAX_POOL_ASSERTVALIDINDEX(index)
         return DataOf(getChunkInfo(index));
     }
 
     PoolAllocator::Index PoolAllocator::getCapacity() const {
         return capacity;
     }
+
+#undef PAX_POOL_ASSERTVALIDINDEX
 }

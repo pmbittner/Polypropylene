@@ -11,6 +11,10 @@ namespace PAX {
         virtual ~IAllocator() = default;
         virtual void* allocate() = 0;
         virtual void free(void * data) = 0;
+
+        /**
+         * @return The size of each allocated data object.
+         */
         virtual size_t getAllocationSize() = 0;
     };
 }

@@ -11,12 +11,17 @@
 namespace PAX {
     struct DefaultChunkValidator {
         static bool isValid(const PoolAllocator & pool, PoolAllocator::Index i) {
-            return pool.getChunkInfo(i)->allocated;
+            return
+                0 <= i && i < pool.getCapacity() &&
+                pool.getChunkInfo(i)->allocated;
         }
     };
 
     /**
      * Iterator for pool allocators.
+     * This is a naive implementations that steps over all memory chunks in a pool allocator
+     * and inspects if these are allocated or not.
+     * Returns allocated chunks and skips invalid ones.
      * @tparam PropertyType The type of property this iterator iterates over.
      */
     template<typename PropertyType, typename ValidatorType = DefaultChunkValidator>
@@ -25,13 +30,20 @@ namespace PAX {
         PoolAllocator & pool;
         PoolAllocator::Index current;
 
-    public:
         PropertyPoolIterator(PoolAllocator & pool, PoolAllocator::Index pos)
-                : pool(pool), current(pos)
-        {
-            if (!ValidatorType::isValid(pool, current)) {
-                this->operator++();
+                : pool(pool), current(pos) {}
+
+    public:
+        static PropertyPoolIterator BeginOf(PoolAllocator & pool) {
+            PoolAllocator::Index current = 0;
+            while (current < pool.getCapacity() && !ValidatorType::isValid(pool, current)) {
+                ++current;
             }
+            return PropertyPoolIterator(pool, current);
+        }
+
+        static PropertyPoolIterator EndOf(PoolAllocator & pool) {
+            return PropertyPoolIterator(pool, pool.getCapacity());
         }
 
         PropertyPoolIterator & operator=(const PropertyPoolIterator & other) = default;
@@ -50,9 +62,11 @@ namespace PAX {
 
         PropertyPoolIterator & operator++() {
             // Step over all invalid memory chunks.
-            do {
-                ++current;
-            } while (!ValidatorType::isValid(pool, current));
+            if (current < pool.getCapacity()) {
+                do {
+                    ++current;
+                } while (current < pool.getCapacity() && !ValidatorType::isValid(pool, current));
+            }
             return *this;
         }
     };
@@ -96,8 +110,8 @@ namespace PAX {
             }
         }
 
-        Iterator begin() { return Iterator(*pool.get(), 0); }
-        Iterator end() { return Iterator(*pool.get(), pool->getCapacity()); }
+        Iterator begin() { return Iterator::BeginOf(*pool.get()); }
+        Iterator end() { return Iterator::EndOf(*pool.get()); }
     };
 }
 
