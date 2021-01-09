@@ -80,27 +80,7 @@ namespace PAX {
          * @tparam T The type for which memory should be allocated.
          * @return A pointer to new memory of size 't.size'.
          */
-        PAX_NODISCARD void * allocate(TypeHandle t) {
-            std::shared_ptr<IAllocator> allocator = nullptr;
-
-            const auto & allocIt = allocators.find(t.id);
-            if (allocIt != allocators.end()) {
-                allocator = allocIt->second;
-
-                if (allocator->getAllocationSize() != t.size) {
-                    PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << t.id.name() << " does not allocate data of size_t " << t.size << "!");
-                }
-            }
-
-            if (!allocator) {
-                allocator = std::make_shared<PoolAllocator>(t.size);
-                registerAllocator(t.id, allocator);
-            }
-
-            void * mem = allocator->allocate();
-            allocatedObjects.push_back(mem);
-            return mem;
-        }
+        PAX_NODISCARD void * allocate(TypeHandle t);
 
         /**
          * Frees the given memory that was allocated used for objects of the given type.

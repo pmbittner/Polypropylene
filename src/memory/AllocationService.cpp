@@ -36,6 +36,28 @@ namespace PAX {
         return Util::vectorContains(allocatedObjects, object);
     }
 
+    void * AllocationService::allocate(TypeHandle t) {
+        std::shared_ptr<IAllocator> allocator = nullptr;
+
+        const auto & allocIt = allocators.find(t.id);
+        if (allocIt != allocators.end()) {
+            allocator = allocIt->second;
+
+            if (allocator->getAllocationSize() != t.size) {
+                PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << t.id.name() << " does not allocate data of size_t " << t.size << "!");
+            }
+        }
+
+        if (!allocator) {
+            allocator = std::make_shared<PoolAllocator>(t.size);
+            registerAllocator(t.id, allocator);
+        }
+
+        void * mem = allocator->allocate();
+        allocatedObjects.push_back(mem);
+        return mem;
+    }
+
     bool AllocationService::free(const TypeId &type, void * object) {
         const auto& allocator = allocators.find(type);
         if (allocator != allocators.end() && Util::removeFromVector(allocatedObjects, object)) {
