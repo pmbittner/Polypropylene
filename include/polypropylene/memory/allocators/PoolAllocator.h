@@ -19,6 +19,9 @@ namespace PAX {
         static constexpr size_t DefaultCapacity = 1024;
         using Index = int32_t;
 
+        /**
+         * Metadata for each allocatable element.
+         */
         struct ChunkInfo {
         public:
             bool allocated;
@@ -29,20 +32,25 @@ namespace PAX {
         using memunit = char;
         static constexpr size_t MetaDataSize = sizeof(ChunkInfo);
 
-        /// This is a stack to remember which chunks of memory are free.
-        /// The stack is realised as an array where the top is at the beginning and is moved to the back as elements get popped.
-        /// Hence, when an element is pushed, topIndex is decremented.
+        /**
+         * This is a stack to remember which chunks of memory are free.
+         * The stack is realised as an array where the top is at the beginning and is moved to the back as elements get popped.
+         * Hence, when an element is pushed, topIndex is decremented.
+         */
         struct IndexStack {
+        private:
             const Index capacity;
             Index * stack;
             Index topIndex;
 
+        public:
             IndexStack(Index capacity);
             IndexStack(IndexStack && other) noexcept;
             ~IndexStack();
 
             Index pop();
             void push(Index val);
+            void clear();
 
             bool empty() const;
             bool full() const;
@@ -69,13 +77,35 @@ namespace PAX {
 
         size_t ChunkSize() const;
         size_t MemorySize() const;
-        
-        void clearFreeChunksStack();
 
+        /**
+         * @return The user data that is associated to the given metadata.
+         */
         static void * DataOf(ChunkInfo * chunk);
+
+        /**
+         * @return A pointer into 'memory' to the beginning of this data's chunk
+         * (w.r.t. to its prefixing ChunkInfo).
+         */
         static memunit * FromData(void * data);
-        static ChunkInfo* InfoFor(memunit * chunk);
+
+        /**
+         * Assumes that the given pointer points to the begin of a data chunk in 'memory'
+         * (i.e., (chunk - memory) % ChunkSize() == 0).
+         * @return The metadata for the data chunk at the given pointer into 'memory'.
+         */
+        ChunkInfo* InfoFor(memunit * chunk) const;
+
+        /**
+         * Assumes that the given pointer points to the begin of a data chunk in 'memory'
+         * (i.e., (chunk - memory) % ChunkSize() == 0).
+         * @return The index of the data chunk at the given pointer into 'memory'.
+         */
         Index indexOf(const memunit * m) const;
+
+        /**
+         * @return A pointer to the data chunk inside 'memory' at the given index.
+         */
         memunit* memAtIndex(Index index) const;
 
     public:
@@ -118,6 +148,12 @@ namespace PAX {
          */
         void * getData(Index index) const;
 
+        /**
+         *
+         * @return The size of each allocated data object..
+         *         This equals the value of the parameter elementSize
+         *         that was passed to this PoolAllocator during creation.
+         */
         size_t getAllocationSize() override;
 
         /**

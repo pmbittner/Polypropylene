@@ -10,8 +10,13 @@ namespace PAX {
         if ((i) < 0 || capacity <= (i)) { \
             PAX_THROW_RUNTIME_ERROR("Index out of bounds. Can be in [0, " << getCapacity() << "] but was " << (i) << "!"); \
         }
+    #define PAX_POOL_ASSERTVALIDPOINTER(p) \
+        if (((p) - memory) % ChunkSize() != 0) { \
+            PAX_THROW_RUNTIME_ERROR("Given pointer " << (p) << " does not point to the beginning a valid data chunk!"); \
+        }
 #else
     #define PAX_POOL_ASSERTVALIDINDEX(i)
+    #define PAX_POOL_ASSERTVALIDPOINTER(p)
 #endif
 
     size_t PoolAllocator::ChunkSize() const {
@@ -33,11 +38,13 @@ namespace PAX {
         return reinterpret_cast<memunit*>(data) - MetaDataSize;
     }
 
-    PoolAllocator::ChunkInfo * PoolAllocator::InfoFor(memunit *chunk) {
+    PoolAllocator::ChunkInfo * PoolAllocator::InfoFor(memunit *chunk) const {
+        PAX_POOL_ASSERTVALIDPOINTER(chunk)
         return reinterpret_cast<ChunkInfo*>(chunk);
     }
 
     PoolAllocator::Index PoolAllocator::indexOf(const memunit * m) const {
+        PAX_POOL_ASSERTVALIDPOINTER(m)
         return Index((m - memory) / ChunkSize());
     }
 
@@ -117,20 +124,20 @@ namespace PAX {
         stack[posToInsertFreeIndex] = val;
     }
 
+    void PoolAllocator::IndexStack::clear() {
+        // Initialise free chunks stack: All chunks are free now.
+        topIndex = 0;
+        for (Index i = 0; i < capacity; ++i) {
+            stack[i] = i;
+        }
+    }
+
     bool PoolAllocator::IndexStack::empty() const {
         return topIndex >= capacity;
     }
 
     bool PoolAllocator::IndexStack::full() const {
         return topIndex <= 0;
-    }
-
-    void PoolAllocator::clearFreeChunksStack() {
-        // Initialise free chunks stack: All chunks are free now.
-        freeChunks.topIndex = 0;
-        for (Index i = 0; i < capacity; ++i) {
-            freeChunks.stack[i] = i;
-        }
     }
 
     void * PoolAllocator::allocate() {
@@ -168,7 +175,7 @@ namespace PAX {
         if (numberOfAllocations == 0) {
             // Null memory. (Thereby set allocated to false in all chunks).
             memset(memory, 0, MemorySize());
-            clearFreeChunksStack();
+            freeChunks.clear();
         } else {
             PAX_LOG(PAX::Log::Level::Error, "Clearing PoolAllocator although there are still " << numberOfAllocations << " elements allocated");
         }
@@ -193,4 +200,5 @@ namespace PAX {
     }
 
 #undef PAX_POOL_ASSERTVALIDINDEX
+#undef PAX_POOL_ASSERTVALIDPOINTER
 }
