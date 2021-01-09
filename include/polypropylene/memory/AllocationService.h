@@ -88,32 +88,35 @@ namespace PAX {
          * This method does not invoke the destructor of the given memory (because there is no
          * static type information).
          * If you want to delete (i.e., invoke the destructor) and free the memory use deleteAndFree<T> instead.
+         * Throws a runtime error with corresponding message if
+         *   - there is no allocator registered for the given type in this AllocationService.
+         *   - or the given memory was not allocated with this AllocationService.
          * @param type The type for which the given memory was allocated with allocate<T>.
          *             This method will look for the allocator registered for this type in this
          *             AllocationService and assumes that the given memory was allocated with the
          *             found allocator.
          * @param memory The memory that should be freed.
-         * @return True iff the given memory could be freed.
-         *         Returns false, when
-         *         - There is no allocator registered for the given type in this AllocationService.
-         *         - or the given memory was not allocated with this AllocationService.
          */
-        bool free(const TypeId & type, void * memory);
+        void free(const TypeId & type, void * memory);
 
         /**
          * Deletes the given object by invoking its constructor.
          * Frees its memory afterwards by invoking `free`.
+         * Does nothing if the given object was not allocated trough this allocation service.
          * @tparam T The type of the constructor that should be invoked (~T()).
          * @param t The object which will be deleted.
-         * @return True iff the memory of the given object could be free.
-         *         False if the inner call to `free` failed.
-         *         Then, t is a zombie afterwards, meaning its memory is still allocated
-         *         but the object was destroyed.
+         * @return True iff the object was deleted.
+         *         False iff the object was not allocated with this
+         *         AllocationService and thus could not be freed.
          */
         template<typename T>
         bool deleteAndFree(T * t) {
-            t->~T();
-            return free(paxtypeid(T), t);
+            if (hasAllocated(t)) {
+                t->~T();
+                free(paxtypeid(T), t);
+                return true;
+            }
+            return false;
         }
     };
 }
