@@ -9,7 +9,7 @@
 #include "polypropylene/memory/allocators/PoolAllocator.h"
 
 namespace PAX {
-    struct DefaultChunkValidator {
+    struct PAX_MAYBEUNUSED DefaultChunkValidator {
         static bool isValid(const PoolAllocator & pool, PoolAllocator::Index i) {
             return
                 0 <= i && i < pool.getCapacity() &&
@@ -25,7 +25,7 @@ namespace PAX {
      * @tparam PropertyType The type of property this iterator iterates over.
      */
     template<typename PropertyType, typename ValidatorType = DefaultChunkValidator>
-    struct PropertyPoolIterator {
+    struct PAX_MAYBEUNUSED PropertyPoolIterator {
     private:
         PoolAllocator & pool;
         PoolAllocator::Index current;

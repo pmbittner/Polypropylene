@@ -17,16 +17,18 @@
 #endif
 
 #if PAX_CXX_STANDARD >= 2017
-#define PAX_CONSTEXPR_IF if constexpr
-#define PAX_NODISCARD [[nodiscard]]
+    #define PAX_CONSTEXPR_IF if constexpr
+    #define PAX_NODISCARD [[nodiscard]]
+    #define PAX_MAYBEUNUSED [[maybe_unused]]
 #else
-#define PAX_CONSTEXPR_IF if
-#define PAX_NODISCARD
+    #define PAX_CONSTEXPR_IF if
+    #define PAX_NODISCARD
+    #define PAX_MAYBEUNUSED
 #endif
 
 #define PAX_INTERNAL(name) _paxinternal_##name
 
-#define ___PAX_STRINGIFY_2_(a) #a
-#define PAX_STRINGIFY(a) ___PAX_STRINGIFY_2_(a)
+#define PAX_STRINGIFY_2_(a) #a
+#define PAX_STRINGIFY(a) PAX_STRINGIFY_2_(a)
 
 #endif //POLYPROPYLENE_DEFINITIONS_H
