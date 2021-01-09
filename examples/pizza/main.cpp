@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     ///   all contained properties but only those that were allocated with the allocation service.
     ///   Thus, beware of memory leaks as customly allocated properties have to be deleted manually!
     /// PropertyFactories and Prefabs always use the allocation service.
-    Champignon * champignon = new (Pizza::GetAllocationService().allocate<Champignon>()) Champignon();
+    Champignon * champignon = new (Pizza::GetAllocationService().allocate(paxtypeof(Champignon))) Champignon();
 
     /// Add TomatoSauce first because Cheeses (e.g., Mozzarella) depend on it.
     pizzaFunghi->add(&tomatoSauce);
