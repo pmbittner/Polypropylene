@@ -47,15 +47,21 @@ namespace PAX {
         clear();
     }
 
-    PoolAllocator::PoolAllocator(const PAX::PoolAllocator &&other) noexcept :
+    PoolAllocator::PoolAllocator(PAX::PoolAllocator && other) noexcept :
       elementSize(other.elementSize),
       capacity(other.capacity),
       numberOfAllocations(other.numberOfAllocations),
       memory(other.memory),
-      freeChunks()
+      freeChunks(std::move(other.freeChunks))
     {
-        freeChunks.stack = other.freeChunks.stack;
-        clear();
+    }
+
+    PoolAllocator::IndexStack::IndexStack() : topIndex(0), stack(nullptr) {}
+    PoolAllocator::IndexStack::IndexStack(IndexStack && other) noexcept :
+      topIndex(other.topIndex),
+      stack(other.stack)
+    {
+
     }
 
     PoolAllocator::Index PoolAllocator::IndexStack::pop() {

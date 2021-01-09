@@ -34,6 +34,9 @@ namespace PAX {
             Index * stack;
             Index topIndex;
 
+            IndexStack();
+            IndexStack(IndexStack && other) noexcept;
+
             Index pop();
             void push(Index val);
         } freeChunks;
@@ -60,7 +63,7 @@ namespace PAX {
         /// Creates a PoolAllocator of fixedSize.
         /// \param capacity The maximum number of elements that can be allocated simultaneously.
         explicit PoolAllocator(size_t elementSize, Index capacity = DefaultSize);
-        PoolAllocator(const PAX::PoolAllocator && other) noexcept;
+        PoolAllocator(PAX::PoolAllocator && other) noexcept;
         PoolAllocator(const PoolAllocator & other) = delete;
         
         PoolAllocator & operator=(const PoolAllocator & other) = delete;
