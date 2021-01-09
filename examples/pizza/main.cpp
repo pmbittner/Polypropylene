@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 
     /// Either allocate properties where and how you like ...
     TomatoSauce tomatoSauce(hotness);
-    Mozzarella mozzarella;
+    Mozzarella * mozzarella = new Mozzarella();
     /// ... or (optionally) use the allocation service.
     /// Using the allocation service has the following benefits:
     /// - PropertyPools only know the properties allocated by the allocation service.
@@ -89,11 +89,11 @@ int main(int argc, char** argv) {
     ///   all contained properties but only those that were allocated with the allocation service.
     ///   Thus, beware of memory leaks as customly allocated properties have to be deleted manually!
     /// PropertyFactories and Prefabs always use the allocation service.
-    Champignon * champignon = new (Pizza::GetAllocationService().allocate(paxtypeof(Champignon))) Champignon();
+    Champignon * champignon = pax_new(Champignon)();
 
     /// Add TomatoSauce first because Cheeses (e.g., Mozzarella) depend on it.
     pizzaFunghi->add(&tomatoSauce);
-    pizzaFunghi->add(&mozzarella);
+    pizzaFunghi->add(mozzarella);
     pizzaFunghi->add(champignon);
 #endif
 

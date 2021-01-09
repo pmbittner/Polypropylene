@@ -40,7 +40,7 @@ namespace PAX {
          * @return returns a new entity of this prefab.
          */
         PAX_NODISCARD virtual T * create(const VariableRegister & variableRegister) {
-            T * e = new (T::GetAllocationService().allocate(paxtypeof(T))) T();
+            T * e = pax_new(T)();
             addMyContentTo(*e, variableRegister);
             return e;
         }
