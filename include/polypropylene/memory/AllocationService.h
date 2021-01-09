@@ -20,9 +20,8 @@ namespace PAX {
      * For each type, a custom allocator can be registered.
      * By default, a PoolAllocator will be registered for each type lazily.
      */
-    class AllocationService {
-        TypeMap<IAllocator*> allocators;
-        std::vector<IAllocator*> defaultAllocators;
+    class AllocationService final {
+        TypeMap<std::shared_ptr<IAllocator>> allocators;
         std::vector<void*> allocatedObjects;
 
     public:
@@ -31,16 +30,12 @@ namespace PAX {
 
         /**
          * Registers the given allocator for (de-) allocating objects of the given type.
-         * Does not take ownership.
          */
-        void registerAllocator(const TypeId & type, IAllocator * allocator);
+        void registerAllocator(const TypeId & type, const std::shared_ptr<IAllocator> & allocator);
 
         /**
          * Removes the allocator that is registered for the given type
          * from this AllocationService and returns it.
-         * Transfers ownership to the caller if the allocator was a default allocator.
-         * Otherwise, the allocator is owned by some other object different from this
-         * AllocationService.
          *
          * Beware! This is a very dangerous call that can lead to memory leaks
          * and segmentation faults if not used carefully.
@@ -54,12 +49,18 @@ namespace PAX {
          *
          * @param type The type for which the current allocator should be removed.
          * @return The removed allocator.
-         *         Ownership might transfer to the owner if this was one of
-         *         the default allocators.
          *         Returns nullptr if this AllocationService does not contain
          *         any allocator for the given type.
          */
-        IAllocator * unregisterAllocator(const TypeId & type);
+        std::shared_ptr<IAllocator> unregisterAllocator(const TypeId & type);
+
+        /**
+         * Returns the IAllocator that is registered for the given type.
+         * @param type The type for which the allocator should be returned.
+         * @return The IAllocator that is registered for the given type.
+         *         Returns nullptr if there is no such allocator.
+         */
+        std::shared_ptr<IAllocator> getAllocator(const TypeId & type);
 
         /**
          * Returns true iff the given object was allocated with this AllocationService.
@@ -81,20 +82,23 @@ namespace PAX {
         template<class T>
         PAX_NODISCARD void * allocate() {
             // TODO: Can we avoid the template of this method?
-            Allocator<sizeof(T)> * allocator = nullptr;
+            //       We could when not registering default allocators here.
+            constexpr size_t TSize = sizeof(T);
+            const TypeId tType = paxtypeid(T);
+            std::shared_ptr<IAllocator> allocator = nullptr;
 
-            const auto & allocIt = allocators.find(paxtypeid(T));
+            const auto & allocIt = allocators.find(tType);
             if (allocIt != allocators.end()) {
-                allocator = dynamic_cast<Allocator<sizeof(T)>*>(allocIt->second);
-                if (!allocator) {
-                    PAX_LOG(PAX::Log::Level::Error, "Registered Allocator for " << typeid(T).name() << " is not of type Allocator<" << typeid(T).name() << ">!");
+                allocator = allocIt->second;
+
+                if (allocator->getAllocationSize() != TSize) {
+                    PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << typeid(T).name() << " does not allocate data of size_t " << TSize << "!");
                 }
             }
 
             if (!allocator) {
-                allocator = new PoolAllocator<sizeof(T)>();
-                defaultAllocators.push_back(allocator);
-                registerAllocator(paxtypeid(T), allocator);
+                allocator = std::make_shared<PoolAllocator<TSize>>();
+                registerAllocator(tType, allocator);
             }
 
             void * mem = allocator->allocate();

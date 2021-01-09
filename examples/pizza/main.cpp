@@ -59,11 +59,11 @@ int main(int argc, char** argv) {
 
     /// EXAMPLE
 
-    /// Create and register a property pool for champignons.
+    /// Create a property pool for champignons.
     /// The pool will hold all allocated instances of champignons.
+    /// It will do so by communicating with the AllocationService of Pizza.
     /// It's usage is optional.
     PropertyPool<Champignon> champignonPool;
-    champignonPool.initialize();
 
     std::cout << "How hot do you like your pizza (in scoville)?\n";
 #ifdef PAX_WITH_JSON

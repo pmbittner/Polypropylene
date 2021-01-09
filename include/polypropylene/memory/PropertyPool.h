@@ -70,20 +70,37 @@ namespace PAX {
      */
     template<class PropertyType, class IteratorType = PropertyPoolIterator<PropertyType>>
     class PropertyPool {
-        PoolAllocator<sizeof(PropertyType)> allocator;
+        static constexpr size_t PropSize = sizeof(PropertyType);
+        std::shared_ptr<PoolAllocator<PropSize>> allocator;
 
     public:
         using Iterator = IteratorType;
 
-        PropertyPool() = default;
-
-        void initialize() {
+        PropertyPool() {
+            const TypeId propType = paxtypeid(PropertyType);
             AllocationService & allocationService = PropertyType::EntityType::GetAllocationService();
-            allocationService.registerAllocator(paxtypeid(PropertyType), &allocator);
+            const std::shared_ptr<IAllocator> & existingAllocator = allocationService.getAllocator(propType);
+
+            // If there is already an allocator registered for our property type ...
+            if (existingAllocator) {
+                // ... See if it is a PoolAllocator.
+                allocator = std::dynamic_pointer_cast<PoolAllocator<PropSize>>(existingAllocator);
+                if (!allocator) {
+                    // If it is not, remove it because we will replace it.
+                    allocationService.unregisterAllocator(propType);
+                }
+            }
+
+            // If we couldn't reuse an existing allocator.
+            if (!allocator) {
+                // create one
+                allocator = std::make_shared<PoolAllocator<PropSize>>();
+                allocationService.registerAllocator(propType, allocator);
+            }
         }
 
-        Iterator begin() { return allocator.getMemory(); }
-        Iterator end() { return allocator.getMemory() + allocator.getCapacity(); }
+        Iterator begin() { return allocator->getMemory(); }
+        Iterator end() { return allocator->getMemory() + allocator->getCapacity(); }
     };
 }
 
