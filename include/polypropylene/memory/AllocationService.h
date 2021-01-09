@@ -5,12 +5,12 @@
 #ifndef POLYPROPYLENE_PROPERTYALLOCATIONSERVICE_H
 #define POLYPROPYLENE_PROPERTYALLOCATIONSERVICE_H
 
+#include <memory>
 
 #include <polypropylene/stdutils/CollectionUtils.h>
 #include "polypropylene/reflection/TypeMap.h"
 
 #include "Allocator.h"
-#include "allocators/MallocAllocator.h"
 #include "allocators/PoolAllocator.h"
 
 namespace PAX {
