@@ -34,7 +34,7 @@ namespace PAX {
         sauces.emplace_back(pax_new(TomatoSauce)(0));
         expect_equal(pool, sauces);
 
-        pax_delete(sauces.back());
+        ASSERT_TRUE(pax_delete(sauces.back()));
         sauces.pop_back();
         expect_equal(pool, sauces);
 
@@ -42,7 +42,7 @@ namespace PAX {
         expect_equal(pool, sauces);
 
         for (TomatoSauce * t : sauces) {
-            pax_delete(t);
+            ASSERT_TRUE(pax_delete(t));
         }
         sauces.clear();
 
