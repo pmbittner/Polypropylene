@@ -5,16 +5,12 @@
 #ifndef POLYPROPYLENE_PROPERTYPOOL_H
 #define POLYPROPYLENE_PROPERTYPOOL_H
 
-#include <polypropylene/memory/AllocationService.h>
-#include "polypropylene/memory/allocators/PoolAllocator.h"
+#include "AllocationService.h"
+#include "allocators/PoolAllocator.h"
 
 namespace PAX {
     struct PAX_MAYBEUNUSED DefaultChunkValidator {
-        static bool isValid(const PoolAllocator & pool, PoolAllocator::Index i) {
-            return
-                0 <= i && i < pool.getCapacity() &&
-                pool.getChunkInfo(i)->allocated;
-        }
+        static bool isValid(const PoolAllocator & pool, PoolAllocator::Index i);
     };
 
     /**

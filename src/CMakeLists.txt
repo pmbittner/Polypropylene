@@ -71,6 +71,7 @@ set(SOURCE_FILES
         log/Log.cpp
 
         memory/AllocationService.cpp
+        memory/PropertyPool.cpp
         memory/allocators/MallocAllocator.cpp
         memory/allocators/PoolAllocator.cpp
 
