@@ -16,7 +16,13 @@
  *    Cheese * c = pax_new(Cheese)(arguments, for, constructor, here);
  * @param propOrEntityType The type of the property or entity you want to create.
  */
-#define pax_new(propOrEntityType) new (propOrEntityType::EntityType::GetAllocationService().allocate(paxtypeof(propOrEntityType))) propOrEntityType
+#define pax_new(propOrEntityType) \
+new (propOrEntityType::EntityType::GetAllocationService().allocate(paxtypeof(propOrEntityType))) propOrEntityType
+
+template<typename T>
+void pax_delete(T * t) {
+    T::EntityType::GetAllocationService().template deleteAndFree<T>(t);
+}
 
 namespace PAX {
     template<class TEntityType>
