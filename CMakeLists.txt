@@ -5,7 +5,7 @@ project(Polypropylene)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 option(POLYPROPYLENE_WITH_EXAMPLES "Build examples" ON)
 option(POLYPROPYLENE_WITH_JSON "Enable entity prefab loading from json files" ON)
-option(POLYPROPYLENE_WITH_TESTS "Build unit tests" ON)
+option(POLYPROPYLENE_WITH_TESTS "Build unit tests; Requires POLYPROPYLENE_WITH_EXAMPLES=ON" ON)
 
 ### FLAGS ###############################################
 set(CMAKE_CXX_STANDARD 17)
