@@ -20,6 +20,13 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
     message("BUILD TYPE is Debug")
 endif(${CMAKE_BUILD_TYPE} MATCHES Release)
 
+if (POLYPROPYLENE_WITH_EXAMPLES)
+    add_definitions(-DPAX_WITH_EXAMPLES)
+    message("Building WITH: Examples (POLYPROPYLENE_WITH_EXAMPLES = ON)")
+else()
+    message("Building WITHOUT: Examples (POLYPROPYLENE_WITH_EXAMPLES = OFF)")
+endif()
+
 if (POLYPROPYLENE_WITH_JSON)
     add_definitions(-DPAX_WITH_JSON)
     message("Building WITH: Json (POLYPROPYLENE_WITH_JSON = ON)")
