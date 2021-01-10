@@ -30,7 +30,6 @@ namespace PAX {
         std::ostream nullStream;
 
         std::map<Level, std::ostream*> outstreams;
-        std::ostream * getStreamFor(Level level);
 
     public:
         static Log instance;
@@ -52,6 +51,12 @@ namespace PAX {
          * @param stream The stream to write logs to.
          */
         void setStreamForLevel(Level level, std::ostream & stream);
+
+        /**
+         * @param level The level whose stream should be returned.
+         * @return The ostream to which log messages for the given level are streamed to.
+         */
+        std::ostream * getStreamFor(Level level);
 
         PAX_NODISCARD std::ostream & stream(Level level, const char * functionName = nullptr, const char * fileName = nullptr, int line = 0);
         PAX_NODISCARD std::ostream & stream_raw(Level level);
