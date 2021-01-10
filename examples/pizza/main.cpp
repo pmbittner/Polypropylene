@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
 
 #ifdef PAX_WITH_JSON
     /// Entities created with prefabs (or with the allocation service) have to be deleted via the allocation service.
-    Pizza::GetAllocationService().deleteAndFree<Pizza>(pizzaFunghi);
+    assert(pax_delete(pizzaFunghi));
 #else
     delete pizzaFunghi;
 #endif

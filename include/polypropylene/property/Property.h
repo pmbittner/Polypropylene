@@ -6,23 +6,10 @@
 #define POLYPROPYLENE_PROPERTY_H
 
 #include "ForwardDeclarations.h"
+#include "Creation.h"
 #include "polypropylene/reflection/Reflectable.h"
 #include "event/PropertyAttachedEvent.h"
 #include "event/PropertyDetachedEvent.h"
-
-/**
- * Convenience macro for creating properties and entities with the allocation service.
- * Use it as follows:
- *    Cheese * c = pax_new(Cheese)(arguments, for, constructor, here);
- * @param propOrEntityType The type of the property or entity you want to create.
- */
-#define pax_new(propOrEntityType) \
-new (propOrEntityType::EntityType::GetAllocationService().allocate(paxtypeof(propOrEntityType))) propOrEntityType
-
-template<typename T>
-void pax_delete(T * t) {
-    T::EntityType::GetAllocationService().template deleteAndFree<T>(t);
-}
 
 namespace PAX {
     template<class TEntityType>
