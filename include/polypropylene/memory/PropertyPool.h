@@ -106,8 +106,8 @@ namespace PAX {
             }
         }
 
-        Iterator begin() { return Iterator::BeginOf(*pool.get()); }
-        Iterator end() { return Iterator::EndOf(*pool.get()); }
+        Iterator begin() const { return Iterator::BeginOf(*pool.get()); }
+        Iterator end() const { return Iterator::EndOf(*pool.get()); }
     };
 }
 
