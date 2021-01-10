@@ -31,15 +31,19 @@ namespace PAX {
     /**
      * An Entity is a generic container for Properties.
      * @tparam TDerived The class deriving from Entity.
-     * @tparam TRootProperty The type of properties that can be added to this container (defaults to Property<TDerived>).
+     * @tparam TRootProperty The type of properties that can be added to this container.
      * This constraints possible properties added to this Entity to derivatives of TRootProperty or TRootProperty itself.
      */
     template<class TDerived, class TRootProperty>
     class Entity {
-        static_assert(std::is_convertible<TRootProperty*, Property<TDerived>*>::value, "Given Property Type is not defined ot does not inherit from Property<your entity type>!");
+        static_assert(
+                std::is_convertible<TRootProperty*, Property<TDerived>*>::value,
+                "Given TRootProperty is not defined or does not inherit from Property<TDerived>!");
 
-        static const std::vector<TRootProperty*> EmptyPropertyVector;
-        static AllocationService propertyAllocator;
+        static const std::vector<TRootProperty*> & GetEmptyPropertyVector() {
+            static std::vector<TRootProperty*> emptyvec(0);
+            return emptyvec;
+        }
 
         EventService localEventService;
 
@@ -102,10 +106,11 @@ namespace PAX {
 
     public:
         /**
-         * @return the AllocationService that is used for entity and property (de-) allocation for derived entitiy type TDerived.
+         * @return The AllocationService that is used for entity and property (de-) allocation for derived entitiy type TDerived.
          */
         PAX_NODISCARD static AllocationService& GetAllocationService() {
-            return propertyAllocator;
+            static AllocationService allocator;
+            return allocator;
         }
 
         /**
@@ -194,7 +199,7 @@ namespace PAX {
             if (properties != multipleProperties.end())
                 return reinterpret_cast<std::vector<TProperty*>&>(properties->second);
             else
-                return *reinterpret_cast<const std::vector<TProperty*>*>(&EmptyPropertyVector);
+                return *reinterpret_cast<const std::vector<TProperty*>*>(&GetEmptyPropertyVector());
         }
 
         PAX_NODISCARD const std::vector<TRootProperty*> & getProperties() const {
@@ -230,7 +235,7 @@ namespace PAX {
                 return it->second;
             }
 
-            return EmptyPropertyVector;
+            return GetEmptyPropertyVector();
         }
 
         /**
@@ -271,13 +276,13 @@ namespace PAX {
                 auto properties = reinterpret_cast<std::vector<TProperty*>>(multipleProperties.get(typeid(TProperty)));
                 for (TProperty* property : properties) {
                     if (!remove(property))
-                        return EmptyPropertyVector;
+                        return GetEmptyPropertyVector();
                 }
 
                 return properties;
             }
 
-            return EmptyPropertyVector;
+            return GetEmptyPropertyVector();
         }
 
         
@@ -321,12 +326,6 @@ namespace PAX {
             }
         }
     };
-
-    template <class D, class P>
-    AllocationService Entity<D, P>::propertyAllocator;
-
-    template <class D, class P>
-    const std::vector<P*> Entity<D, P>::EmptyPropertyVector(0);
 }
 
 #undef PAX_GENERATE_PropertyContainerFunctionTemplateHeader
