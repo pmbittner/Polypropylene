@@ -49,7 +49,7 @@ namespace PAX {
         std::vector<TRootProperty*> allProperties; // Do we really want to have a copy of all pointers for easy access?
 
     public:
-        using DerivedType = TDerived;
+        using EntityType = TDerived;
         using PropertyType = TRootProperty;
 
         Entity() = default;
