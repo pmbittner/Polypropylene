@@ -20,7 +20,7 @@
 #ifdef PAX_COMPILER_MSVC
 #define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
 template <class TProperty, bool mult = TProperty::IsMultiple()> \
-typename std::enable_if<neg mult, rettype>::type
+typename std::enable_if<neg mult, rettype>::type PAX_MAYBEUNUSED
 #else
 #define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
 template <class TProperty> \
