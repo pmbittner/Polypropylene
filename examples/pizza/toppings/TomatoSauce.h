@@ -25,6 +25,7 @@ namespace PAX::Examples {
         explicit TomatoSauce(int scoville);
         ClassMetadata getMetadata() override;
         std::string yummy() override;
+        int getScoville() const;
     };
 }
 

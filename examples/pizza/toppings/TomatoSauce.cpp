@@ -20,4 +20,8 @@ namespace PAX::Examples {
     std::string TomatoSauce::yummy() {
         return std::to_string(scoville) + " scoville tomato sauce";
     }
+
+    int TomatoSauce::getScoville() const {
+        return scoville;
+    }
 }
