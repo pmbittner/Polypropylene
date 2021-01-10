@@ -1,3 +1,6 @@
+# This file was created and customised according to the official googletest documentation at
+# https://github.com/google/googletest/tree/master/googletest.
+
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
@@ -31,6 +34,15 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 # Now simply link against gtest or gtest_main as needed. Eg
-add_executable(exampletest example.cpp)
-target_link_libraries(exampletest gtest_main)
-add_test(NAME example_test COMMAND exampletest)
+if (POLYPROPYLENE_WITH_EXAMPLES)
+    add_executable(exampletest example.cpp)
+    target_link_libraries(exampletest PUBLIC gtest_main)
+    add_test(NAME example_test COMMAND exampletest)
+
+    add_executable(polypropylenetests polypropyleneTests.cpp)
+    target_include_directories(polypropylenetests PUBLIC include)
+    target_include_directories(polypropylenetests PUBLIC ../examples/pizza)
+    target_link_libraries(polypropylenetests PUBLIC gtest_main pizzalib)
+    add_test(NAME polypropylene_tests COMMAND polypropylenetests)
+endif(POLYPROPYLENE_WITH_EXAMPLES)
+
