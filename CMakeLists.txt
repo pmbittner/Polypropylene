@@ -5,6 +5,7 @@ project(Polypropylene)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 option(POLYPROPYLENE_WITH_EXAMPLES "Build examples" ON)
 option(POLYPROPYLENE_WITH_JSON "Enable entity prefab loading from json files" ON)
+option(POLYPROPYLENE_WITH_TESTS "Build unit tests" ON)
 
 ### FLAGS ###############################################
 set(CMAKE_CXX_STANDARD 17)
@@ -26,6 +27,13 @@ else()
     message("Building WITHOUT: Json (POLYPROPYLENE_WITH_JSON = OFF)")
 endif()
 
+if (POLYPROPYLENE_WITH_TESTS)
+    add_definitions(-DPAX_WITH_TESTS)
+    message("Building WITH: Tests (POLYPROPYLENE_WITH_TESTS = ON)")
+else()
+    message("Building WITHOUT: Tests (POLYPROPYLENE_WITH_TESTS = OFF)")
+endif()
+
 ### SOURCE FILES ########################################
 
 include_directories(include)
@@ -36,3 +44,9 @@ add_subdirectory(src)
 if (POLYPROPYLENE_WITH_EXAMPLES)
     add_subdirectory(examples)
 endif(POLYPROPYLENE_WITH_EXAMPLES)
+
+### TEST ################################################
+
+if (POLYPROPYLENE_WITH_TESTS)
+    add_subdirectory(test)
+endif(POLYPROPYLENE_WITH_TESTS)
