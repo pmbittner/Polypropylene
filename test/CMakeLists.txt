@@ -35,10 +35,6 @@ endif()
 
 # Now simply link against gtest or gtest_main as needed. Eg
 if (POLYPROPYLENE_WITH_EXAMPLES)
-    add_executable(exampletest example.cpp)
-    target_link_libraries(exampletest PUBLIC gtest_main)
-    add_test(NAME example_test COMMAND exampletest)
-
     add_executable(polypropylenetests polypropyleneTests.cpp)
     target_include_directories(polypropylenetests PUBLIC include)
     target_include_directories(polypropylenetests PUBLIC ../examples/pizza)
