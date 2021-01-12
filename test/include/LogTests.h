@@ -10,7 +10,7 @@
 #include "polypropylene/log/Log.h"
 
 namespace PAX {
-    PAX_TEST(LogTests, DefaultStreamsPresent)
+    PAX_TEST(Log, DefaultStreamsPresent)
         std::vector<Log::Level> levels = {
                 Log::Level::None,
                 Log::Level::Error,

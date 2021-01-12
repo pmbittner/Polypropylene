@@ -23,7 +23,7 @@ namespace PAX {
         EXPECT_EQ(i, sauces.size()) << "PropertyPool and vector have different sizes!";
     }
 
-    PAX_TEST(AllocatorTests, IteratingPropertyPoolYieldsExactlyAllAllocatedInstances)
+    PAX_TEST(Allocator, IteratingPropertyPoolYieldsExactlyAllAllocatedInstances)
         using namespace PAX::Examples;
 
         PropertyPool<TomatoSauce> pool;
