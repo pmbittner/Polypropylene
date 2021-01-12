@@ -11,6 +11,7 @@
 /// If we do not include our tests here, RUN_ALL_TESTS won't find them.
 #include "LogTests.h"
 #include "AllocatorTests.h"
+#include "EntityTests.h"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
