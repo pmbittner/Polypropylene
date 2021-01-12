@@ -50,8 +50,6 @@ namespace PAX {
         TypeMap<TRootProperty*> singleProperties;
         TypeMap<std::vector<TRootProperty*>> multipleProperties;
 
-        std::vector<TRootProperty*> allProperties; // Do we really want to have a copy of all pointers for easy access?
-
     public:
         using EntityType = TDerived;
         using PropertyType = TRootProperty;
@@ -59,20 +57,17 @@ namespace PAX {
         Entity() = default;
 
         /**
-         * Deletes all properties.
+         * Deletes all properties that were allocated with the AllocationService
+         * of this Entity (e.g., those that were allocated with pax_new).
          */
         virtual ~Entity() {
-            std::vector<TRootProperty*> myProperties = getProperties();
             AllocationService & allocator = GetAllocationService();
-
-            while (!myProperties.empty()) {
-                Property<TDerived> * victim = myProperties.back();
-                myProperties.pop_back();
-
-                if (allocator.hasAllocated(victim)) {
-                    TypeHandle victimType = victim->getClassType();
-                    victim->~Property<TDerived>();
-                    GetAllocationService().free(victimType.id, victim);
+            const std::vector<TRootProperty*> & props = getAllProperties();
+            for (TRootProperty * propToDelete : props) {
+                if (allocator.hasAllocated(propToDelete)) {
+                    const TypeHandle pType = propToDelete->getClassType();
+                    propToDelete->~TRootProperty();
+                    GetAllocationService().free(pType.id, propToDelete);
                 }
             }
         }
@@ -89,14 +84,12 @@ namespace PAX {
         inline void registerProperty(TRootProperty* property) {
             property->owner = static_cast<TDerived*>(this);
             property->attached(*static_cast<TDerived*>(this));
-            allProperties.push_back(property);
             onPropertyAdded(property);
         }
 
         inline void unregisterProperty(TRootProperty* property) {
             property->owner = nullptr;
             property->detached(*static_cast<TDerived*>(this));
-            Util::removeFromVector(allProperties, property);
             onPropertyRemoved(property);
         }
 
@@ -202,8 +195,8 @@ namespace PAX {
                 return *reinterpret_cast<const std::vector<TProperty*>*>(&GetEmptyPropertyVector());
         }
 
-        PAX_NODISCARD const std::vector<TRootProperty*> & getProperties() const {
-            return allProperties;
+        PAX_NODISCARD const std::vector<TRootProperty*> & getAllProperties() const {
+            return get<TRootProperty>();
         }
 
         /**
