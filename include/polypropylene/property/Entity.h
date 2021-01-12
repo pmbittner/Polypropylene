@@ -186,7 +186,7 @@ namespace PAX {
         }
 
         PAX_GENERATE_EntityTemplateHeader(TProperty*, !)
-        get() {
+        get() const {
             const auto& property = singleProperties.find(typeid(TProperty));
             if (property != singleProperties.end())
                 return static_cast<TProperty*>(property->second);
@@ -194,10 +194,10 @@ namespace PAX {
         }
 
         PAX_GENERATE_EntityTemplateHeader(const std::vector<TProperty*>&, )
-        get() {
+        get() const {
             const auto& properties = multipleProperties.find(typeid(TProperty));
             if (properties != multipleProperties.end())
-                return reinterpret_cast<std::vector<TProperty*>&>(properties->second);
+                return reinterpret_cast<const std::vector<TProperty*>&>(properties->second);
             else
                 return *reinterpret_cast<const std::vector<TProperty*>*>(&GetEmptyPropertyVector());
         }
