@@ -35,7 +35,7 @@ namespace PAX {
      * This constraints possible properties added to this Entity to derivatives of TRootProperty or TRootProperty itself.
      */
     template<class TDerived, class TRootProperty>
-    class Entity {
+    class Entity : public Polymorphic {
         static_assert(
                 std::is_convertible<TRootProperty*, Property<TDerived>*>::value,
                 "Given TRootProperty is not defined or does not inherit from Property<TDerived>!");
@@ -61,14 +61,9 @@ namespace PAX {
          * of this Entity (e.g., those that were allocated with pax_new).
          */
         virtual ~Entity() {
-            AllocationService & allocator = GetAllocationService();
             const std::vector<TRootProperty*> & props = getAllProperties();
             for (TRootProperty * propToDelete : props) {
-                if (allocator.hasAllocated(propToDelete)) {
-                    const TypeHandle pType = propToDelete->getClassType();
-                    propToDelete->~TRootProperty();
-                    GetAllocationService().free(pType.id, propToDelete);
-                }
+                pax_delete(propToDelete);
             }
         }
 
@@ -111,6 +106,11 @@ namespace PAX {
          */
         PAX_NODISCARD EventService& getEventService() {
             return localEventService;
+        }
+
+        PAX_NODISCARD const TypeHandle& getClassType() const override {
+            static TypeHandle myType = paxtypeof(EntityType);
+            return myType;
         }
 
         PAX_NODISCARD PrototypeEntityPrefab<TDerived> toPrefab() const;
@@ -240,7 +240,7 @@ namespace PAX {
          * If the property type is multiple (PAX_PROPERTY_IS_MULTIPLE), the returned vector will contain all properties
          * of the given type.
          */
-        std::vector<TRootProperty*> get(const TypeId & type) {
+        std::vector<TRootProperty*> get(const TypeId & type) const {
             // Copy is intended
             std::vector<TRootProperty*> props = getMultiple(type);
             if (TRootProperty * single = getSingle(type)) {

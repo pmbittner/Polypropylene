@@ -62,13 +62,13 @@ namespace PAX {
         const auto& allocator = allocators.find(type);
 
         if (allocator == allocators.end()) {
-            PAX_THROW_RUNTIME_ERROR("Cannot free " << object << " because there is no IAllocator registered for the given type " << type.name() << "!");
+            PAX_THROW_RUNTIME_ERROR("Cannot free \"" << object << "\" because there is no IAllocator registered for the given type \"" << type.name() << "\"!");
         }
 
         if (Util::removeFromVector(allocatedObjects, object)) {
             allocator->second->free(object);
         } else {
-            PAX_THROW_RUNTIME_ERROR("Cannot free " << object << " because it was not allocated by the allocator " << allocator->second << " registered for the given type " << type.name() << " in this AllocationService!");
+            PAX_THROW_RUNTIME_ERROR("Cannot free \"" << object << "\" because it was not allocated by the allocator \"" << allocator->second << "\" registered for the given type \"" << type.name() << "\" in this AllocationService!");
         }
     }
 }

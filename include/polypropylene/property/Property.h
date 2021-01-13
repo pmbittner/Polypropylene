@@ -13,7 +13,7 @@
 
 namespace PAX {
     template<class TEntityType>
-    class Property : public Reflectable {
+    class Property : public Polymorphic, public Reflectable {
         template<class, class>
         friend class Entity;
 
@@ -48,11 +48,6 @@ namespace PAX {
          * @return The entity this property is attached to. Returns nullptr if this property is not attached to an entity.
          */
         PAX_NODISCARD TEntityType * getOwner() const { return owner; }
-
-        /**
-         * @return A TypeHandle identifying the actual type of the object (i.e., the derived class).
-         */
-        PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
 
         /**
          * @return Reflection information on the fields of this property that should be considered for cloning,

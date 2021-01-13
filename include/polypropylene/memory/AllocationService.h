@@ -103,20 +103,29 @@ namespace PAX {
          * Deletes the given object by invoking its constructor.
          * Frees its memory afterwards by invoking `free`.
          * Does nothing if the given object was not allocated trough this allocation service.
-         * @tparam T The type of the constructor that should be invoked (~T()).
+         * @tparam DestructorType The type of the constructor that should be invoked (~DestructorType()).
          * @param t The object which will be deleted.
+         * @param type The type for which the given memory was allocated with allocate<T>.
+         *             This method will look for the allocator registered for this type in this
+         *             AllocationService and assumes that the given memory was allocated with the
+         *             found allocator.
          * @return True iff the object was deleted.
          *         False iff the object was not allocated with this
          *         AllocationService and thus could not be freed.
          */
-        template<typename T>
-        bool deleteAndFree(T * t) {
+        template<typename DestructorType>
+        bool deleteAndFree(DestructorType * t, const TypeId & type) {
             if (hasAllocated(t)) {
-                t->~T();
-                free(paxtypeid(T), t);
+                t->~DestructorType();
+                free(type, t);
                 return true;
             }
             return false;
+        }
+
+        template<typename DestructorType>
+        bool deleteAndFree(DestructorType * t) {
+            return deleteAndFree(t, paxtypeid(DestructorType));
         }
     };
 }
