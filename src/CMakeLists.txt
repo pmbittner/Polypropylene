@@ -44,12 +44,13 @@ set(HEADERS_FOR_CLION
         serialisation/ClassMetadataSerialiser.h
         serialisation/TryParser.h
 
+        reflection/ClassMetadata.h
+        reflection/Field.h
+        reflection/Polymorphic.h
         reflection/Reflectable.h
         reflection/TemplateTypeToString.h
         reflection/TypeHandle.h
         reflection/TypeMap.h
-        reflection/ClassMetadata.h
-        reflection/Field.h
         reflection/VariableRegister.h
 
         stdutils/CollectionUtils.h
