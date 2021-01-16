@@ -55,6 +55,11 @@ namespace PAX {
          */
         PAX_NODISCARD ClassMetadata getMetadata() override { return {}; }
 
+        PAX_NODISCARD virtual const PolymorphicType & getClassType() const {
+            static auto t = PolymorphicType(paxtypeof(*this));
+            return t;
+        }
+
         /**
          * @return True if multiple instances of this property can be attached to the same entity.
          * Returns false if only a single instance is allowed per entity.

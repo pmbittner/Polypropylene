@@ -36,7 +36,7 @@ namespace PAX {
         return Util::vectorContains(allocatedObjects, object);
     }
 
-    void * AllocationService::allocate(TypeHandle t) {
+    void * AllocationService::allocate(Type t) {
         std::shared_ptr<IAllocator> allocator = nullptr;
 
         const auto & allocIt = allocators.find(t.id);

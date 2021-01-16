@@ -5,7 +5,7 @@
 #ifndef POLYPROPYLENE_POLYMORPHIC_H
 #define POLYPROPYLENE_POLYMORPHIC_H
 
-#include "TypeHandle.h"
+#include "Type.h"
 
 namespace PAX {
     class Polymorphic {
@@ -13,7 +13,7 @@ namespace PAX {
         /**
          * @return A TypeHandle identifying the actual type of the object (i.e., the derived class).
          */
-        PAX_NODISCARD virtual const TypeHandle& getClassType() const = 0;
+        PAX_NODISCARD virtual const PolymorphicType & getClassType() const = 0;
     };
 }
 

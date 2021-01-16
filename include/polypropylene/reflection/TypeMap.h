@@ -9,7 +9,7 @@
 #include <map>
 #include <unordered_map>
 
-#include "polypropylene/reflection/TypeHandle.h"
+#include "polypropylene/reflection/Type.h"
 
 namespace PAX {
 #define PAX_TYPE_MAP_LIGHTWEIGHT

@@ -32,6 +32,7 @@ namespace PAX {
         std::map<Level, std::ostream*> outstreams;
 
     public:
+        // TODO: Make this a function to prevent static storage initialization bugs.
         static Log instance;
         static std::string timestamp();
 

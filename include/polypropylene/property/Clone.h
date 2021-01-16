@@ -20,7 +20,7 @@ namespace PAX {
         // Theoretically, the return type does not have to be TEntityType::PropertyType.
         // However, it is the only return type making sense because no other types of properties can be added to TEntityType.
         typename TEntityType::PropertyType * clone
-            = PropertyFactoryRegister<TEntityType>::getFactoryFor(propertyToClone->getClassType().id)->create();
+            = PropertyFactoryRegister<TEntityType>::getFactoryFor(propertyToClone->getClassType().type.id)->create();
         ClassMetadata cloneMetadata = clone->getMetadata();
         propertyToClone->getMetadata().writeTo(cloneMetadata);
         clone->created();

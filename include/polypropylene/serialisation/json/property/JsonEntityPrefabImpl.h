@@ -59,7 +59,7 @@ namespace PAX::Json {
 
                         // If the entity already has properties of the given type we won't create a new one
                         // but instead overwrite the old ones with the newer settings.
-                        const PAX::TypeHandle &propType = propertyFactory->getPropertyType();
+                        const PAX::Type &propType = propertyFactory->getPropertyType();
                         const bool isPropMultiple = propertyFactory->isPropertyMultiple();
 
                         PropertyType * property = nullptr;

@@ -44,7 +44,7 @@ namespace PAX {
          * @return A newly heap-allocated Property.
          */
         PAX_NODISCARD virtual typename TEntityType::PropertyType * create() const = 0;
-        PAX_NODISCARD virtual TypeHandle getPropertyType() const = 0;
+        PAX_NODISCARD virtual Type getPropertyType() const = 0;
         PAX_NODISCARD virtual bool isPropertyMultiple() const = 0;
 
         PAX_NODISCARD const std::string & getPropertyName() const {
@@ -110,7 +110,7 @@ namespace PAX {
             return pax_new(TPropertyType)();
         }
 
-        PAX_NODISCARD TypeHandle getPropertyType() const override {
+        PAX_NODISCARD Type getPropertyType() const override {
             return paxtypeof(TPropertyType);
         }
 

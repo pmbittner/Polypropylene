@@ -124,7 +124,7 @@ namespace PAX {
 
                 ClassMetadataSerialiser serialiser({});
                 for (PropertyType * property : properties) {
-                    IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(property->getClassType().id);
+                    IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(property->getClassType().type.id);
                     json & propertyNode = propertiesNode[factory->getPropertyName()];
                     JsonFieldStorage storage(propertyNode, *GlobalWriters);
                     serialiser.setStorage(&storage);
@@ -179,7 +179,7 @@ namespace PAX {
                 ClassMetadataSerialiser serialiser({});
                 const std::vector<PropertyType*> & properties = e->getAllProperties();
                 for (PropertyType * p : properties) {
-                    IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(p->getClassType().id);
+                    IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(p->getClassType().type.id);
                     json & propertyNode = propertiesNode[factory->getPropertyName()];
                     JsonFieldStorage storage(propertyNode, *GlobalWriters);
                     serialiser.setStorage(&storage);

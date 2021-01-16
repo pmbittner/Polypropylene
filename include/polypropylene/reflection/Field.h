@@ -7,7 +7,7 @@
 
 #include <string>
 #include <polypropylene/definitions/Definitions.h>
-#include <polypropylene/reflection/TypeHandle.h>
+#include <polypropylene/reflection/Type.h>
 
 #define paxfieldalias_flagged(name, field, flag) ::PAX::Field(name, paxtypeof(field), &field, flag)
 #define paxfieldalias(name, field) paxfieldalias_flagged(name, field, ::PAX::Field::NoFlag)
@@ -41,7 +41,7 @@ namespace PAX {
         constexpr static FieldFlag IsMandatory = 1;
         constexpr static FieldFlag CustomFlagsBegin = 2 * IsMandatory;
 
-        TypeHandle type;
+        Type type;
         std::string name;
         void * data;
         FieldFlag flags;
@@ -60,7 +60,7 @@ namespace PAX {
          * @param data A pointer to the field such that it can be read and written to.
          * @param flags Optional flags for further attribute specification.
          */
-        Field(const std::string & name, const TypeHandle & type, void * data, FieldFlag flags = NoFlag);
+        Field(const std::string & name, const Type & type, void * data, FieldFlag flags = NoFlag);
 
         /**
          * Checks if this field describes the same field as the other field by considering name and type equality.

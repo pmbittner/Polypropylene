@@ -13,6 +13,8 @@
 /// Generators
 
 // TODO: Find a way to make add and remove methods in PropertyContainer private.
+// TODO: Can we avoid this chain by moving it to Entity and instead equip Polymorphic with information on super types?
+//       But multiplicity might cause problems there.
 #define _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(Type, methodName, asMultiple, asSingle, EventType) \
 bool Type::methodName(EntityType & e) { \
     if (Super::methodName(e)) { \
@@ -37,7 +39,7 @@ bool Type::methodName(EntityType & e) { \
 public: \
     friend ::PAX::PropertyFactory<Typename, EntityType>; \
     static constexpr bool IsAbstract() { return isAbstract; } \
-    PAX_NODISCARD const ::PAX::TypeHandle& getClassType() const override; \
+    PAX_NODISCARD const ::PAX::PolymorphicType & getClassType() const override; \
 protected: \
     bool PAX_INTERNAL(addTo)(EntityType & e) override; \
     bool PAX_INTERNAL(removeFrom)(EntityType & e) override;
@@ -74,13 +76,13 @@ private:
 
 ///// SOURCE
 
-#define PAX_PROPERTY_IMPL(Type) \
-    _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(Type, PAX_INTERNAL(addTo), PAX_INTERNAL(addAsMultiple), PAX_INTERNAL(addAsSingle), ::PAX::PropertyAttachedEvent) \
-    _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(Type, PAX_INTERNAL(removeFrom), PAX_INTERNAL(removeAsMultiple), PAX_INTERNAL(removeAsSingle), ::PAX::PropertyDetachedEvent) \
-    const ::PAX::TypeHandle& Type::getClassType() const { \
-        static PAX::TypeHandle myType = paxtypeof(Type); \
-        return myType; \
+#define PAX_PROPERTY_IMPL(PType) \
+    _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(PType, PAX_INTERNAL(addTo), PAX_INTERNAL(addAsMultiple), PAX_INTERNAL(addAsSingle), ::PAX::PropertyAttachedEvent) \
+    _PAX_GENERATE_PROPERTY_ADD_OR_REMOVE_SOURCE_(PType, PAX_INTERNAL(removeFrom), PAX_INTERNAL(removeAsMultiple), PAX_INTERNAL(removeAsSingle), ::PAX::PropertyDetachedEvent) \
+    const ::PAX::PolymorphicType & PType::getClassType() const { \
+        static auto t = ::PAX::PolymorphicType(paxtypeof(PType), &Super::getClassType()); \
+        return t; \
     } \
-    bool Type::isMultiple() const { return IsMultiple(); }
+    bool PType::isMultiple() const { return IsMultiple(); }
 
 #endif //POLYPROPYLENE_PROPERTYANNOTATIONS_H

@@ -16,6 +16,7 @@ namespace PAX {
      * @tparam EntityType The concrete Entity type (i.e., the derived class)
      * @tparam RequiredProperties A list of Property types that should be contained by filtered entities.
      */
+     // TODO: Make Iterable
     template<typename EntityType, typename... RequiredProperties>
     class EntityManagerView {
         const EntityManager<EntityType> & manager;

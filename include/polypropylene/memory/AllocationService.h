@@ -80,7 +80,7 @@ namespace PAX {
          * @tparam T The type for which memory should be allocated.
          * @return A pointer to new memory of size 't.size'.
          */
-        PAX_NODISCARD void * allocate(TypeHandle t);
+        PAX_NODISCARD void * allocate(Type t);
 
         /**
          * Frees the given memory that was allocated used for objects of the given type.

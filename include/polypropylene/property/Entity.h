@@ -108,9 +108,9 @@ namespace PAX {
             return localEventService;
         }
 
-        PAX_NODISCARD const TypeHandle& getClassType() const override {
-            static TypeHandle myType = paxtypeof(EntityType);
-            return myType;
+        PAX_NODISCARD const PolymorphicType & getClassType() const override {
+            static auto derived = PolymorphicType(paxtypeof(EntityType));
+            return derived;
         }
 
         PAX_NODISCARD PrototypeEntityPrefab<TDerived> toPrefab() const;

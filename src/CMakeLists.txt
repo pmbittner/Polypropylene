@@ -49,7 +49,7 @@ set(HEADERS_FOR_CLION
         reflection/Polymorphic.h
         reflection/Reflectable.h
         reflection/TemplateTypeToString.h
-        reflection/TypeHandle.h
+        reflection/Type.h
         reflection/TypeMap.h
         reflection/VariableRegister.h
 
@@ -80,7 +80,7 @@ set(SOURCE_FILES
         reflection/ClassMetadata.cpp
         reflection/Field.cpp
         reflection/VariableRegister.cpp
-        reflection/TypeHandle.cpp)
+        reflection/Type.cpp)
 
 if (POLYPROPYLENE_WITH_JSON)
     set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}
