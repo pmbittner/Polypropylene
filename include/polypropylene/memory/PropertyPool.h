@@ -83,6 +83,8 @@ namespace PAX {
         std::shared_ptr<PoolAllocator> pool;
 
     public:
+        using iterator = Iterator;
+
         PropertyPool() {
             const TypeId propType = paxtypeid(PropertyType);
             AllocationService & allocationService = PropertyType::EntityType::GetAllocationService();
@@ -106,8 +108,8 @@ namespace PAX {
             }
         }
 
-        Iterator begin() const { return Iterator::BeginOf(*pool.get()); }
-        Iterator end() const { return Iterator::EndOf(*pool.get()); }
+        iterator begin() const { return Iterator::BeginOf(*pool.get()); }
+        iterator end() const { return Iterator::EndOf(*pool.get()); }
     };
 }
 
