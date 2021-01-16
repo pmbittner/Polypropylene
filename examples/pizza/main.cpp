@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <polypropylene/log/Assert.h>
 
 #include "polypropylene/Polypropylene.h"
 #include "polypropylene/memory/PropertyPool.h"
@@ -137,7 +138,7 @@ int main(int argc, char** argv) {
 
 #ifdef PAX_WITH_JSON
     /// Entities created with prefabs (or with the allocation service) have to be deleted via the allocation service.
-    assert(pax_delete(pizzaFunghi));
+    PAX_ASSERT(pax_delete(pizzaFunghi));
 #else
     delete pizzaFunghi;
 #endif
