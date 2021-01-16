@@ -6,7 +6,6 @@
 #define POLYPROPYLENE_PROPERTYALLOCATIONSERVICE_H
 
 #include <memory>
-#include <unordered_set>
 
 #include <polypropylene/stdutils/CollectionUtils.h>
 #include "polypropylene/reflection/TypeMap.h"
@@ -23,7 +22,6 @@ namespace PAX {
      */
     class AllocationService final {
         TypeMap<std::shared_ptr<IAllocator>> allocators;
-        std::unordered_set<void*> allocatedObjects;
 
     public:
         AllocationService() = default;
@@ -61,7 +59,7 @@ namespace PAX {
          * @return The IAllocator that is registered for the given type.
          *         Returns nullptr if there is no such allocator.
          */
-        std::shared_ptr<IAllocator> getAllocator(const TypeId & type);
+        PAX_NODISCARD std::shared_ptr<IAllocator> getAllocator(const TypeId & type);
 
         /**
          * Returns true iff the given object was allocated with this AllocationService.
@@ -69,7 +67,7 @@ namespace PAX {
          *               allocated with this AllocationService or not.
          * @return True iff the given object was allocated with this AllocationService.
          */
-        bool hasAllocated(void * object);
+        PAX_NODISCARD bool hasAllocated(const TypeId & t, void * object) const;
 
         /**
          * Allocates memory for the given type.
@@ -81,7 +79,7 @@ namespace PAX {
          * @tparam T The type for which memory should be allocated.
          * @return A pointer to new memory of size 't.size'.
          */
-        PAX_NODISCARD void * allocate(Type t);
+        PAX_NODISCARD void * allocate(const Type & t);
 
         /**
          * Frees the given memory that was allocated used for objects of the given type.
@@ -97,8 +95,9 @@ namespace PAX {
          *             AllocationService and assumes that the given memory was allocated with the
          *             found allocator.
          * @param memory The memory that should be freed.
+         * @return True iff freeing the data was successful.
          */
-        void free(const TypeId & type, void * memory);
+        PAX_NODISCARD bool free(const TypeId & type, void * memory);
 
         /**
          * Deletes the given object by invoking its constructor.
@@ -115,8 +114,8 @@ namespace PAX {
          *         AllocationService and thus could not be freed.
          */
         template<typename DestructorType>
-        bool deleteAndFree(DestructorType * t, const TypeId & type) {
-            if (hasAllocated(t)) {
+        PAX_NODISCARD bool deleteAndFree(DestructorType * t, const TypeId & type) {
+            if (hasAllocated(type, t)) {
                 t->~DestructorType();
                 free(type, t);
                 return true;
@@ -125,7 +124,7 @@ namespace PAX {
         }
 
         template<typename DestructorType>
-        bool deleteAndFree(DestructorType * t) {
+        PAX_NODISCARD bool deleteAndFree(DestructorType * t) {
             return deleteAndFree(t, paxtypeid(DestructorType));
         }
     };

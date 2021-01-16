@@ -2,7 +2,8 @@
 // Created by Paul Bittner on 09.01.2021.
 //
 
-#include <polypropylene/memory/allocators/PoolAllocator.h>
+#include "polypropylene/memory/allocators/PoolAllocator.h"
+#include "polypropylene/log/Assert.h"
 
 namespace PAX {
 #ifdef PAX_BUILD_TYPE_DEBUG
@@ -60,7 +61,7 @@ namespace PAX {
       freeChunks(capacity)
     {
         memory = new memunit[MemorySize()];
-        clear();
+        PAX_DEBUGASSERT(clear());
     }
 
     PoolAllocator::PoolAllocator(PAX::PoolAllocator && other) noexcept :
@@ -151,7 +152,7 @@ namespace PAX {
         }
     }
 
-    void PoolAllocator::free(void *data) {
+    bool PoolAllocator::free(void *data) {
         memunit * mem = FromData(data);
         const Index i = indexOf(mem);
 
@@ -161,6 +162,7 @@ namespace PAX {
                 chunkToFree->allocated = false;
                 --numberOfAllocations;
                 freeChunks.push(i);
+                return true;
             } else {
                 PAX_LOG(PAX::Log::Level::Warn, "Trying to free unallocated memory chunk! aborting...");
             }
@@ -169,19 +171,29 @@ namespace PAX {
             // We should not throw an exception as this function is likely to be called in destructors.
             PAX_LOG(PAX::Log::Level::Error, "Given pointer (" << data << ") was not allocated by me!");
         }
+
+        return false;
     }
 
-    void PoolAllocator::clear() {
+    bool PoolAllocator::isMine(void *data) const {
+        // +1 to point to the end of the last data chunk = the begin of the first chunk behind our memory.
+        void * end = static_cast<void*>(memory + MemorySize() + 1);
+        return memory <= data && data < end;
+    }
+
+    bool PoolAllocator::clear() {
         if (numberOfAllocations == 0) {
             // Null memory. (Thereby set allocated to false in all chunks).
             memset(memory, 0, MemorySize());
             freeChunks.clear();
+            return true;
         } else {
             PAX_LOG(PAX::Log::Level::Error, "Clearing PoolAllocator although there are still " << numberOfAllocations << " elements allocated");
         }
+        return false;
     }
 
-    size_t PoolAllocator::getAllocationSize() {
+    size_t PoolAllocator::getAllocationSize() const {
         return elementSize;
     }
 

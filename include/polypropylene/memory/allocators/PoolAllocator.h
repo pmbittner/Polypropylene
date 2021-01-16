@@ -75,38 +75,38 @@ namespace PAX {
         memunit * memory = nullptr;
         int32_t numberOfAllocations = 0;
 
-        size_t ChunkSize() const;
-        size_t MemorySize() const;
+        PAX_NODISCARD size_t ChunkSize() const;
+        PAX_NODISCARD size_t MemorySize() const;
 
         /**
          * @return The user data that is associated to the given metadata.
          */
-        static void * DataOf(ChunkInfo * chunk);
+        PAX_NODISCARD static void * DataOf(ChunkInfo * chunk);
 
         /**
          * @return A pointer into 'memory' to the beginning of this data's chunk
          * (w.r.t. to its prefixing ChunkInfo).
          */
-        static memunit * FromData(void * data);
+        PAX_NODISCARD static memunit * FromData(void * data);
 
         /**
          * Assumes that the given pointer points to the begin of a data chunk in 'memory'
          * (i.e., (chunk - memory) % ChunkSize() == 0).
          * @return The metadata for the data chunk at the given pointer into 'memory'.
          */
-        ChunkInfo* InfoFor(memunit * chunk) const;
+        PAX_NODISCARD ChunkInfo* InfoFor(memunit * chunk) const;
 
         /**
          * Assumes that the given pointer points to the begin of a data chunk in 'memory'
          * (i.e., (chunk - memory) % ChunkSize() == 0).
          * @return The index of the data chunk at the given pointer into 'memory'.
          */
-        Index indexOf(const memunit * m) const;
+        PAX_NODISCARD Index indexOf(const memunit * m) const;
 
         /**
          * @return A pointer to the data chunk inside 'memory' at the given index.
          */
-        memunit* memAtIndex(Index index) const;
+        PAX_NODISCARD memunit* memAtIndex(Index index) const;
 
     public:
         /**
@@ -122,21 +122,24 @@ namespace PAX {
 
         ~PoolAllocator() override;
 
-        void * allocate() override;
-        void free(void * data) override;
+        PAX_NODISCARD void * allocate() override;
+        PAX_NODISCARD bool free(void * data) override;
+        PAX_NODISCARD bool isMine(void * data) const override;
 
         /**
          * Clears the contents of this PoolAllocator and resets it,
          * such as if it would just have been created.
+         * @return True iff clearing was successful.
+         *         False iff there are still allocated elements that have to be freed first.
          */
-        void clear();
+        PAX_NODISCARD bool clear();
 
         /**
          * Returns metadata for the data at the given index.
          * @param index The index of which metadata should be given.
          * @return A pointer to the metadata about the element at the given index.
          */
-        ChunkInfo * getChunkInfo(Index index) const;
+        PAX_NODISCARD ChunkInfo * getChunkInfo(Index index) const;
 
         /**
          * Returns the data at the given index.
@@ -146,7 +149,7 @@ namespace PAX {
          * @return A pointer to the data at the given index.
          *         The returned pointer will be of the size returned by 'getAllocationSize()'.
          */
-        void * getData(Index index) const;
+        PAX_NODISCARD void * getData(Index index) const;
 
         /**
          *
@@ -154,12 +157,12 @@ namespace PAX {
          *         This equals the value of the parameter elementSize
          *         that was passed to this PoolAllocator during creation.
          */
-        size_t getAllocationSize() override;
+        PAX_NODISCARD size_t getAllocationSize() const override;
 
         /**
          * @return The maximum number of elements that can be allocated simultaneously.
          */
-        Index getCapacity() const;
+        PAX_NODISCARD Index getCapacity() const;
     };
 }
 

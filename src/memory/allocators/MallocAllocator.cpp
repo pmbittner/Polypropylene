@@ -10,14 +10,25 @@ namespace PAX {
     {}
 
     void * MallocAllocator::allocate() {
-        return malloc(elementSize);
+        void * mem = malloc(elementSize);
+        allocatedObjects.insert(mem);
+        return mem;
     }
 
-    void MallocAllocator::free(void * data) {
-        ::free(data);
+    bool MallocAllocator::free(void * data) {
+        if (isMine(data)) {
+            allocatedObjects.erase(data);
+            ::free(data);
+            return true;
+        }
+        return false;
     }
 
-    size_t MallocAllocator::getAllocationSize() {
+    size_t MallocAllocator::getAllocationSize() const {
         return elementSize;
+    }
+
+    bool MallocAllocator::isMine(void *data) const {
+        return allocatedObjects.find(data) != allocatedObjects.end();
     }
 }

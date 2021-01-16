@@ -6,21 +6,23 @@
 #define POLYPROPYLENE_PROPERTYMALLOCALLOCATOR_H
 
 #include "../Allocator.h"
-#include <cstdlib>
+#include <unordered_set>
 
 namespace PAX {
     /**
-     * Allocator that simply mallocs or frees single elements.
+     * Allocator that simply uses malloc and free.
      */
     class MallocAllocator : public IAllocator {
         const size_t elementSize;
+        std::unordered_set<void*> allocatedObjects;
 
     public:
-        MallocAllocator(size_t elementSize);
+        explicit MallocAllocator(size_t elementSize);
 
-        void* allocate() override;
-        void free(void * data) override;
-        size_t getAllocationSize() override;
+        PAX_NODISCARD void* allocate() override;
+        PAX_NODISCARD bool free(void * data) override;
+        PAX_NODISCARD size_t getAllocationSize() const override;
+        PAX_NODISCARD bool isMine(void * data) const override;
     };
 }
 

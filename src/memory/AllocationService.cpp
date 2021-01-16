@@ -31,11 +31,12 @@ namespace PAX {
         return nullptr;
     }
 
-    bool AllocationService::hasAllocated(void * object) {
-        return allocatedObjects.find(object) != allocatedObjects.end();
+    bool AllocationService::hasAllocated(const TypeId & t, void * object) const {
+        const auto & it = allocators.find(t);
+        return it != allocators.end() && it->second->isMine(object);
     }
 
-    void * AllocationService::allocate(Type t) {
+    void * AllocationService::allocate(const Type & t) {
         std::shared_ptr<IAllocator> allocator = nullptr;
 
         const auto & allocIt = allocators.find(t.id);
@@ -43,31 +44,30 @@ namespace PAX {
             allocator = allocIt->second;
 
             if (allocator->getAllocationSize() != t.size) {
-                PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << t.id.name() << " does not allocate data of size_t " << t.size << "!");
+                PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << t.name() << " does not allocate data of size_t " << t.size << "!");
             }
         }
 
+        // Create default allocator
         if (!allocator) {
             allocator = std::make_shared<PoolAllocator>(t.size);
             registerAllocator(t.id, allocator);
         }
 
-        void * mem = allocator->allocate();
-        allocatedObjects.insert(mem);
-        return mem;
+        return allocator->allocate();
     }
 
-    void AllocationService::free(const TypeId &type, void * object) {
-        const auto& allocator = allocators.find(type);
-
-        if (allocator == allocators.end()) {
+    bool AllocationService::free(const TypeId & type, void * object) {
+        const auto& it = allocators.find(type);
+        if (it == allocators.end()) {
             PAX_THROW_RUNTIME_ERROR("Cannot free \"" << object << "\" because there is no IAllocator registered for the given type \"" << type.name() << "\"!");
         }
 
-        if (allocatedObjects.erase(object)) {
-            allocator->second->free(object);
+        const auto & allocator = it->second;
+        if (allocator->isMine(object)) {
+            return allocator->free(object);
         } else {
-            PAX_THROW_RUNTIME_ERROR("Cannot free \"" << object << "\" because it was not allocated by the allocator \"" << allocator->second << "\" registered for the given type \"" << type.name() << "\" in this AllocationService!");
+            PAX_THROW_RUNTIME_ERROR("Cannot free \"" << object << "\" because it was not allocated by the allocator \"" << allocator << "\" registered for the given type \"" << type.name() << "\" in this AllocationService!");
         }
     }
 }
