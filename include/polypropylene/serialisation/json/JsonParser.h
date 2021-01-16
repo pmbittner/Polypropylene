@@ -10,9 +10,6 @@
 #include "JsonUtil.h"
 #include "polypropylene/stdutils/StringUtils.h"
 
-// TODO: Find a way to include JsonFwd.h here instead of Json.h
-#include "polypropylene/serialisation/json/nlohmann/Json.h"
-
 /**
  * Convencience macros for implementing json parsers.
  * Explanations and examples can be found in the project's wiki:

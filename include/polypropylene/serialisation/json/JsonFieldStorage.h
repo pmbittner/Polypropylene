@@ -8,8 +8,7 @@
 #ifdef PAX_WITH_JSON
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
-// TODO: Find a way to include JsonFwd.h here instead of Json.h
-#include "polypropylene/serialisation/json/nlohmann/Json.h"
+#include "polypropylene/serialisation/json/nlohmann/JsonFwd.h"
 #include "polypropylene/serialisation/json/JsonFieldWriterRegister.h"
 
 namespace PAX::Json {

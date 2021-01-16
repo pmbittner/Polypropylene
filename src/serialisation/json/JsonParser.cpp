@@ -2,8 +2,8 @@
 // Created by Bittner on 20.12.2019.
 //
 
-#include <polypropylene/serialisation/json/JsonParser.h>
-#include <polypropylene/log/Errors.h>
+#include "polypropylene/serialisation/json/JsonParser.h"
+#include "polypropylene/serialisation/json/nlohmann/Json.h"
 
 namespace PAX {
     Path TryParser<nlohmann::json, Path>::tryParse(const nlohmann::json & j) {

@@ -21,6 +21,12 @@ namespace PAX {
     std::string JsonToString(const nlohmann::json & j);
     Path JsonToPath(const nlohmann::json & j);
     nlohmann::json StringToJson(const std::string & s);
+
+    /**
+     * Helper function to avoid having to include Json.h in header files.
+     * Invokes: j.emplace(key, value)
+     */
+    void setJsonValue(nlohmann::json & j, const std::string & key, const std::string & value);
 }
 
 #endif //PAX_WITH_JSON

@@ -33,4 +33,8 @@ namespace PAX {
 
         return Path(JsonToString(j));
     }
+
+    void setJsonValue(nlohmann::json & j, const std::string & key, const std::string & value) {
+        j.emplace(key, value);
+    }
 }

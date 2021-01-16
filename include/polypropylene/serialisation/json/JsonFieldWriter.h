@@ -51,7 +51,7 @@ namespace PAX {
                     T* data = static_cast<T*>(field.data);
                     std::stringstream stream;
                     stream << *data;
-                    j.emplace(field.name, stream.str());
+                    setJsonValue(j, field.name, stream.str());
                     return true;
                 }
 

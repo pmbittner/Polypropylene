@@ -2,9 +2,8 @@
 // Created by Paul on 02.03.2019.
 //
 
-#include <polypropylene/serialisation/json/JsonFieldStorage.h>
-#include <polypropylene/serialisation/json/JsonParser.h>
-#include "polypropylene/log/Errors.h"
+#include "polypropylene/serialisation/json/JsonFieldStorage.h"
+#include "polypropylene/serialisation/json/nlohmann/Json.h"
 
 namespace PAX::Json {
     JsonFieldStorage::JsonFieldStorage(nlohmann::json &node, const JsonFieldWriterRegister & jsonFieldWriterRegister)

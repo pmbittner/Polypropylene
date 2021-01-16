@@ -5,16 +5,18 @@
 #ifndef POLYPROPYLENE_JSONENTITYPREFAB_H
 #define POLYPROPYLENE_JSONENTITYPREFAB_H
 
-#include <polypropylene/prefab/Prefab.h>
-#include <polypropylene/serialisation/json/JsonUtil.h>
-#include <polypropylene/io/Path.h>
+#include "polypropylene/prefab/Prefab.h"
+#include "polypropylene/property/Property.h"
 
-#include <polypropylene/property/Property.h>
-#include <polypropylene/serialisation/json/JsonFieldWriter.h>
-#include <polypropylene/stdutils/CollectionUtils.h>
+#include "polypropylene/io/Path.h"
 
 #include "polypropylene/serialisation/ClassMetadataSerialiser.h"
+#include "polypropylene/serialisation/json/nlohmann/Json.h"
+#include "polypropylene/serialisation/json/JsonUtil.h"
+#include "polypropylene/serialisation/json/JsonFieldWriter.h"
 #include "polypropylene/serialisation/json/JsonFieldStorage.h"
+
+#include "polypropylene/stdutils/CollectionUtils.h"
 
 namespace PAX {
     namespace Json {
@@ -65,7 +67,7 @@ namespace PAX {
                 return registerParser(name, new LambdaJsonEntityPrefabElementParser<EntityType>(lambda));
             }
 
-            bool unregisterParser(const std::string &name) {
+            PAX_MAYBEUNUSED bool unregisterParser(const std::string &name) {
                 const auto &it = parsers.find(name);
                 if (it != parsers.end()) {
                     parsers.erase(it);
@@ -137,7 +139,7 @@ namespace PAX {
 
             virtual ~JsonEntityPrefab() = default;
 
-            Path resolvePath(const std::string & str) {
+            PAX_MAYBEUNUSED Path resolvePath(const std::string & str) {
                 Path p = Path(VariableResolver::resolveVariables(str, IPrefab::PreDefinedVariables));
 
                 if (p.isRelative()) {
@@ -196,13 +198,13 @@ namespace PAX {
         };
 
         template<typename EntityType>
-        JsonFieldWriterRegister * JsonEntityPrefab<EntityType>::GlobalWriters = nullptr;
+        PAX_MAYBEUNUSED JsonFieldWriterRegister * JsonEntityPrefab<EntityType>::GlobalWriters = nullptr;
 
         template<typename EntityType>
-        std::vector<std::string> JsonEntityPrefab<EntityType>::ParseOrder;
+        PAX_MAYBEUNUSED std::vector<std::string> JsonEntityPrefab<EntityType>::ParseOrder;
 
         template<typename EntityType>
-        JsonEntityPrefabElementParserRegister<EntityType> JsonEntityPrefab<EntityType>::ElementParsers;
+        PAX_MAYBEUNUSED JsonEntityPrefabElementParserRegister<EntityType> JsonEntityPrefab<EntityType>::ElementParsers;
     }
 }
 
