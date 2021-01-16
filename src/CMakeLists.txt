@@ -14,6 +14,7 @@ set(HEADERS_FOR_CLION
 
         io/Path.h
 
+        log/Assert.h
         log/Errors.h
         log/Log.h
 
