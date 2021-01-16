@@ -6,6 +6,7 @@
 #define POLYPROPYLENE_PROPERTYALLOCATIONSERVICE_H
 
 #include <memory>
+#include <unordered_set>
 
 #include <polypropylene/stdutils/CollectionUtils.h>
 #include "polypropylene/reflection/TypeMap.h"
@@ -22,7 +23,7 @@ namespace PAX {
      */
     class AllocationService final {
         TypeMap<std::shared_ptr<IAllocator>> allocators;
-        std::vector<void*> allocatedObjects;
+        std::unordered_set<void*> allocatedObjects;
 
     public:
         AllocationService() = default;

@@ -32,8 +32,7 @@ namespace PAX {
     }
 
     bool AllocationService::hasAllocated(void * object) {
-        // TODO: Maybe we find a better way for detecting this than caching all pointers in a vector.
-        return Util::vectorContains(allocatedObjects, object);
+        return allocatedObjects.find(object) != allocatedObjects.end();
     }
 
     void * AllocationService::allocate(Type t) {
@@ -54,7 +53,7 @@ namespace PAX {
         }
 
         void * mem = allocator->allocate();
-        allocatedObjects.push_back(mem);
+        allocatedObjects.insert(mem);
         return mem;
     }
 
@@ -65,7 +64,7 @@ namespace PAX {
             PAX_THROW_RUNTIME_ERROR("Cannot free \"" << object << "\" because there is no IAllocator registered for the given type \"" << type.name() << "\"!");
         }
 
-        if (Util::removeFromVector(allocatedObjects, object)) {
+        if (allocatedObjects.erase(object)) {
             allocator->second->free(object);
         } else {
             PAX_THROW_RUNTIME_ERROR("Cannot free \"" << object << "\" because it was not allocated by the allocator \"" << allocator->second << "\" registered for the given type \"" << type.name() << "\" in this AllocationService!");
