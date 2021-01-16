@@ -21,12 +21,39 @@ namespace PAX {
 
         // Add the Toppings to the pizza
         for (Topping * topping : toppings) {
-            pizza->add(topping);
+            EXPECT_TRUE(pizza->add(topping)) << "Adding Topping does not work";
         }
 
         EXPECT_TRUE(ContentEquals(toppings, pizza->getAllProperties()));
 
-        pax_delete(pizza);
+        EXPECT_TRUE(pax_delete(pizza));
+    }
+
+    PAX_TEST(Entity, Has)
+        using namespace Examples;
+        Pizza * pizza = pax_new(Pizza)();
+
+        EXPECT_TRUE(pizza->add(pax_new(Champignon)()));
+        EXPECT_TRUE(pizza->has<Topping>());
+        EXPECT_TRUE(pizza->has<Champignon>());
+
+        Mozzarella * mozzarella = pax_new(Mozzarella)();
+        EXPECT_FALSE(pizza->add(mozzarella))
+            << "Could add Mozzarella although dependency to tomato sauce is not met!";
+        EXPECT_TRUE(pizza->add(pax_new(TomatoSauce)(1)));
+        EXPECT_TRUE(pizza->add(mozzarella));
+
+        EXPECT_TRUE(pizza->has<Topping>());
+        EXPECT_TRUE(pizza->has<Champignon>());
+        EXPECT_TRUE(pizza->has<Cheese>());
+        EXPECT_TRUE(pizza->has<Mozzarella>());
+
+        bool test = pizza->has<Mozzarella, Champignon>();
+        EXPECT_TRUE(test);
+        test = pizza->has<Champignon, TomatoSauce, Mozzarella>();
+        EXPECT_TRUE(test);
+
+        EXPECT_TRUE(pax_delete(pizza));
     }
 }
 

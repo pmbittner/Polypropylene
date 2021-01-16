@@ -141,12 +141,12 @@ namespace PAX {
 
         PAX_GENERATE_EntityTemplateHeader(bool, !)
         has() const {
-            return singleProperties.count(typeid(TProperty)) > 0;
+            return singleProperties.count(paxtypeid(TProperty)) > 0;
         }
 
         PAX_GENERATE_EntityTemplateHeader(bool, )
         has() const {
-            return multipleProperties.count(typeid(TProperty)) > 0;
+            return multipleProperties.count(paxtypeid(TProperty)) > 0;
         }
 
         template<class FirstTPropertyType, class SecondTPropertyType, class... FurtherTPropertyTypees>
