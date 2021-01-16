@@ -21,7 +21,7 @@ namespace PAX {
         };
 
         for (Log::Level level : levels) {
-            EXPECT_NE(Log::instance.getStreamFor(level), nullptr) << "There is no default stream for Log::Level " << level;
+            EXPECT_NE(Log::Instance().getStreamFor(level), nullptr) << "There is no default stream for Log::Level " << level;
         }
     }
 }

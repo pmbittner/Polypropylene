@@ -22,7 +22,10 @@ namespace PAX {
         }
     }
 
-    Log Log::instance = Log();
+    Log & Log::Instance() {
+        static Log log;
+        return log;
+    }
 
     std::ostream * Log::getStreamFor(PAX::Log::Level level) {
         if (level <= currentLevel) {

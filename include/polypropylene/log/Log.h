@@ -31,9 +31,10 @@ namespace PAX {
 
         std::map<Level, std::ostream*> outstreams;
 
+        Log();
+
     public:
-        // TODO: Make this a function to prevent static storage initialization bugs.
-        static Log instance;
+        static Log& Instance();
         static std::string timestamp();
 
         Level currentLevel =
@@ -42,8 +43,6 @@ namespace PAX {
 #else
             Level::Error;
 #endif
-
-        Log();
 
         /**
          * Sets the stream to write logs to for a given log level.
@@ -79,12 +78,12 @@ namespace PAX {
  *     PAX_LOG(Log::Level::Info, "Test Log Message " << x);
  * will write "Test Log Message 3" with a timestamp and caller information to the stream for level Info in Log::instance.
  */
-#define PAX_LOG(level, ... /* message */) do {::PAX::Log::instance.stream(level, PAX_FUNCTION_NAME, __FILE__, __LINE__) << __VA_ARGS__ << std::endl;} while(0)
+#define PAX_LOG(level, ... /* message */) do {::PAX::Log::Instance().stream(level, PAX_FUNCTION_NAME, __FILE__, __LINE__) << __VA_ARGS__ << std::endl;} while(0)
 
 /**
  * The same as PAX_LOG but does not write any metadata.
  */
-#define PAX_LOG_RAW(level, ... /* message */) do {::PAX::Log::instance.stream_raw(level) << __VA_ARGS__ << std::endl;} while(0)
+#define PAX_LOG_RAW(level, ... /* message */) do {::PAX::Log::Instance().stream_raw(level) << __VA_ARGS__ << std::endl;} while(0)
 
 /**
  * PAX_LOG_DEBUG will only log if the program is built in debug mode.
