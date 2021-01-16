@@ -17,18 +17,15 @@ namespace PAX {
 
     public:
         explicit PrototypeEntityPrefab(const TEntityType & prototype) {
-            const std::vector<PropertyType *> & prototypeProperties = prototype.getProperties();
+            const std::vector<PropertyType *> & prototypeProperties = prototype.getAllProperties();
             for (PropertyType * original : prototypeProperties) {
                 prototypes.emplace_back(Clone<TEntityType>(original));
             }
         }
 
         ~PrototypeEntityPrefab() override {
-            AllocationService & allocationService = TEntityType::GetAllocationService();
             for (Property<TEntityType> * p : prototypes) {
-                TypeHandle pType = p->getClassType();
-                p->~Property<TEntityType>();
-                allocationService.free(pType.id, p);
+                pax_delete(p);
             }
         }
 

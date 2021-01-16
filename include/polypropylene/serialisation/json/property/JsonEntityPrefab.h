@@ -120,7 +120,7 @@ namespace PAX {
                 json & propertiesNode = rootNode[DefaultElements::Properties];
 
                 EntityType * e = other.create({});
-                const std::vector<PropertyType*> & properties = e->getProperties();
+                const std::vector<PropertyType*> & properties = e->getAllProperties();
 
                 ClassMetadataSerialiser serialiser({});
                 for (PropertyType * property : properties) {
@@ -177,7 +177,7 @@ namespace PAX {
 
                 EntityType * e = Prefab<EntityType>::create({});
                 ClassMetadataSerialiser serialiser({});
-                const std::vector<PropertyType*> & properties = e->getProperties();
+                const std::vector<PropertyType*> & properties = e->getAllProperties();
                 for (PropertyType * p : properties) {
                     IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(p->getClassType().id);
                     json & propertyNode = propertiesNode[factory->getPropertyName()];
