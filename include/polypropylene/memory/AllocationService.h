@@ -111,14 +111,13 @@ namespace PAX {
          *             found allocator.
          * @return True iff the object was deleted.
          *         False iff the object was not allocated with this
-         *         AllocationService and thus could not be freed.
+         *         AllocationService or could not be freed.
          */
         template<typename DestructorType>
         PAX_NODISCARD bool deleteAndFree(DestructorType * t, const TypeId & type) {
             if (hasAllocated(type, t)) {
                 t->~DestructorType();
-                free(type, t);
-                return true;
+                return free(type, t);
             }
             return false;
         }
