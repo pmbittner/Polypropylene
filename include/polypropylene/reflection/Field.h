@@ -6,8 +6,8 @@
 #define POLYPROPYLENE_FIELD_H
 
 #include <string>
-#include <polypropylene/definitions/Definitions.h>
-#include <polypropylene/reflection/Type.h>
+#include "polypropylene/definitions/Definitions.h"
+#include "polypropylene/reflection/Type.h"
 
 #define paxfieldalias_flagged(name, field, flag) ::PAX::Field(name, paxtypeof(field), &field, flag)
 #define paxfieldalias(name, field) paxfieldalias_flagged(name, field, ::PAX::Field::NoFlag)

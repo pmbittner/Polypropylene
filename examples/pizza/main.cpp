@@ -16,7 +16,6 @@
 #include "Pizza.h"
 #include "toppings/Mozzarella.h"
 #include "toppings/Champignon.h"
-#include "toppings/TomatoSauce.h"
 
 /**
  * Each type of property has to be registered before it can be used in prefabs.

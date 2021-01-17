@@ -2,8 +2,7 @@
 // Created by Paul Bittner on 17.03.2020.
 //
 
-#include <polypropylene/serialisation/json/JsonFieldWriterRegister.h>
-#include <polypropylene/io/Path.h>
+#include "polypropylene/serialisation/json/JsonFieldWriterRegister.h"
 
 namespace PAX::Json {
 #define JSONREGISTER_REGISTERPRIMITIVE(type) \
