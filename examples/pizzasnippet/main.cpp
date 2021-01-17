@@ -38,7 +38,7 @@ int main() {
     pizza.get<TomatoSauce>()->scoville = 3000; // put Tabasco in ;)
     Mozzarella * mozzarella = pizza.get<Mozzarella>();
     const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // contains our Mozzarella only
-    const std::vector<PAX::Property<Pizza>*> & allProperties = pizza.getProperties();
+    const std::vector<PAX::Property<Pizza>*> & allProperties = pizza.getAllProperties();
 
     return 0;
 }
