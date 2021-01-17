@@ -61,7 +61,7 @@ namespace PAX {
       freeChunks(capacity)
     {
         memory = new memunit[MemorySize()];
-        PAX_DEBUGASSERT(clear());
+        PAX_ASSERT(clear());
     }
 
     PoolAllocator::PoolAllocator(PAX::PoolAllocator && other) noexcept :

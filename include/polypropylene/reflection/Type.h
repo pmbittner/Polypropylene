@@ -6,6 +6,7 @@
 #define POLYPROPYLENE_TYPEINFO_H
 
 #include <typeindex>
+#include <cstddef> // size_t
 #include "polypropylene/definitions/Definitions.h"
 
 namespace PAX {

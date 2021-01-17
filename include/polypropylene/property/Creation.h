@@ -5,6 +5,7 @@
 #ifndef POLYPROPYLENE_CREATION_H
 #define POLYPROPYLENE_CREATION_H
 
+#include <type_traits> // std::enable_if
 #include "polypropylene/definitions/Definitions.h"
 #include "polypropylene/reflection/Polymorphic.h"
 
