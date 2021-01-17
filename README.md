@@ -199,9 +199,9 @@ Polypropylene further contains the following features:
     Furthermore, **prefabs can be stored to json files**, as done in our [pizza example][example_pizza_main]:
     ```C++
     Path outPath = "res/pizza/out/funghiWith" + hotness + "scoville.json";
-        PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
-        JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
-        prefabLoader.write(asJson, outPath);
+    PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
+    JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
+    prefabLoader.write(asJson, outPath);
     ```
 
 -   **EntityManagers and -Views**: Managing collections of entities can be done with `EntityManagers`.
