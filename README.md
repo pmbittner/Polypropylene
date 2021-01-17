@@ -258,6 +258,7 @@ By default, all options are activated (set to ON):
 
 -   `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][nlohmannjson] for loading and writing `EntityPrefabs` from and to json files.
 -   `POLYPROPYLENE_WITH_EXAMPLES`: Specifies if examples should be built or not.
+-   `POLYPROPYLENE_WITH_TESTS`: Specifies if tests should be built or not.
 
 ## Code Examples
 
