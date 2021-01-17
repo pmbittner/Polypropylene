@@ -6,6 +6,7 @@
 #define POLYPROPYLENE_PREFAB_H
 
 #include "polypropylene/reflection/VariableRegister.h"
+#include "polypropylene/property/Creation.h"
 
 namespace PAX {
     class IPrefab {
