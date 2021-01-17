@@ -38,8 +38,7 @@ namespace PAX {
         public:
             PAX_NODISCARD bool loadIntoField(const nlohmann::json &j, Field &field) const override {
                 if (field.type == paxtypeof(T)) {
-                    // TODO: Move?
-                    *static_cast<T *>(field.data) = TryParser<nlohmann::json, T>::tryParse(j);
+                    *static_cast<T *>(field.data) = std::move(TryParser<nlohmann::json, T>::tryParse(j));
                     return true;
                 }
 

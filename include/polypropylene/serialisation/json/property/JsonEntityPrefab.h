@@ -110,18 +110,11 @@ namespace PAX {
                 }
             }
 
-        public:
-            static JsonEntityPrefabElementParserRegister<EntityType> ElementParsers;
-            static std::vector<std::string> ParseOrder;
+            static json ToJson(Prefab<EntityType> & prefab) {
+                json ret;
+                json & propertiesNode = ret[DefaultElements::Properties];
 
-            explicit JsonEntityPrefab(const json & j, const Path & path)
-                    : Prefab<EntityType>(), rootNode(j), path(path) {}
-
-            explicit JsonEntityPrefab(Prefab<EntityType> & other) {
-                // TODO: Check if other is a JsonEntityPrefab
-                json & propertiesNode = rootNode[DefaultElements::Properties];
-
-                EntityType * e = other.create({});
+                EntityType * e = prefab.create({});
                 const std::vector<PropertyType*> & properties = e->getAllProperties();
 
                 ClassMetadataSerialiser serialiser({});
@@ -135,10 +128,49 @@ namespace PAX {
                 }
 
                 pax_delete(e);
+                return ret;
+            }
+
+        public:
+            static JsonEntityPrefabElementParserRegister<EntityType> ElementParsers;
+            static std::vector<std::string> ParseOrder;
+
+            /**
+             * Creates a JsonEntityPrefab from a json object that was loaded from the
+             * given path.
+             * @param j The json object that represents a prefab.
+             * @param path The path from which the given json was loaded.
+             *             This path is used to resolve relative paths in the json.
+             */
+            explicit JsonEntityPrefab(const json & j, const Path & path)
+                    : Prefab<EntityType>(), rootNode(j), path(path) {}
+
+            /**
+             * Creates a JsonEntityPrefab from the given Prefab.
+             * This allows converting and exporting the given Prefab as json.
+             * @param other The prefab to copy.
+             * @return A JsonEntityPrefab that is a copy of the given prefab.
+             */
+            static JsonEntityPrefab<EntityType> FromPrefab(Prefab<EntityType> & other) {
+                if (auto * otherAsJson = dynamic_cast<JsonEntityPrefab<EntityType>*>(&other)) {
+                    return JsonEntityPrefab(otherAsJson->toJson(), otherAsJson->getPath());
+                } else {
+                    return JsonEntityPrefab(ToJson(other), Path::EmptyPath);
+                }
             }
 
             virtual ~JsonEntityPrefab() = default;
 
+            /**
+             * Given a path as string:
+             *   - resolves any variables used in that path (${...}) with the variables in IPrefab::PreDefinedVariables,
+             *   - if the path is relative, makes it a path starting from this prefabs path.
+             *  For example the path of this JsonEntityPrefab is "/usr/asd"
+             *  and IPrefab::PreDefinedVariables["fooDir"] = "baz" we get:
+             *    resolvePath("../${fooDir}/bar.txt") = "/usr/baz/bar.txt"
+             * @param str The path to resolve variables for and directory if it is relative.
+             * @return A path with variables resolved and directory if it is relative.
+             */
             PAX_MAYBEUNUSED Path resolvePath(const std::string & str) {
                 Path p = Path(VariableResolver::resolveVariables(str, IPrefab::PreDefinedVariables));
 
@@ -149,16 +181,22 @@ namespace PAX {
                 return p;
             }
 
+            /**
+             * Has to be invoked once during program startup.
+             * Memorizes the JsonFieldWriters you use.
+             */
             static void initialize(JsonFieldWriterRegister & jsonFieldWriterRegister);
 
             void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {
                 // Compose given variables with the predefined ones.
                 // Therefore, copy the given VariableRegister, such that duplicates
                 // are overriden with the custom variables.
-                // TODO: Check if this is the correct order.
                 VariableRegister composedVariableRegister = variableRegister;
-                composedVariableRegister.insert(Prefab<EntityType>::PreDefinedVariables.begin(),
-                                                Prefab<EntityType>::PreDefinedVariables.end());
+                for (const std::pair<std::string, std::string> & predefined : Prefab<EntityType>::PreDefinedVariables) {
+                    if (composedVariableRegister.find(predefined.first) == composedVariableRegister.end()) {
+                        composedVariableRegister.insert(predefined);
+                    }
+                }
 
                 for (const std::string & name : ParseOrder) {
                     if (rootNode.count(name) > 0) {
@@ -174,22 +212,12 @@ namespace PAX {
             }
 
             PAX_NODISCARD nlohmann::json toJson() {
-                json me;
-                json & propertiesNode = me[DefaultElements::Properties];
-
-                EntityType * e = Prefab<EntityType>::create({});
-                ClassMetadataSerialiser serialiser({});
-                const std::vector<PropertyType*> & properties = e->getAllProperties();
-                for (PropertyType * p : properties) {
-                    IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(p->getClassType().type.id);
-                    json & propertyNode = propertiesNode[factory->getPropertyName()];
-                    JsonFieldStorage storage(propertyNode, *GlobalWriters);
-                    serialiser.setStorage(&storage);
-                    ClassMetadata m = p->getMetadata();
-                    serialiser.readFromMetadata(m);
+                if (parentPrefabs.empty()) {
+                    return rootNode;
+                } else {
+                    // If we have parent prefabs, inline their contents.
+                    return ToJson(*this);
                 }
-                pax_delete(e);
-                return me;
             }
 
             PAX_NODISCARD const Path & getPath() const {

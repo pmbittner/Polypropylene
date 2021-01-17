@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
     { /// Open a scope here to remove the temporary prefabs we create.
         Path outPath = "res/pizza/out/funghiWith" + hotness + "scoville.json";
         PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
-        JsonEntityPrefab<Pizza> asJson(prefabToSerialise);
+        JsonEntityPrefab<Pizza> asJson = JsonEntityPrefab<Pizza>::FromPrefab(prefabToSerialise);
         prefabLoader.write(asJson, outPath);
 
         PAX_LOG(Log::Level::Info, "Your pizza was delivered to '" << outPath << "'.");
