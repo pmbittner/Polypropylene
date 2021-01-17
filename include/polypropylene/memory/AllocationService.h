@@ -6,6 +6,7 @@
 #define POLYPROPYLENE_PROPERTYALLOCATIONSERVICE_H
 
 #include <memory>
+#include <functional>
 
 #include <polypropylene/stdutils/CollectionUtils.h>
 #include "polypropylene/reflection/TypeMap.h"
@@ -21,11 +22,27 @@ namespace PAX {
      * By default, a PoolAllocator will be registered for each type lazily.
      */
     class AllocationService final {
+    public:
+        using AllocatorFactory = std::function<std::shared_ptr<IAllocator>(size_t)>;
+
+    private:
         TypeMap<std::shared_ptr<IAllocator>> allocators;
+        AllocatorFactory allocatorFactory;
 
     public:
-        AllocationService() = default;
+        AllocationService();
         virtual ~AllocationService();
+
+        /**
+         * Define how new allocators should be created when necessary.
+         * When invoking @see allocate(const Type & t), the AllocationService will
+         * look for an allocator registered for the given type.
+         * If no allocator is registered for the given type, a new allocator will
+         * be created for the given type with the default allocator factory.
+         * The default value of this creates PoolAllocators of default capacity.
+         * @param factory The factory to create default allocators with.
+         */
+        PAX_MAYBEUNUSED void setDefaultAllocatorFactory(const AllocatorFactory & factory);
 
         /**
          * Registers the given allocator for (de-) allocating objects of the given type.

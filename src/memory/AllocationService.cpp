@@ -5,7 +5,15 @@
 #include <polypropylene/memory/AllocationService.h>
 
 namespace PAX {
+    AllocationService::AllocationService()
+    : allocatorFactory([](size_t s){ return std::make_shared<PoolAllocator>(s);} )
+    {}
+
     AllocationService::~AllocationService() = default;
+
+    void AllocationService::setDefaultAllocatorFactory(const AllocatorFactory &factory) {
+        this->allocatorFactory = factory;
+    }
 
     void AllocationService::registerAllocator(const TypeId & type, const std::shared_ptr<IAllocator> & allocator) {
         allocators.insert_or_assign(type, allocator);
@@ -50,7 +58,7 @@ namespace PAX {
 
         // Create default allocator
         if (!allocator) {
-            allocator = std::make_shared<PoolAllocator>(t.size);
+            allocator = allocatorFactory(t.size);
             registerAllocator(t.id, allocator);
         }
 
