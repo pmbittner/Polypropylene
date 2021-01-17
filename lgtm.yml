@@ -1,4 +1,7 @@
 path_classifiers:
-  library:
-    - exclude: include/polypropylene/serialisation/json/Json.h
-    - exclude: include/polypropylene/serialisation/json/JsonFwd.h
+  test:
+    - "test/"
+queries:
+    - exclude: include/polypropylene/serialisation/json/nlohmann/
+extraction:
+  cpp:
