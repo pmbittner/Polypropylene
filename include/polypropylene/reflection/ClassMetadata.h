@@ -12,10 +12,11 @@
 
 namespace PAX {
     class ClassMetadata {
+        std::string className;
         std::vector<Field> fields;
 
     public:
-        ClassMetadata();
+        explicit ClassMetadata(const std::string & className);
         ClassMetadata(const ClassMetadata & other);
         ClassMetadata(ClassMetadata && other) noexcept;
 
@@ -25,6 +26,7 @@ namespace PAX {
         PAX_NODISCARD const Field & get(const std::string & name) const;
         PAX_NODISCARD std::vector<Field> & getFields();
         PAX_NODISCARD const std::vector<Field> & getFields() const;
+        PAX_NODISCARD const std::string & getName() const;
 
         void writeTo(ClassMetadata & other) const;
     };

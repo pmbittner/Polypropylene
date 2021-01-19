@@ -53,7 +53,9 @@ namespace PAX {
          * @return Reflection information on the fields of this property that should be considered for cloning,
          * (de-)serialisation, and prefabs.
          */
-        PAX_NODISCARD ClassMetadata getMetadata() override { return {}; }
+        PAX_NODISCARD ClassMetadata getMetadata() override {
+            return ClassMetadata(getClassType().name());
+        }
 
         PAX_NODISCARD virtual const PolymorphicType & getClassType() const {
             static auto t = PolymorphicType(paxtypeof(*this));

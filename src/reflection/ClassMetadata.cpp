@@ -6,7 +6,7 @@
 #include <polypropylene/log/Errors.h>
 
 namespace PAX {
-    ClassMetadata::ClassMetadata() = default;
+    ClassMetadata::ClassMetadata(const std::string & className) : className(className) {}
     ClassMetadata::ClassMetadata(const PAX::ClassMetadata &other) = default;
     ClassMetadata::ClassMetadata(PAX::ClassMetadata &&other) noexcept = default;
 
@@ -49,6 +49,10 @@ namespace PAX {
 
     const std::vector<Field> & ClassMetadata::getFields() const {
         return fields;
+    }
+
+    const std::string & ClassMetadata::getName() const {
+        return className;
     }
 
     void ClassMetadata::writeTo(ClassMetadata & other) const {
