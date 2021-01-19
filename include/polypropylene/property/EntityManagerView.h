@@ -54,8 +54,8 @@ namespace PAX {
         }
 
     public:
-        using iterator = decltype(entities)::iterator;
-        using const_iterator = decltype(entities)::const_iterator;
+        using iterator = typename decltype(entities)::iterator;
+        using const_iterator = typename decltype(entities)::const_iterator;
 
         explicit EntityManagerView(const EntityManager<EntityType> & manager) : manager(manager) {
             for (EntityType * entity : manager.getEntities()) {
@@ -102,8 +102,8 @@ namespace PAX {
             return entities;
         }
 
-        iterator begin() const { return entities.begin(); }
-        iterator end() const { return entities.end(); }
+        iterator begin() { return entities.begin(); }
+        iterator end() { return entities.end(); }
         const_iterator begin() const { return entities.begin(); }
         const_iterator end() const { return entities.end(); }
     };
