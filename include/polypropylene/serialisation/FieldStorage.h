@@ -33,7 +33,7 @@ namespace PAX {
          * @return True, iff a value was written to the given field.
          *         False, there is no value for the given field in this storage or there is a type mismatch.
          */
-        PAX_NODISCARD virtual bool writeTo(Field &field, const VariableRegister & variables) const = 0;
+        PAX_NODISCARD virtual Field::WriteResult writeTo(Field &field, const VariableRegister & variables) const = 0;
 
         /**
          * Stores the value from the given field in this storage under the given field's name.

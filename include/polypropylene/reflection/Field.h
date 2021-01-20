@@ -6,12 +6,11 @@
 #define POLYPROPYLENE_FIELD_H
 
 #include <string>
+#include <vector>
 #include "polypropylene/definitions/Definitions.h"
 #include "polypropylene/reflection/Type.h"
 
-#define paxfieldalias_flagged(name, field, flag) ::PAX::Field(name, paxtypeof(field), &field, flag)
-#define paxfieldalias(name, field) paxfieldalias_flagged(name, field, ::PAX::Field::NoFlag)
-#define paxfieldof_flagged(field, flag) paxfieldalias_flagged(#field, field, flag)
+#define paxfieldalias(name, field) ::PAX::Internal::FieldCreator<decltype(field)>::createField(name, &field)
 #define paxfieldof(field) paxfieldalias(#field, field)
 
 namespace PAX {
@@ -39,12 +38,37 @@ namespace PAX {
          */
         constexpr static FieldFlag NoFlag = 0;
         constexpr static FieldFlag IsMandatory = 1;
-        constexpr static FieldFlag CustomFlagsBegin = 2 * IsMandatory;
+        constexpr static FieldFlag IsVector = 2;
+        constexpr static FieldFlag CustomFlagsBegin = 2 * IsVector;
 
         Type type;
         std::string name;
         void * data;
         FieldFlag flags;
+
+        struct WriteResult {
+            enum Value {
+                Success = 0,
+                FieldNotFound,
+                TypeMismatch,
+                SizeMismatch,
+                Other
+            };
+
+            const Value value;
+            const std::string message;
+
+            PAX_IMPLICIT WriteResult(Value val);
+            WriteResult(Value val, const std::string & message);
+
+            /**
+             * Converts a WriteResult::Value to string.
+             * (Overloading ostream>> caused trouble. :( )
+             * @param v
+             * @return
+             */
+            static std::string ToString(Value v);
+        };
 
         /**
          * Creates a field handle pointing to the concrete variable.
@@ -75,14 +99,32 @@ namespace PAX {
          * Be careful and ensure that sizeof(*value) is the same as the size of this field!
          * @param value Pointer to data to read from.
          */
-        void setFrom(const void * value);
+        WriteResult setTo(const void * value);
 
         /**
          * Sets the data of this field to the data of the given field.
          * @param field The field whose 'data' should be copied to this field.
          */
-        void setFrom(const Field & field);
+        WriteResult setTo(const Field & field);
+
+        void addFlag(FieldFlag flag);
     };
+
+    namespace Internal {
+        template<typename T>
+        struct FieldCreator {
+            static Field createField(const std::string & name, void * data) {
+                return Field(name, paxtypeof(T), data, ::PAX::Field::NoFlag);
+            }
+        };
+
+        template<typename T>
+        struct FieldCreator<std::vector<T>> {
+            static Field createField(const std::string &name, void * data) {
+                return Field(name, paxtypeof(T), data, ::PAX::Field::IsVector);
+            }
+        };
+    }
 }
 
 #endif //POLYPROPYLENE_FIELD_H

@@ -19,20 +19,26 @@ namespace PAX::Json {
         return VariableResolver::resolveVariables(JsonToString(node[key]), variables);
     }
 
-    bool JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
+    Field::WriteResult JsonFieldStorage::writeTo(Field & field, const VariableRegister &variables) const {
         if (!has(field.name)) {
-            PAX_LOG(Log::Level::Warn, "Json object\n" << JsonToString(node) << "\ndoes not have a value for " << field.name << "!");
-            return false;
+            std::stringstream ss;
+            ss << "Json object\n" << JsonToString(node) << "\ndoes not have a value for " << field.name << "!";
+            return Field::WriteResult(Field::WriteResult::FieldNotFound, ss.str());
         }
 
         const IJsonFieldWriter * writer = writers.getWriterFor(field.type.id);
         if (writer) {
-            return writer->loadIntoField(StringToJson(getValue(field.name, variables)), field);
+            const nlohmann::json value = StringToJson(getValue(field.name, variables));
+            if (field.flags & Field::IsVector) {
+                return writer->loadIntoVector(value, field);
+            } else {
+                return writer->loadIntoField(value, field);
+            }
         } else {
-            PAX_THROW_RUNTIME_ERROR("Could not write to field of type \"" << field.type.name() << "\" because no IJsonFieldWriter is registered for it!");
+            std::stringstream ss;
+            ss << "Could not write to field of type \"" << field.type.name() << "\" because no IJsonFieldWriter is registered for it!";
+            return Field::WriteResult(Field::WriteResult::Other, ss.str());
         }
-
-        return false;
     }
 
     bool JsonFieldStorage::readFrom(const Field & field) {

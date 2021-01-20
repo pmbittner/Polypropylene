@@ -59,7 +59,7 @@ namespace PAX {
         for (const Field & myField : fields) {
             Field & otherField = other.get(myField.name);
             if (myField.isEqualTo(otherField)) {
-                otherField.setFrom(myField);
+                otherField.setTo(myField);
             }
         }
     }

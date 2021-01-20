@@ -16,9 +16,13 @@ namespace PAX
 
     void ClassMetadataSerialiser::writeToMetadata(ClassMetadata &metadata, Options options) const {
         for (Field & field : metadata.getFields()) {
-            bool writeSuccessful = fieldStorage->writeTo(field, variables);
-            if (!writeSuccessful && (field.flags & Field::IsMandatory) && !(options & IgnoreMandatoryFlags)) {
-                PAX_THROW_RUNTIME_ERROR("No value for mandatory field \"" << field.name << "\" defined in " << fieldStorage->toString() << "!");
+            Field::WriteResult result = fieldStorage->writeTo(field, variables);
+            if (result.value != Field::WriteResult::Success) {
+                if ((field.flags & Field::IsMandatory) && !(options & IgnoreMandatoryFlags)) {
+                    PAX_THROW_RUNTIME_ERROR("Could not set mandatory field \"" << field.type.name() << " " << field.name << "\" from \"" << fieldStorage->toString() << "\"!\nReason is " << Field::WriteResult::ToString(result.value) << ": " << result.message);
+                } else {
+                    PAX_LOG(Log::Level::Warn, "Could not set field \"" << field.type.name() << " " << field.name << "\" from \"" << fieldStorage->toString() << "\"!\nReason is " << Field::WriteResult::ToString(result.value) << ": " << result.message);
+                }
             }
         }
     }

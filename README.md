@@ -189,7 +189,7 @@ Polypropylene further contains the following features:
     ```C++
     ClassMetadata TomatoSauce::getMetadata() {
         ClassMetadata m = Super::getMetadata();
-        m.add(paxfieldof(scoville)).flags = Field::IsMandatory;
+        m.add(paxfieldof(scoville)).flags |= Field::IsMandatory;
         return m;
     }
     ```

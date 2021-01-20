@@ -7,8 +7,13 @@
 
 #ifdef PAX_WITH_JSON
 
+#include <sstream>
+
 #include "polypropylene/reflection/Field.h"
 #include "JsonParser.h"
+
+// TODO: Avoid
+#include "nlohmann/Json.h"
 
 namespace PAX {
     namespace Json {
@@ -21,7 +26,9 @@ namespace PAX {
              * @return True if writing was successful. Returns false if this parser cannot write to the given field.
              * This can happen if the type of the field does not correspond to the type this parser can read.
              */
-            PAX_NODISCARD virtual bool loadIntoField(const nlohmann::json &j, Field &field) const = 0;
+            PAX_NODISCARD virtual Field::WriteResult loadIntoField(const nlohmann::json &j, Field &field) const = 0;
+
+            virtual Field::WriteResult loadIntoVector(const nlohmann::json &j, Field &field) const = 0;
 
             /**
              * Writes the data given in the field to the json.
@@ -36,19 +43,38 @@ namespace PAX {
         template<class T>
         class JsonFieldWriter : public IJsonFieldWriter {
         public:
-            PAX_NODISCARD bool loadIntoField(const nlohmann::json &j, Field &field) const override {
+            PAX_NODISCARD Field::WriteResult loadIntoField(const nlohmann::json &j, Field &field) const override {
+                // TODO: Make this a method of field?
                 if (field.type == paxtypeof(T)) {
                     *static_cast<T *>(field.data) = std::move(TryParser<nlohmann::json, T>::tryParse(j));
-                    return true;
+                    return Field::WriteResult::Success;
                 }
 
-                return false;
+                return Field::WriteResult::TypeMismatch;
+            }
+
+            PAX_NODISCARD Field::WriteResult loadIntoVector(const nlohmann::json &j, Field &field) const override {
+                using Vec = std::vector<T>;
+
+                // TODO: Make this a method of field? This could avoid having to include json.h
+                if (field.type == paxtypeof(T) && j.is_array()) {
+                    Vec* vec = static_cast<Vec *>(field.data);
+                    for (const nlohmann::json & child : j) {
+                        vec->emplace_back(TryParser<nlohmann::json, T>::tryParse(child));
+                    }
+
+                    return Field::WriteResult::Success;
+                }
+
+                return Field::WriteResult::TypeMismatch;
             }
 
             PAX_NODISCARD bool loadIntoJson(const Field & field, nlohmann::json & j) const override {
                 if (field.type == paxtypeof(T)) {
                     T* data = static_cast<T*>(field.data);
                     std::stringstream stream;
+                    // TODO: Is this the best solution?
+                    //       Do we want to require << to be implemented?
                     stream << *data;
                     setJsonValue(j, field.name, stream.str());
                     return true;
