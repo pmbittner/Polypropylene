@@ -12,6 +12,12 @@
 #include "polypropylene/serialisation/json/JsonFieldWriterRegister.h"
 
 namespace PAX::Json {
+    /**
+     * Implementation of a FieldStorage for json files.
+     * Realized with the nlohmann::json library.
+     * To read and write fields from and to Json,
+     * the JsonFieldStorage uses IJsonFieldWriters.
+     */
     class JsonFieldStorage : public FieldStorage {
         nlohmann::json & node;
         const JsonFieldWriterRegister & writers;
