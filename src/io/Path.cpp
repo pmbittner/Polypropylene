@@ -32,6 +32,10 @@ namespace PAX {
 
     Path::Path(const Path &other) = default;
 
+    bool Path::isEmpty() const {
+        return _path == EmptyPath;
+    }
+
     bool Path::isFile() const {
         auto dotPos = _path.find_last_of('.');
         if (dotPos != std::string::npos) {

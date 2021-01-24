@@ -34,6 +34,8 @@ namespace PAX {
         PAX_IMPLICIT Path(const std::string& path);
         Path(const Path& other);
 
+        PAX_NODISCARD bool isEmpty() const;
+
         /**
          * A Path is considered to be a file, if it contains a dot, indicating a file ending, after the last slash/backslash.
          * @return True, iff this file points to a file.
