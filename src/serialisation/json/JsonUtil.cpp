@@ -12,7 +12,7 @@ namespace PAX {
             return j;
         }
 
-        return j.dump();
+        return j.dump(2);
     }
 
     nlohmann::json StringToJson(const std::string & s) {
