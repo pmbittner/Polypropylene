@@ -126,6 +126,10 @@ namespace PAX {
                 return true;
             }
 
+#ifdef PAX_BUILD_TYPE_DEBUG
+            PAX_THROW_RUNTIME_ERROR("Could not add " << property->getClassType().name() << " to entity " << this);
+#endif
+
             return false;
         }
 
