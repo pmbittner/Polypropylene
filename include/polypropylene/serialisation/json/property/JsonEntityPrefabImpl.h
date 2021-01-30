@@ -93,7 +93,14 @@ namespace PAX::Json {
 
                         if (numOfPropsToAdd == props.size()) {
                             // Not a single property could be added to the Entity because not a single dependency is met!
-                            PAX_LOG(Log::Level::Error, "Parsing \"Properties\": Error during adding properties! Dependencies could not be met!");
+                            std::stringstream errorMessageStream;
+                            errorMessageStream << "Parsing \"Properties\": Error during adding properties! Dependencies could not be met for properties:\n" << std::endl;
+
+                            for (auto it = props.begin(); it != props.end(); ++it) {
+                                errorMessageStream << "  " << (*it)->getClassType().name() << std::endl;
+                            }
+
+                            PAX_LOG(Log::Level::Error, errorMessageStream.str());
                             break;
                         }
                     }
