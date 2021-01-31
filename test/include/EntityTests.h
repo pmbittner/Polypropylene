@@ -38,6 +38,7 @@ namespace PAX {
         EXPECT_TRUE(pizza->has<Champignon>());
 
         Mozzarella * mozzarella = pax_new(Mozzarella)();
+        PAX_LOG_DEBUG(Log::Level::Info, "The following error message is expected");
         EXPECT_FALSE(pizza->add(mozzarella))
             << "Could add Mozzarella although dependency to tomato sauce is not met!";
         EXPECT_TRUE(pizza->add(pax_new(TomatoSauce)(1)));
