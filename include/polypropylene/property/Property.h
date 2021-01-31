@@ -57,7 +57,7 @@ namespace PAX {
             return ClassMetadata(getClassType().name());
         }
 
-        PAX_NODISCARD virtual const PolymorphicType & getClassType() const {
+        PAX_NODISCARD const PolymorphicType & getClassType() const override {
             static auto t = PolymorphicType(paxtypeof(*this));
             return t;
         }
