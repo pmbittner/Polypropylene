@@ -38,6 +38,13 @@ namespace PAX {
             return PAX::Util::removeFromVector(_delegates, Delegate<Args...>(callee, &invoke<T, Method>));
         }
 
+#if __cplusplus >= 201703L
+        template<auto Method, typename T>
+        bool remove(T* callee) {
+            return PAX::Util::removeFromVector(_delegates, Delegate<Args...>(callee, &invoke<T, Method>));
+        }
+#endif
+
         void operator()(Args... args) const {
             for (Delegate<Args...> delegate: _delegates) {
                 delegate.method(delegate.callee, std::forward<Args>(args)...);
