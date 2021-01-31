@@ -8,12 +8,24 @@
 
 namespace PAX {
     namespace String {
-        void toLower(std::string & str) {
+        void LowerCased(std::string & str) {
             std::transform(str.begin(), str.end(), str.begin(), ::tolower);
         }
 
-        void toUpper(std::string & str) {
+        void UpperCased(std::string & str) {
             std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+        }
+
+        std::string LowerCase(const std::string & str) {
+            std::string copy = str;
+            LowerCased(copy);
+            return copy;
+        }
+
+        std::string UpperCase(const std::string & str) {
+            std::string copy = str;
+            UpperCased(copy);
+            return copy;
         }
 
         void ltrim(std::string &s) {
@@ -75,7 +87,7 @@ namespace PAX {
 
     bool TryParser<std::string, bool>::tryParse(const std::string & str) {
         std::string strcopy = str;
-        String::toLower(strcopy);
+        String::LowerCased(strcopy);
 
         return
                 strcopy == "true"
@@ -130,8 +142,7 @@ namespace PAX {
     }
 
     Log::Level TryParser<std::string, Log::Level>::tryParse(const std::string & str) {
-        std::string lvl = str;
-        String::toLower(lvl);
+        std::string lvl = String::LowerCase(str);
 
         if (lvl == "err" || lvl == "error" || lvl == "1") {
             return Log::Level::Error;

@@ -16,8 +16,10 @@
 
 namespace PAX {
     namespace String {
-        void toLower(std::string & str);
-        void toUpper(std::string & str);
+        void LowerCased(std::string & str);
+        void UpperCased(std::string & str);
+        std::string LowerCase(const std::string & str);
+        std::string UpperCase(const std::string & str);
 
         /// trim from start (in place)
         void ltrim(std::string &s);
