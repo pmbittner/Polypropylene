@@ -2,6 +2,8 @@
 // Created by Bittner on 25.12.2019.
 //
 
+#include <polypropylene/log/Assert.h>
+
 #if defined(POLYPROPYLENE_JSONENTITYPREFABLOADER_DEFINED) && defined(POLYPROPYLENE_JSONENTITYPREFAB_DEFINED)
 
 #ifndef POLYPROPYLENE_JSONENTITYPREFABIMPL_H
@@ -45,26 +47,38 @@ namespace PAX::Json {
         ElementParsers.registerParser(
                 DefaultElements::Properties,
                 [&jsonFieldWriterRegister](json &node, EntityType & e, const JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
+                    if (!node.is_array()) {
+                        PAX_THROW_RUNTIME_ERROR("Expected array but was given " << std::endl << node.dump(2));
+                    }
                     std::vector<PropertyType *> props;
-
                     ClassMetadataSerialiser serialiser(variableRegister);
 
-                    for (auto &el : node.items()) {
-                        const std::string & propTypeName = el.key();
+                    // For each proprety that is defined in the json array
+                    for (auto &propertyNode : node) {
+                        std::string propTypeName = "none";
+                        for (auto propertyNodeEntries : propertyNode.items()) {
+                            if (propTypeName == "none") {
+                                propTypeName = propertyNodeEntries.key();
+                            } else {
+                                PAX_THROW_RUNTIME_ERROR("Expected only one property but got multiple in:" << std::endl
+                                                                                                          << propertyNode.dump(
+                                                                                                                  2));
+                            }
+                        }
+
+                        if (propTypeName == "none") {
+                            PAX_THROW_RUNTIME_ERROR("Expected property in blank object" << std::endl << propertyNode.dump(2) << std::endl <<" in:" << std::endl << node.dump(2));
+                        }
                         IPropertyFactory<EntityType> *propertyFactory = PropertyFactoryRegister<EntityType>::getFactoryFor(
                                 propTypeName);
-
-                        JsonFieldStorage storage(el.value(), jsonFieldWriterRegister);
-                        serialiser.setStorage(&storage);
-
-                        // If the entity already has properties of the given type we won't create a new one
-                        // but instead overwrite the old ones with the newer settings.
                         const PAX::Type &propType = propertyFactory->getPropertyType();
                         const bool isPropMultiple = propertyFactory->isPropertyMultiple();
 
                         PropertyType * property = nullptr;
                         ClassMetadataSerialiser::Options options = ClassMetadataSerialiser::Options::None;
 
+                        // If the entity already has properties of the given type we won't create a new one
+                        // but instead overwrite the old ones with the newer settings.
                         if (!isPropMultiple && e.has(propType.id, isPropMultiple)) {
                             property = e.getSingle(propType.id);
                             options = ClassMetadataSerialiser::Options::IgnoreMandatoryFlags;
@@ -73,9 +87,15 @@ namespace PAX::Json {
                             props.emplace_back(property);
                         }
 
-                        ClassMetadata metadata = property->getMetadata();
-                        serialiser.writeToMetadata(metadata, options);
-                        serialiser.setStorage(nullptr);
+                        // If there are any fields given, set them in the property.
+                        json & fields = propertyNode[propTypeName];
+                        if (!fields.empty()) {
+                            JsonFieldStorage storage(fields, jsonFieldWriterRegister);
+                            serialiser.setStorage(&storage);
+                            ClassMetadata metadata = property->getMetadata();
+                            serialiser.writeToMetadata(metadata, options);
+                            serialiser.setStorage(nullptr);
+                        }
                     }
 
                     // Add the properties deferred to resolve their dependencies.

@@ -112,7 +112,7 @@ namespace PAX {
 
             static json ToJson(Prefab<EntityType> & prefab) {
                 json ret;
-                json & propertiesNode = ret[DefaultElements::Properties];
+                json propertiesNode;
 
                 EntityType * e = prefab.create({});
                 const std::vector<PropertyType*> & properties = e->getAllProperties();
@@ -120,12 +120,16 @@ namespace PAX {
                 ClassMetadataSerialiser serialiser({});
                 for (PropertyType * property : properties) {
                     IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(property->getClassType().type.id);
-                    json & propertyNode = propertiesNode[factory->getPropertyName()];
-                    JsonFieldStorage storage(propertyNode, *GlobalWriters);
+                    json propertyNode;
+                    json & fields = propertyNode[factory->getPropertyName()];
+                    JsonFieldStorage storage(fields, *GlobalWriters);
                     serialiser.setStorage(&storage);
                     serialiser.readFromMetadata(property->getMetadata());
                     serialiser.setStorage(nullptr);
+                    propertiesNode.push_back(propertyNode);
                 }
+
+                ret[DefaultElements::Properties] = propertiesNode;
 
                 pax_delete(e);
                 return ret;

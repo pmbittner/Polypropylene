@@ -143,12 +143,16 @@ Polypropylene further contains the following features:
     
     ```json
     {
-      "Properties": {
-        "PAX::Examples::Mozzarella": {},
-        "PAX::Examples::TomatoSauce": {
-          "scoville": "9001"
+      "Properties": [
+        {
+          "PAX::Examples::Mozzarella": {}
+        },
+        {
+          "PAX::Examples::TomatoSauce": {
+            "scoville": "9001"
+          }
         }
-      }
+      ]
     }
     ```
     
@@ -159,9 +163,11 @@ Polypropylene further contains the following features:
       "Inherits": [
         "margherita.json"
       ],
-      "Properties": {
-        "PAX::Examples::Champignon": {}
-      }
+      "Properties": [
+        {
+          "PAX::Examples::Champignon": {}
+        }
+      ]
     }
     ```
     From such files so called [**prefabs**][prefab] are created.

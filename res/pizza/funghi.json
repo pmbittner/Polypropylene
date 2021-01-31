@@ -2,7 +2,9 @@
   "Inherits": [
     "margherita.json"
   ],
-  "Properties": {
-    "PAX::Examples::Champignon": {}
-  }
+  "Properties": [
+    {
+      "PAX::Examples::Champignon": {}
+    }
+  ]
 }
