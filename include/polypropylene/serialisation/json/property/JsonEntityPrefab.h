@@ -195,12 +195,7 @@ namespace PAX {
                 // Compose given variables with the predefined ones.
                 // Therefore, copy the given VariableRegister, such that duplicates
                 // are overriden with the custom variables.
-                VariableRegister composedVariableRegister = variableRegister;
-                for (const std::pair<std::string, std::string> & predefined : Prefab<EntityType>::PreDefinedVariables) {
-                    if (composedVariableRegister.find(predefined.first) == composedVariableRegister.end()) {
-                        composedVariableRegister.insert(predefined);
-                    }
-                }
+                VariableRegister composedVariableRegister = ComposeVariableRegisters(IPrefab::PreDefinedVariables, variableRegister);
 
                 for (const std::string & name : ParseOrder) {
                     if (rootNode.count(name) > 0) {

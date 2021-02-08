@@ -11,6 +11,10 @@
 namespace PAX {
     using VariableRegister = std::map<std::string, std::string>;
 
+    // Adds all variables defined in b to a.
+    // Duplicates are overriden with values from b.
+    VariableRegister ComposeVariableRegisters(const VariableRegister & a, const VariableRegister & b);
+
     struct VariableHierarchy {
         // This can contain other VariableHierarchies, too.
         VariableRegister values;

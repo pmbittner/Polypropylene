@@ -5,6 +5,18 @@
 #include <polypropylene/reflection/VariableRegister.h>
 
 namespace PAX {
+    VariableRegister ComposeVariableRegisters(const VariableRegister & a, const VariableRegister & b) {
+        // Compose given variables with the predefined ones.
+        // Therefore, copy the given VariableRegister, such that duplicates
+        // are overriden with the custom variables.
+        VariableRegister composedVariableRegister = a;
+        for (const auto & bEntry : b) {
+            composedVariableRegister.insert_or_assign(bEntry.first, bEntry.second);
+        }
+        return composedVariableRegister;
+    }
+
+
     std::string VariableResolver::resolveVariables(const std::string & str, const VariableRegister & variables) {
         const std::size_t VariableDeclarationBeginLen = std::string(VariableDeclarationBegin).size();
         const std::size_t VariableDeclarationEndLen = std::string(VariableDeclarationEnd).size();
