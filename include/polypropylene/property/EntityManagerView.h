@@ -69,6 +69,7 @@ namespace PAX {
         }
 
         explicit EntityManagerView(const EntityManagerView<EntityType, RequiredProperties...> & other) = delete;
+        // TODO: Delete this, too? All event service pointers will invalide on move right?
         EntityManagerView(EntityManagerView<EntityType, RequiredProperties...> && other) noexcept = default;
 
         virtual ~EntityManagerView() {
