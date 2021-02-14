@@ -20,6 +20,8 @@ namespace PAX {
     #define PAX_POOL_ASSERTVALIDPOINTER(p)
 #endif
 
+    size_t PoolAllocator::DefaultCapacity = 1024;
+
     size_t PoolAllocator::ChunkSize() const {
         return MetaDataSize + elementSize;
     }
@@ -209,6 +211,19 @@ namespace PAX {
 
     PoolAllocator::Index PoolAllocator::getCapacity() const {
         return capacity;
+    }
+
+    void PoolAllocator::SetDefaultCapacity(size_t defaultCapacity) {
+        PAX_LOG(Log::Level::Info, "Changing default capacity from "
+                << DefaultCapacity
+                << " to "
+                << defaultCapacity
+                << ".");
+        DefaultCapacity = defaultCapacity;
+    }
+
+    size_t PoolAllocator::GetDefaultCapacity() {
+        return DefaultCapacity;
     }
 
 #undef PAX_POOL_ASSERTVALIDINDEX

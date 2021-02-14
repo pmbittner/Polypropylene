@@ -16,7 +16,6 @@ namespace PAX {
      */
     class PoolAllocator : public IAllocator {
     public:
-        static constexpr size_t DefaultCapacity = 1024;
         using Index = int32_t;
 
         /**
@@ -28,6 +27,8 @@ namespace PAX {
         };
 
     private:
+        static size_t DefaultCapacity; // = 1024
+
         /// Chunk data
         using memunit = char;
         static constexpr size_t MetaDataSize = sizeof(ChunkInfo);
@@ -163,6 +164,17 @@ namespace PAX {
          * @return The maximum number of elements that can be allocated simultaneously.
          */
         PAX_NODISCARD Index getCapacity() const;
+
+        /**
+         * Sets the default capacity of new PoolAllocators to the given value.
+         * The default capacity is used when constructung new PoolAllocators without
+         * specifying a capacity explicitly.
+         * A pool allocator's capacity denotes the maximum number of elements it can contain.
+         * Does not affect existing pool allocators.
+         * @param defaultCapacity
+         */
+        static void SetDefaultCapacity(size_t defaultCapacity);
+        PAX_NODISCARD static size_t GetDefaultCapacity();
     };
 }
 
