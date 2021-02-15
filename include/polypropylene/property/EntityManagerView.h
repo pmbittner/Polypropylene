@@ -103,6 +103,10 @@ namespace PAX {
             return entities;
         }
 
+        PAX_NODISCARD size_t size() const noexcept {
+            return entities.size();
+        }
+
         iterator begin() { return entities.begin(); }
         iterator end() { return entities.end(); }
         const_iterator begin() const { return entities.begin(); }
