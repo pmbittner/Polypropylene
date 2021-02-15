@@ -39,6 +39,7 @@ namespace PAX {
         /// Split the given *subject* string at occurences of *separator*.
         std::vector<std::string> split(char separator, const std::string &subject, bool keepEmptySubstrings = true);
 
+        // TODO: Move to Path.h
         std::string getExtension(const std::string &path);
 
         void replace(std::string &string, const char &from, const char &to);
@@ -50,6 +51,13 @@ namespace PAX {
             }
 
             return TryParser<std::string, T>::tryParse(str);
+        }
+
+        template<typename T>
+        std::string ToStringViaOstream(const T & t) {
+            std::stringstream s;
+            s << t;
+            return s.str();
         }
     }
 
