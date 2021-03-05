@@ -107,7 +107,7 @@ namespace PAX {
          */
         WriteResult setTo(const Field & field);
 
-        void addFlag(FieldFlag flag);
+        Field & addFlag(FieldFlag flag);
     };
 
     namespace Internal {

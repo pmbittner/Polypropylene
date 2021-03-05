@@ -42,8 +42,9 @@ namespace PAX {
         return setTo(field.data);
     }
 
-    void Field::addFlag(FieldFlag flag) {
+    Field & Field::addFlag(FieldFlag flag) {
         flags |= flag;
+        return *this;
     }
 
     std::string Field::WriteResult::ToString(Value val) {
