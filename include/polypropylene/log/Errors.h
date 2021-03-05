@@ -11,17 +11,17 @@
 
 #define PAX_ASSERT_NOT_NULL(value, ...) do { \
 if (value == nullptr) { \
-    std::stringstream s; \
-    s << __VA_ARGS__; \
-    PAX_LOG(::PAX::Log::Level::Error, s.str()); \
-    throw std::invalid_argument(s.str()); \
+    std::stringstream _pax_stringstream_; \
+    _pax_stringstream_ << __VA_ARGS__; \
+    PAX_LOG(::PAX::Log::Level::Error, _pax_stringstream_.str()); \
+    throw std::invalid_argument(_pax_stringstream_.str()); \
 }} while(0)
 
 #define PAX_THROW_RUNTIME_ERROR(...) do { \
-    std::stringstream s; \
-    s << __VA_ARGS__; \
-    PAX_LOG(::PAX::Log::Level::Error, s.str()); \
-    throw std::runtime_error(s.str()); \
+    std::stringstream _pax_stringstream_; \
+    _pax_stringstream_ << __VA_ARGS__; \
+    PAX_LOG(::PAX::Log::Level::Error, _pax_stringstream_.str()); \
+    throw std::runtime_error(_pax_stringstream_.str()); \
 } while(0)
 
 #define PAX_NOT_IMPLEMENTED() PAX_LOG(PAX::Log::Level::Warn, "not implemented")
