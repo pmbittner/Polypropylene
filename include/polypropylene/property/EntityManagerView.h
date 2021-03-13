@@ -9,8 +9,8 @@
 
 namespace PAX {
     /**
-     * EntityManagerViews filter the entities of an EntityManager by their containing nodes.
-     * The method EntityManagerView::getEntities returns exactly those entities from the given manager that contain
+     * EntityManagerViews filter the entities of an EntityManager by their containing properties.
+     * The method EntityManagerView::getEntities() returns exactly those entities from the given manager that contain
      * the specified properties.
      *
      * @tparam EntityType The concrete Entity type (i.e., the derived class)
@@ -19,20 +19,76 @@ namespace PAX {
     template<typename EntityType, typename... RequiredProperties>
     class EntityManagerView {
         const EntityManager<EntityType> & manager;
-        std::set<EntityType*> entities;
 
+        /*
+         * Currently we are using a sorted set::vector here to optimize for iteration time.
+         * According to this (non-professional?) benchmark
+         * https://tinodidriksen.com/2010/04/cpp-set-performance/
+         * using a sorted vector is an order of magnitude faster than iterating a set.
+         * Insertions and deletions are faster for sets but the difference is less big.
+         *
+         * https://stackoverflow.com/questions/2710221/is-there-a-sorted-vector-class-which-supports-insert-etc
+         * Boost's flat_set might be a good alternative but I want to avoid introducing such a dependency.
+         * I cannot add just the file on its own to this project.
+         *
+         * Prove me wrong and open a pull-request if you have evidence that set is better. :)
+         */
+        std::vector<EntityType*> entities;
+
+    public:
+        using iterator = typename decltype(entities)::iterator;
+        using const_iterator = typename decltype(entities)::const_iterator;
+
+    private:
         bool isValid(EntityType * entity) {
             return entity->template has<RequiredProperties...>();
         }
 
+        /**
+         * Returns an iterator to the given entity in the entities vector.
+         * If the entity is not yet in the vector, returns the position where
+         * the entities has to be inserted to keep the vector sorted.
+         */
+        const_iterator find(EntityType * entity) const {
+            if (entities.empty()) {
+                return entities.begin();
+            }
+
+            size_t leftBound = 0;
+            size_t rightBound = entities.size();
+            // inserted sorted by pointer to improve caching on iterating
+            while (rightBound - leftBound > 1) {
+                size_t currentPos = (leftBound + rightBound) / 2;
+                EntityType * entityAtPos = entities.at(currentPos);
+                if (entityAtPos == entity) {
+                    leftBound = currentPos;
+                    break;
+                } else if (entityAtPos < entity) {
+                    leftBound = currentPos;
+                } else { // entity < entityAtPos
+                    rightBound = currentPos;
+                }
+            }
+            return entities.begin() + leftBound;
+        }
+
         void tryAdd(EntityType * entity) {
-            if (isValid(entity))
-                entities.insert(entity);
+            if (isValid(entity)) {
+                const const_iterator it = find(entity);
+                if (entities.empty() || *it != entity) { // If the given entity is not already in the vector
+                    entities.insert(it, entity);
+                }
+            }
         }
 
         void tryRemove(EntityType * entity) {
-            if (!isValid(entity))
-                entities.erase(entity);
+            if (!isValid(entity)) {
+                const const_iterator it = find(entity);
+                if (it < entities.end() && entity == *it) {
+                    entities.erase(it);
+                }
+//                entities.erase(entity); // when using set
+            }
         }
 
         template<bool add, typename T>
@@ -54,9 +110,6 @@ namespace PAX {
         }
 
     public:
-        using iterator = typename decltype(entities)::iterator;
-        using const_iterator = typename decltype(entities)::const_iterator;
-
         explicit EntityManagerView(const EntityManager<EntityType> & manager) : manager(manager) {
             for (EntityType * entity : manager.getEntities()) {
                 tryAdd(entity);
@@ -70,7 +123,7 @@ namespace PAX {
 
         explicit EntityManagerView(const EntityManagerView<EntityType, RequiredProperties...> & other) = delete;
         // TODO: Delete this, too? All event service pointers will invalide on move right?
-        EntityManagerView(EntityManagerView<EntityType, RequiredProperties...> && other) noexcept = default;
+//        EntityManagerView(EntityManagerView<EntityType, RequiredProperties...> && other) noexcept = default;
 
         virtual ~EntityManagerView() {
             // It is unnecessary to remove all entities by hand.
@@ -99,7 +152,7 @@ namespace PAX {
             tryRemove(e.entity);
         }
 
-        PAX_NODISCARD const std::set<EntityType*> & getEntities() const {
+        PAX_NODISCARD const std::vector<EntityType*> & getEntities() const {
             return entities;
         }
 
