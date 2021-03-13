@@ -31,15 +31,15 @@ namespace PAX {
 
     public:
         static PropertyPoolIterator BeginOf(PoolAllocator & pool) {
-            PoolAllocator::Index current = 0;
-            while (current < pool.getCapacity() && !ValidatorType::isValid(pool, current)) {
+            PoolAllocator::Index current = pool.begin();
+            while (current < pool.end() && !ValidatorType::isValid(pool, current)) {
                 ++current;
             }
             return PropertyPoolIterator(pool, current);
         }
 
         static PropertyPoolIterator EndOf(PoolAllocator & pool) {
-            return PropertyPoolIterator(pool, pool.getCapacity());
+            return PropertyPoolIterator(pool, pool.end());
         }
 
         PropertyPoolIterator & operator=(const PropertyPoolIterator & other) = default;
@@ -58,10 +58,10 @@ namespace PAX {
 
         PropertyPoolIterator & operator++() {
             // Step over all invalid memory chunks.
-            if (current < pool.getCapacity()) {
+            if (current < pool.end()) {
                 do {
                     ++current;
-                } while (current < pool.getCapacity() && !ValidatorType::isValid(pool, current));
+                } while (current < pool.end() && !ValidatorType::isValid(pool, current));
             }
             return *this;
         }

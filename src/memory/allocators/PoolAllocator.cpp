@@ -56,6 +56,49 @@ namespace PAX {
         return memory + size_t(index * ChunkSize());
     }
 
+    void PoolAllocator::clearBounds() {
+        firstElement = 0;
+        lastElement = -1;
+    }
+
+    void PoolAllocator::updateBoundsAfterDeletionOf(Index i) {
+        const bool isLastElement = i == lastElement;
+        if (i == firstElement) {
+            if (isLastElement) { // there was only one element allocated
+                // and now we are empty
+                clearBounds();
+            } else {
+                // go to the right and have a look who is the next allocated chunk
+                for (Index whoIsIt = i + 1; whoIsIt <= lastElement; ++whoIsIt) {
+                    if (getChunkInfo(whoIsIt)->allocated) {
+                        firstElement = whoIsIt;
+                        break;
+                    }
+                }
+                // If we did not find any other allocated chunk
+                // but we weren't the last element (because we are in the else branch)
+                if (i == firstElement) {
+                    // we had an illegal state
+                    PAX_THROW_RUNTIME_ERROR("Illegal state. This is a bug. The bounds begin and end are invalid.");
+                }
+            }
+        } else if (isLastElement) {
+            // go from the last position to the left until we hit the next allocated chunk
+            for (Index whoIsIt = i - 1; whoIsIt >= firstElement; --whoIsIt) {
+                if (getChunkInfo(whoIsIt)->allocated) {
+                    lastElement = whoIsIt;
+                    break;
+                }
+            }
+            // If we did not find any other allocated chunk
+            // but we weren't the first element (because we are in the else branch)
+            if (i == lastElement) {
+                // we had an illegal state
+                PAX_THROW_RUNTIME_ERROR("Illegal state. This is a bug. The bounds begin and end are invalid.");
+            }
+        }
+    }
+
     PoolAllocator::PoolAllocator(size_t elementSize, Index capacity) :
       elementSize(elementSize),
       capacity(capacity),
@@ -71,6 +114,8 @@ namespace PAX {
       capacity(other.capacity),
       numberOfAllocations(other.numberOfAllocations),
       memory(other.memory),
+      firstElement(other.firstElement),
+      lastElement(other.lastElement),
       freeChunks(std::move(other.freeChunks))
     {
     }
@@ -146,15 +191,22 @@ namespace PAX {
     void * PoolAllocator::allocate() {
         if (!freeChunks.empty()) {
             ++numberOfAllocations;
-            ChunkInfo * ourChunkInfo = getChunkInfo(freeChunks.pop());
+            Index indexOfNewElement = freeChunks.pop();
+            ChunkInfo * ourChunkInfo = getChunkInfo(indexOfNewElement);
             ourChunkInfo->allocated = true;
+            if (indexOfNewElement < firstElement) {
+                firstElement = indexOfNewElement;
+            }
+            if (indexOfNewElement > lastElement) {
+                lastElement = indexOfNewElement;
+            }
             return DataOf(ourChunkInfo);
         } else {
             PAX_THROW_RUNTIME_ERROR("Memory overflow");
         }
     }
 
-    bool PoolAllocator::free(void *data) {
+    bool PoolAllocator::free(void *data) noexcept {
         memunit * mem = FromData(data);
         const Index i = indexOf(mem);
 
@@ -163,6 +215,7 @@ namespace PAX {
             if (chunkToFree->allocated) {
                 chunkToFree->allocated = false;
                 --numberOfAllocations;
+                updateBoundsAfterDeletionOf(i);
                 freeChunks.push(i);
                 return true;
             } else {
@@ -188,6 +241,7 @@ namespace PAX {
             // Null memory. (Thereby set allocated to false in all chunks).
             memset(memory, 0, MemorySize());
             freeChunks.clear();
+            clearBounds();
             return true;
         } else {
             PAX_LOG(PAX::Log::Level::Error, "Clearing PoolAllocator although there are still " << numberOfAllocations << " elements allocated");
@@ -211,6 +265,15 @@ namespace PAX {
 
     PoolAllocator::Index PoolAllocator::getCapacity() const {
         return capacity;
+    }
+
+    PoolAllocator::Index PoolAllocator::begin() const {
+        return firstElement;
+    }
+
+    PoolAllocator::Index PoolAllocator::end() const {
+        // by C++ standard convention, end is supposed to point one behind the last valid element
+        return lastElement + 1;
     }
 
     void PoolAllocator::SetDefaultCapacity(size_t defaultCapacity) {

@@ -60,6 +60,8 @@ namespace PAX {
         /// Memory
         const Index capacity;
         const size_t elementSize;
+        Index firstElement = 0;
+        Index lastElement = -1;
 
         /**
          * The memory where everything is stored.
@@ -109,6 +111,21 @@ namespace PAX {
          */
         PAX_NODISCARD memunit* memAtIndex(Index index) const;
 
+        /**
+         * Resets the bounds signaling that no elements are allocated at all.
+         * Only call this, when the pool is empty or emptied!
+         * Otherwise iterating the pool will result in wrong behaviour!
+         */
+        void clearBounds();
+
+        /**
+         * Updates the bounds assuming the element at index i was just deleted.
+         * In particular, checks whether i was the first or the last element and
+         * updates the bounds accordingly.
+         * @param i Index of the element that was just deleted.
+         */
+        void updateBoundsAfterDeletionOf(Index i);
+
     public:
         /**
          * Creates a PoolAllocator of a fixed capacity.
@@ -123,8 +140,46 @@ namespace PAX {
 
         ~PoolAllocator() override;
 
+        /**
+         * Allocates a new chunk of data in the pool and returns it.
+         * This reduces the available chunks to allocate by 1.
+         * If already n chunks are allocated where n is the capacity of this PoolAllocator,
+         * a runtime_error with message "memory overflow" will be thrown.
+         * The caller will get ownership of the returned memory chunk.
+         * The memory can be given back to the PoolAllocator with the free method.
+         * The size of the returned memory is given by getAllocationSize().
+         * @return Pointer to the chunk that was allocated. It is now owned by the caller.
+         */
         PAX_NODISCARD void * allocate() override;
-        PAX_NODISCARD bool free(void * data) override;
+
+        /**
+         * Gives ownership of the given memory back to this PoolAllocator.
+         * The memory is not altered right away but available for reallocation
+         * (i.e., upcoming calls to allocate() can return the given chunk again).
+         * So beware of the following:
+         *   - accessing the given pointer after calling this method results in undefined behaviour
+         *   - accessing the given pointer can lead to ghost bugs because when accessing the memory
+         *     it might already be in use again (as it was allocated again somewhere else)
+         *   - So it is of utmost importance that you invalidate all references you have to the given
+         *     data pointer as ownership goes back to this PoolAllocator!
+         *   - This method does not call a destructor. If you pass an object here, you have to call
+         *     its destructor yourself before calling free().
+         * Does not throw any exceptions at will so that you can call free in destructors.
+         * Guarantee on absence of bugs is not given though so errors might still occur.
+         * @param data The memory whose ownership should transferred back to this PoolAllocator.
+         * @return True, iff freeing was successful.
+         *         False, if the given memory belongs to this PoolAllocator but was not allocated.
+         *         False, if the given memory was not allocated by this PoolAllocator.
+         */
+        PAX_NODISCARD bool free(void * data) noexcept override;
+
+        /**
+         * Checks whether the given data belongs to this PoolAllocator,
+         * independent whether the data is actually allocated or not.
+         * @param data The data which might or might not belong to this Allocator.
+         * @return True, iff the given data is or can be allocated from this PoolAllocator.
+         *         False, otherwise.
+         */
         PAX_NODISCARD bool isMine(void * data) const override;
 
         /**
@@ -166,15 +221,29 @@ namespace PAX {
         PAX_NODISCARD Index getCapacity() const;
 
         /**
+         * Points to the first allocated element in this PoolAllocator.
+         * @return Index of the first allocated element.
+         */
+        PAX_NODISCARD Index begin() const;
+
+        /**
+         * Points one behind the last allocated element in this PoolAllocator.
+         * So there is no valid element at end().
+         * The last valid element is at (end() - 1).
+         * @return Index one after the last allocated element.
+         */
+        PAX_NODISCARD Index end() const;
+
+        /**
          * Sets the default capacity of new PoolAllocators to the given value.
-         * The default capacity is used when constructung new PoolAllocators without
+         * The default capacity is used when constructing new PoolAllocators without
          * specifying a capacity explicitly.
          * A pool allocator's capacity denotes the maximum number of elements it can contain.
          * Does not affect existing pool allocators.
          * @param defaultCapacity
          */
-        static void SetDefaultCapacity(size_t defaultCapacity);
-        PAX_NODISCARD static size_t GetDefaultCapacity();
+        PAX_MAYBEUNUSED static void SetDefaultCapacity(size_t defaultCapacity);
+        PAX_MAYBEUNUSED PAX_NODISCARD static size_t GetDefaultCapacity();
     };
 }
 
