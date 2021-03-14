@@ -34,6 +34,12 @@ namespace PAX {
         std::set<EntityType*> entities;
         EventService & eventService;
 
+        void onRemoved(EntityType * entity) {
+            entity->getEventService().setParent(nullptr);
+            EntityRemovedEvent<EntityType> e(entity);
+            eventService(e);
+        }
+
     public:
         using iterator = typename decltype(entities)::iterator;
         using const_iterator = typename decltype(entities)::const_iterator;
@@ -59,9 +65,7 @@ namespace PAX {
 
         bool remove(EntityType * entity) {
             if (entities.erase(entity)) {
-                entity->getEventService().setParent(nullptr);
-                EntityRemovedEvent<EntityType> e(entity);
-                eventService(e);
+                onRemoved(entity);
                 return true;
             }
 
@@ -90,6 +94,15 @@ namespace PAX {
 
         PAX_NODISCARD EventService & getEventService() const {
             return eventService;
+        }
+
+        void clear() {
+            for (EntityType * victim : entities) {
+                // is there a smarter choice than begin?
+                onRemoved(victim);
+                pax_delete(victim);
+            }
+            entities.clear();
         }
     };
 }
