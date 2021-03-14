@@ -171,6 +171,28 @@ namespace PAX {
 #endif
     }
 
+    std::string Path::getFileEnding() const {
+        size_t pointPos = _path.find_last_of('.');
+        if (pointPos != std::string::npos) {
+            return _path.substr(pointPos+1);
+        }
+        return "";
+    }
+
+    void Path::dropFileEnding() {
+        size_t pointPos = _path.find_last_of('.');
+        if (pointPos != std::string::npos) {
+            _path = _path.substr(0, pointPos);
+        }
+    }
+
+    Path Path::withoutFileEnding() const {
+        Path p(*this);
+        p.dropFileEnding();
+        return p;
+
+    }
+
     void Path::convertToCurrentPlatform() {
         Path::convertToCurrentPlatform(_path);
     }

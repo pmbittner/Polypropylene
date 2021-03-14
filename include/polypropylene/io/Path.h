@@ -68,6 +68,10 @@ namespace PAX {
         PAX_NODISCARD Path toRelative(const Path & root) const;
         PAX_NODISCARD Path toAbsolute() const;
 
+        PAX_NODISCARD std::string getFileEnding() const;
+        void dropFileEnding();
+        PAX_NODISCARD Path withoutFileEnding() const;
+
         /**
          * Converts all slashes to the current platform's separator.
          * For Windows, this will be `\` and on unix this will be `/`.
