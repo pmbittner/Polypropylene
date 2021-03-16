@@ -275,10 +275,11 @@ namespace PAX {
             const auto& propertiesIt = multipleProperties.find(typeid(TProperty));
             if (propertiesIt != multipleProperties.end()) {
                 // Copy to be able to return all removed instances
-                auto & properties = reinterpret_cast<std::vector<TProperty*>&>(propertiesIt->second);
+                std::vector<TProperty*> properties
+                    = reinterpret_cast<std::vector<TProperty*>&>(propertiesIt->second);
                 for (TProperty* property : properties) {
                     if (!remove(property)) {
-                        PAX_RETURN_EMPTYVEC_OF(TProperty);
+                        PAX_THROW_RUNTIME_ERROR("Could not remove property " << property);
                     }
                 }
 
