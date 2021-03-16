@@ -18,14 +18,19 @@
 
 // We have to create this workaround, because MSVC can't handle constexpr functions in enable_if.
 #ifdef PAX_COMPILER_MSVC
-#define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
-template <class TProperty, bool mult = TProperty::IsMultiple()> \
-typename std::enable_if<neg mult, rettype>::type PAX_MAYBEUNUSED
+    #define PAX_ENABLE_IF_MULTIPLICITY(rettype, neg) \
+    template <class TProperty, bool mult = TProperty::IsMultiple()> \
+    typename std::enable_if<neg mult, rettype>::type PAX_MAYBEUNUSED
 #else
-#define PAX_GENERATE_EntityTemplateHeader(rettype, neg) \
-template <class TProperty> \
-typename std::enable_if<neg TProperty::IsMultiple(), rettype>::type
+    #define PAX_ENABLE_IF_MULTIPLICITY(rettype, neg) \
+    template <class TProperty> \
+    typename std::enable_if<neg TProperty::IsMultiple(), rettype>::type
 #endif
+
+#define PAX_ENABLE_IF_MULTIPLE(rettype) PAX_ENABLE_IF_MULTIPLICITY(rettype, )
+#define PAX_ENABLE_IF_SINGLE(rettype) PAX_ENABLE_IF_MULTIPLICITY(rettype, !)
+
+#define PAX_RETURN_EMPTYVEC_OF(type) return *reinterpret_cast<const std::vector<type*>*>(&GetEmptyPropertyVector())
 
 namespace PAX {
     /**
@@ -141,12 +146,12 @@ namespace PAX {
             return false;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(bool, !)
+        PAX_ENABLE_IF_SINGLE(bool)
         has() const {
             return singleProperties.count(paxtypeid(TProperty)) > 0;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(bool, )
+        PAX_ENABLE_IF_MULTIPLE(bool)
         has() const {
             return multipleProperties.count(paxtypeid(TProperty)) > 0;
         }
@@ -180,7 +185,7 @@ namespace PAX {
             return ret;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(TProperty*, !)
+        PAX_ENABLE_IF_SINGLE(TProperty*)
         get() const {
             const auto& property = singleProperties.find(typeid(TProperty));
             if (property != singleProperties.end())
@@ -188,13 +193,14 @@ namespace PAX {
             return nullptr;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(const std::vector<TProperty*>&, )
+        PAX_ENABLE_IF_MULTIPLE(const std::vector<TProperty*>&)
         get() const {
             const auto& properties = multipleProperties.find(typeid(TProperty));
-            if (properties != multipleProperties.end())
-                return reinterpret_cast<const std::vector<TProperty*>&>(properties->second);
-            else
-                return *reinterpret_cast<const std::vector<TProperty*>*>(&GetEmptyPropertyVector());
+            if (properties != multipleProperties.end()) {
+                return reinterpret_cast<const std::vector<TProperty *> &>(properties->second);
+            } else {
+                PAX_RETURN_EMPTYVEC_OF(TProperty);
+            }
         }
 
         PAX_NODISCARD const std::vector<TRootProperty*> & getAllProperties() const {
@@ -251,33 +257,35 @@ namespace PAX {
             return props;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(TProperty*, !)
+        PAX_ENABLE_IF_SINGLE(TProperty*)
         removeAll() {
-            const auto& propertyIt = singleProperties.contains(typeid(TProperty));
+            const auto& propertyIt = singleProperties.find(typeid(TProperty));
             if (propertyIt != singleProperties.end()) {
                 TProperty* property = static_cast<TProperty*>(propertyIt->second);
-                if (remove(property))
+                if (remove(property)) {
                     return property;
+                }
             }
 
             return nullptr;
         }
 
-        PAX_GENERATE_EntityTemplateHeader(const std::vector<TProperty*>&, )
+        PAX_ENABLE_IF_MULTIPLE(std::vector<TProperty*>)
         removeAll() {
-            const auto& propertiesIt = multipleProperties.contains(typeid(TProperty));
+            const auto& propertiesIt = multipleProperties.find(typeid(TProperty));
             if (propertiesIt != multipleProperties.end()) {
                 // Copy to be able to return all removed instances
-                auto properties = reinterpret_cast<std::vector<TProperty*>>(multipleProperties.get(typeid(TProperty)));
+                auto & properties = reinterpret_cast<std::vector<TProperty*>&>(propertiesIt->second);
                 for (TProperty* property : properties) {
-                    if (!remove(property))
-                        return GetEmptyPropertyVector();
+                    if (!remove(property)) {
+                        PAX_RETURN_EMPTYVEC_OF(TProperty);
+                    }
                 }
 
                 return properties;
             }
 
-            return GetEmptyPropertyVector();
+            PAX_RETURN_EMPTYVEC_OF(TProperty);
         }
 
         
@@ -323,7 +331,10 @@ namespace PAX {
     };
 }
 
-#undef PAX_GENERATE_PropertyContainerFunctionTemplateHeader
+#undef PAX_RETURN_EMPTYVEC_OF
+#undef PAX_ENABLE_IF_SINGLE
+#undef PAX_ENABLE_IF_MULTIPLE
+#undef PAX_ENABLE_IF_MULTIPLICITY
 
 #include "PrototypeEntityPrefab.h"
 

@@ -130,10 +130,16 @@ int main(int argc, char** argv) {
         PrototypeEntityPrefab<Pizza> prefabToSerialise = pizzaFunghi->toPrefab();
         JsonEntityPrefab<Pizza> asJson = JsonEntityPrefab<Pizza>::FromPrefab(prefabToSerialise);
         prefabLoader.write(asJson, outPath);
-
         PAX_LOG(Log::Level::Info, "Your pizza was delivered to '" << outPath << "'.");
     }
 #endif
+
+    // Actually, I don't want mushrooms at all ...
+    {
+        Champignon *mushroom = pizzaFunghi->removeAll<Champignon>();
+        PAX_LOG(Log::Level::Info, "Why was it delivered with champignons?! Removing and deleting " << mushroom);
+        pax_delete(mushroom);
+    }
 
 #ifdef PAX_WITH_JSON
     /// Entities created with prefabs (or with the allocation service) have to be deleted via the allocation service.
