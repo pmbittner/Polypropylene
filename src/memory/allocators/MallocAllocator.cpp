@@ -5,8 +5,9 @@
 #include <polypropylene/memory/allocators/MallocAllocator.h>
 
 namespace PAX {
-    MallocAllocator::MallocAllocator(size_t elementSize)
-    : elementSize(elementSize)
+    MallocAllocator::MallocAllocator(const std::string & name, size_t elementSize) :
+    Allocator(name),
+    elementSize(elementSize)
     {}
 
     void * MallocAllocator::allocate() {

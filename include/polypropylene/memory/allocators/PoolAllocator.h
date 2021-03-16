@@ -14,7 +14,7 @@ namespace PAX {
      * A PoolAllocator of fixed capacity.
      * It can neither grow nor shrink.
      */
-    class PoolAllocator : public IAllocator {
+    class PoolAllocator : public Allocator {
     public:
         using Index = int32_t;
 
@@ -129,10 +129,11 @@ namespace PAX {
     public:
         /**
          * Creates a PoolAllocator of a fixed capacity.
+         * @param name The name of this allocator used for debug messages.
          * @param elementSize The size each allocated data object should have.
          * @param capacity The maximum number of elements that can be allocated simultaneously.
          */
-        explicit PoolAllocator(size_t elementSize, Index capacity = DefaultCapacity);
+        PoolAllocator(const std::string & name, size_t elementSize, Index capacity = DefaultCapacity);
         PoolAllocator(PAX::PoolAllocator && other) noexcept;
 
         PoolAllocator(const PoolAllocator & other) = delete;

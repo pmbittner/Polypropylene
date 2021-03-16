@@ -5,16 +5,21 @@
 #ifndef POLYPROPYLENE_PROPERTYALLOCATOR_H
 #define POLYPROPYLENE_PROPERTYALLOCATOR_H
 
-#include <cstddef> // for size_t
+//#include <cstddef> // for size_t
+#include <string>
 #include "polypropylene/definitions/Definitions.h"
 
 namespace PAX {
     /**
      * Interface for memory allocators.
      */
-    class IAllocator {
+    class Allocator {
+        std::string name;
+
     public:
-        virtual ~IAllocator() = default;
+        explicit Allocator(const std::string & name);
+
+        virtual ~Allocator();
 
         /**
          * Allocates a memory chunk of size @see getAllocationSize().
@@ -41,6 +46,8 @@ namespace PAX {
          * @return The size of each allocated data object.
          */
         PAX_NODISCARD virtual size_t getAllocationSize() const = 0;
+
+        PAX_NODISCARD const std::string & getName() const;
     };
 }
 

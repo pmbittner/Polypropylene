@@ -12,12 +12,12 @@ namespace PAX {
     /**
      * Allocator that simply uses malloc and free.
      */
-    class MallocAllocator : public IAllocator {
+    class MallocAllocator : public Allocator {
         const size_t elementSize;
         std::unordered_set<void*> allocatedObjects;
 
     public:
-        explicit MallocAllocator(size_t elementSize);
+        MallocAllocator(const std::string & name, size_t elementSize);
 
         PAX_NODISCARD void* allocate() override;
         PAX_NODISCARD bool free(void * data) override;

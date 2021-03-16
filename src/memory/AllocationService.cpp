@@ -6,7 +6,11 @@
 
 namespace PAX {
     AllocationService::AllocationService()
-    : allocatorFactory([](size_t s){ return std::make_shared<PoolAllocator>(s);} )
+    : allocatorFactory([](const Type & t){
+        std::stringstream name;
+        name << "[" << t.name() << "]";
+        return std::make_shared<PoolAllocator>(name.str(), t.size);
+    })
     {}
 
     AllocationService::~AllocationService() = default;
@@ -15,14 +19,14 @@ namespace PAX {
         this->allocatorFactory = factory;
     }
 
-    void AllocationService::registerAllocator(const TypeId & type, const std::shared_ptr<IAllocator> & allocator) {
+    void AllocationService::registerAllocator(const TypeId & type, const std::shared_ptr<Allocator> & allocator) {
         allocators.insert_or_assign(type, allocator);
     }
 
-    std::shared_ptr<IAllocator> AllocationService::unregisterAllocator(const TypeId & type) {
+    std::shared_ptr<Allocator> AllocationService::unregisterAllocator(const TypeId & type) {
         auto iterator = allocators.find(type);
         if (iterator != allocators.end()) {
-            std::shared_ptr<IAllocator> elementToRemove = std::move(iterator->second);
+            std::shared_ptr<Allocator> elementToRemove = std::move(iterator->second);
             allocators.erase(iterator);
             return elementToRemove;
         }
@@ -30,7 +34,7 @@ namespace PAX {
         return nullptr;
     }
 
-    std::shared_ptr<IAllocator> AllocationService::getAllocator(const TypeId &type) {
+    std::shared_ptr<Allocator> AllocationService::getAllocator(const TypeId &type) {
         auto iterator = allocators.find(type);
         if (iterator != allocators.end()) {
             return iterator->second;
@@ -45,20 +49,20 @@ namespace PAX {
     }
 
     void * AllocationService::allocate(const Type & t) {
-        std::shared_ptr<IAllocator> allocator = nullptr;
+        std::shared_ptr<Allocator> allocator = nullptr;
 
         const auto & allocIt = allocators.find(t.id);
         if (allocIt != allocators.end()) {
             allocator = allocIt->second;
 
             if (allocator->getAllocationSize() != t.size) {
-                PAX_THROW_RUNTIME_ERROR("IAllocator registered for type " << t.name() << " does not allocate data of size_t " << t.size << "!");
+                PAX_THROW_RUNTIME_ERROR("Allocator registered for type " << t.name() << " does not allocate data of size_t " << t.size << "!");
             }
         }
 
         // Create default allocator
         if (!allocator) {
-            allocator = allocatorFactory(t.size);
+            allocator = allocatorFactory(t);
             registerAllocator(t.id, allocator);
         }
 

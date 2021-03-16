@@ -86,9 +86,9 @@ namespace PAX {
         using iterator = Iterator;
 
         PropertyPool() {
-            const TypeId propType = paxtypeid(PropertyType);
+            const Type propType = paxtypeof(PropertyType);
             AllocationService & allocationService = PropertyType::EntityType::GetAllocationService();
-            const std::shared_ptr<IAllocator> & existingAllocator = allocationService.getAllocator(propType);
+            const std::shared_ptr<Allocator> & existingAllocator = allocationService.getAllocator(propType.id);
 
             // If there is already an allocator registered for our property type ...
             if (existingAllocator) {
@@ -96,15 +96,15 @@ namespace PAX {
                 pool = std::dynamic_pointer_cast<PoolAllocator>(existingAllocator);
                 if (!pool) {
                     // If it is not, remove it because we will replace it.
-                    allocationService.unregisterAllocator(propType);
+                    allocationService.unregisterAllocator(propType.id);
                 }
             }
 
             // If we couldn't reuse an existing allocator.
             if (!pool) {
                 // create one
-                pool = std::make_shared<PoolAllocator>(PropSize);
-                allocationService.registerAllocator(propType, pool);
+                pool = std::make_shared<PoolAllocator>(propType.name(), PropSize);
+                allocationService.registerAllocator(propType.id, pool);
             }
         }
 

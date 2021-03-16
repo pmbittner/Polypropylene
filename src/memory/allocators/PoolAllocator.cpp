@@ -9,11 +9,11 @@ namespace PAX {
 #ifdef PAX_BUILD_TYPE_DEBUG
     #define PAX_POOL_ASSERTVALIDINDEX(i) \
         if ((i) < 0 || capacity <= (i)) { \
-            PAX_THROW_RUNTIME_ERROR("Index out of bounds. Can be in [0, " << getCapacity() << "] but was " << (i) << "!"); \
+            PAX_THROW_RUNTIME_ERROR("Index out of bounds in PoolAllocator " << getName() << ". Can be in [0, " << getCapacity() << "] but was " << (i) << "!"); \
         }
     #define PAX_POOL_ASSERTVALIDPOINTER(p) \
         if (((p) - memory) % ChunkSize() != 0) { \
-            PAX_THROW_RUNTIME_ERROR("Given pointer " << (p) << " does not point to the beginning a valid data chunk!"); \
+            PAX_THROW_RUNTIME_ERROR("Pointer out of bounds in PoolAllocator " << getName() << ".Given pointer " << (p) << " does not point to the beginning a valid data chunk!"); \
         }
 #else
     #define PAX_POOL_ASSERTVALIDINDEX(i)
@@ -79,7 +79,7 @@ namespace PAX {
                 // but we weren't the last element (because we are in the else branch)
                 if (i == firstElement) {
                     // we had an illegal state
-                    PAX_THROW_RUNTIME_ERROR("Illegal state. This is a bug. The bounds begin and end are invalid.");
+                    PAX_THROW_RUNTIME_ERROR("Illegal state in PoolAllocator " << getName() << ". This is a bug. The bounds begin and end are invalid.");
                 }
             }
         } else if (isLastElement) {
@@ -94,12 +94,13 @@ namespace PAX {
             // but we weren't the first element (because we are in the else branch)
             if (i == lastElement) {
                 // we had an illegal state
-                PAX_THROW_RUNTIME_ERROR("Illegal state. This is a bug. The bounds begin and end are invalid.");
+                PAX_THROW_RUNTIME_ERROR("Illegal state in PoolAllocator " << getName() << ". This is a bug. The bounds begin and end are invalid.");
             }
         }
     }
 
-    PoolAllocator::PoolAllocator(size_t elementSize, Index capacity) :
+    PoolAllocator::PoolAllocator(const std::string & name, size_t elementSize, Index capacity) :
+      Allocator(name),
       elementSize(elementSize),
       capacity(capacity),
       numberOfAllocations(0),
@@ -110,6 +111,7 @@ namespace PAX {
     }
 
     PoolAllocator::PoolAllocator(PAX::PoolAllocator && other) noexcept :
+      Allocator(other.getName()),
       elementSize(other.elementSize),
       capacity(other.capacity),
       numberOfAllocations(other.numberOfAllocations),
@@ -122,7 +124,7 @@ namespace PAX {
 
     PoolAllocator::~PoolAllocator() {
         if (numberOfAllocations > 0) {
-            PAX_LOG(PAX::Log::Level::Warn, "Deleting PoolAllocator although there are still " << numberOfAllocations << " elements allocated!");
+            PAX_LOG(PAX::Log::Level::Warn, "Deleting PoolAllocator " << getName() << " although there are still " << numberOfAllocations << " elements allocated!");
         }
 
         delete[] memory;
@@ -202,7 +204,7 @@ namespace PAX {
             }
             return DataOf(ourChunkInfo);
         } else {
-            PAX_THROW_RUNTIME_ERROR("Memory overflow");
+            PAX_THROW_RUNTIME_ERROR("Memory overflow in PoolAllocator " << getName() << "!");
         }
     }
 
@@ -219,7 +221,7 @@ namespace PAX {
                 freeChunks.push(i);
                 return true;
             } else {
-                PAX_LOG(PAX::Log::Level::Warn, "Trying to free unallocated memory chunk! aborting...");
+                PAX_LOG(PAX::Log::Level::Warn, "Trying to free unallocated memory chunk in PoolAllocator " << getName() << "! aborting...");
             }
         } else {
             // The data seems not to be allocated by us.
@@ -244,7 +246,7 @@ namespace PAX {
             clearBounds();
             return true;
         } else {
-            PAX_LOG(PAX::Log::Level::Error, "Clearing PoolAllocator although there are still " << numberOfAllocations << " elements allocated");
+            PAX_LOG(PAX::Log::Level::Error, "Clearing PoolAllocator " << getName() << " although there are still " << numberOfAllocations << " elements allocated");
         }
         return false;
     }

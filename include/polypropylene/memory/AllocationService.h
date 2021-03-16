@@ -23,10 +23,10 @@ namespace PAX {
      */
     class AllocationService final {
     public:
-        using AllocatorFactory = std::function<std::shared_ptr<IAllocator>(size_t)>;
+        using AllocatorFactory = std::function<std::shared_ptr<Allocator>(const Type&)>;
 
     private:
-        TypeMap<std::shared_ptr<IAllocator>> allocators;
+        TypeMap<std::shared_ptr<Allocator>> allocators;
         AllocatorFactory allocatorFactory;
 
     public:
@@ -47,7 +47,7 @@ namespace PAX {
         /**
          * Registers the given allocator for (de-) allocating objects of the given type.
          */
-        void registerAllocator(const TypeId & type, const std::shared_ptr<IAllocator> & allocator);
+        void registerAllocator(const TypeId & type, const std::shared_ptr<Allocator> & allocator);
 
         /**
          * Removes the allocator that is registered for the given type
@@ -68,15 +68,15 @@ namespace PAX {
          *         Returns nullptr if this AllocationService does not contain
          *         any allocator for the given type.
          */
-        std::shared_ptr<IAllocator> unregisterAllocator(const TypeId & type);
+        std::shared_ptr<Allocator> unregisterAllocator(const TypeId & type);
 
         /**
-         * Returns the IAllocator that is registered for the given type.
+         * Returns the Allocator that is registered for the given type.
          * @param type The type for which the allocator should be returned.
-         * @return The IAllocator that is registered for the given type.
+         * @return The Allocator that is registered for the given type.
          *         Returns nullptr if there is no such allocator.
          */
-        PAX_NODISCARD std::shared_ptr<IAllocator> getAllocator(const TypeId & type);
+        PAX_NODISCARD std::shared_ptr<Allocator> getAllocator(const TypeId & type);
 
         /**
          * Returns true iff the given object was allocated with this AllocationService.
