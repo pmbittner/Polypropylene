@@ -10,7 +10,7 @@
 
 namespace PAX {
     struct PAX_MAYBEUNUSED DefaultChunkValidator {
-        static bool isValid(const PoolAllocator & pool, PoolAllocator::Index i);
+        PAX_NODISCARD bool isValid(const PoolAllocator & pool, PoolAllocator::Index i) const;
     };
 
     /**
@@ -25,21 +25,24 @@ namespace PAX {
     private:
         PoolAllocator & pool;
         PoolAllocator::Index current;
+        const ValidatorType & validator;
 
-        PropertyPoolIterator(PoolAllocator & pool, PoolAllocator::Index pos)
-                : pool(pool), current(pos) {}
+        PropertyPoolIterator(PoolAllocator & pool, PoolAllocator::Index pos, const ValidatorType & validator)
+                : pool(pool), current(pos), validator(validator) {}
 
     public:
-        static PropertyPoolIterator BeginOf(PoolAllocator & pool) {
+        using Validator = ValidatorType;
+
+        static PropertyPoolIterator BeginOf(PoolAllocator & pool, const ValidatorType & validator) {
             PoolAllocator::Index current = pool.begin();
-            while (current < pool.end() && !ValidatorType::isValid(pool, current)) {
+            while (current < pool.end() && !validator.isValid(pool, current)) {
                 ++current;
             }
-            return PropertyPoolIterator(pool, current);
+            return PropertyPoolIterator(pool, current, validator);
         }
 
-        static PropertyPoolIterator EndOf(PoolAllocator & pool) {
-            return PropertyPoolIterator(pool, pool.end());
+        static PropertyPoolIterator EndOf(PoolAllocator & pool, const ValidatorType & validator) {
+            return PropertyPoolIterator(pool, pool.end(), validator);
         }
 
         PropertyPoolIterator & operator=(const PropertyPoolIterator & other) = default;
@@ -61,7 +64,7 @@ namespace PAX {
             if (current < pool.end()) {
                 do {
                     ++current;
-                } while (current < pool.end() && !ValidatorType::isValid(pool, current));
+                } while (current < pool.end() && !validator.isValid(pool, current));
             }
             return *this;
         }
@@ -77,17 +80,19 @@ namespace PAX {
      * For the specified property type a pool allocator is registered in the allocation service of the corresponding
      * entity.
      */
-    template<class PropertyType, class Iterator = PropertyPoolIterator<PropertyType>>
+    template<class PropertyType, class IteratorType = PropertyPoolIterator<PropertyType>>
     class PropertyPool {
         static constexpr size_t PropSize = sizeof(PropertyType);
         std::shared_ptr<PoolAllocator> pool;
 
     public:
-        using iterator = Iterator;
+        using Property = PropertyType;
+        using Iterator = IteratorType;
+        using Validator = typename Iterator::Validator;
 
         PropertyPool() {
-            const Type propType = paxtypeof(PropertyType);
-            AllocationService & allocationService = PropertyType::EntityType::GetAllocationService();
+            const Type propType = paxtypeof(Property);
+            AllocationService & allocationService = Property::EntityType::GetAllocationService();
             const std::shared_ptr<Allocator> & existingAllocator = allocationService.getAllocator(propType.id);
 
             // If there is already an allocator registered for our property type ...
@@ -108,8 +113,13 @@ namespace PAX {
             }
         }
 
-        iterator begin() const { return Iterator::BeginOf(*pool.get()); }
-        iterator end() const { return Iterator::EndOf(*pool.get()); }
+        PAX_NODISCARD virtual const Validator & getValidator() const {
+            static Validator v;
+            return v;
+        }
+
+        Iterator begin() const { return Iterator::BeginOf(*pool, getValidator()); }
+        Iterator end() const { return Iterator::EndOf(*pool, getValidator()); }
     };
 }
 
