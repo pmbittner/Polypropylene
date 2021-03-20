@@ -86,18 +86,19 @@ set(SOURCE_FILES
 
 if (POLYPROPYLENE_WITH_JSON)
     set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}
+            serialisation/json/JsonDefaultParsers.h
+            serialisation/json/JsonFieldStorage.h
+            serialisation/json/JsonFieldWriter.h
+            serialisation/json/JsonFieldWriterRegister.h
             serialisation/json/JsonLoader.h
             serialisation/json/JsonParser.h
             serialisation/json/JsonUtil.h
-            serialisation/json/JsonFieldStorage.h
-            serialisation/json/nlohmann/JsonFwd.h
+#            serialisation/json/nlohmann/JsonFwd.h
 
             serialisation/json/property/JsonEntityPrefab.h
             serialisation/json/property/JsonEntityPrefabLoader.h
             serialisation/json/property/JsonEntityPrefabLoaderImpl.h
-            serialisation/json/property/JsonEntityPrefabImpl.h
-            serialisation/json/JsonFieldWriter.h
-            serialisation/json/JsonFieldWriterRegister.h)
+            serialisation/json/property/JsonEntityPrefabImpl.h)
 
     set(SOURCE_FILES ${SOURCE_FILES}
             serialisation/json/JsonUtil.cpp

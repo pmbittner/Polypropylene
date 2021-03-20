@@ -81,14 +81,3 @@ namespace PAX {
         }
     }
 }
-
-#ifdef PAX_WITH_JSON
-#include "polypropylene/serialisation/json/nlohmann/Json.h"
-PAX_IMPLEMENT_JSONPARSER_FOR(PAX::VariableRegister) {
-    VariableRegister r;
-    for (const auto & entry : json.items()) {
-        r[entry.key()] = JsonToString(entry.value());
-    }
-    return r;
-}
-#endif
