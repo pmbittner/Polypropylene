@@ -54,22 +54,22 @@ namespace PAX {
                 return entities.begin();
             }
 
-            size_t leftBound = 0;
-            size_t rightBound = entities.size();
+            size_t first = 0;
+            size_t last = entities.size() - 1;
             // inserted sorted by pointer to improve caching on iterating
-            while (rightBound - leftBound > 1) {
-                size_t currentPos = (leftBound + rightBound) / 2;
-                EntityType * entityAtPos = entities.at(currentPos);
-                if (entityAtPos == entity) {
-                    leftBound = currentPos;
+            while (first < last) {
+                size_t mid = (first + last) / 2;
+                EntityType * entityInMid = entities.at(mid);
+                if (entityInMid == entity) {
+                    first = mid;
                     break;
-                } else if (entityAtPos < entity) {
-                    leftBound = currentPos;
-                } else { // entity < entityAtPos
-                    rightBound = currentPos;
+                } else if (entityInMid < entity) {
+                    first = mid + 1;
+                } else { // entity < entityInMid
+                    last  = mid - 1;
                 }
             }
-            return entities.begin() + leftBound;
+            return entities.begin() + first;
         }
 
         void tryAdd(EntityType * entity) {
@@ -81,14 +81,13 @@ namespace PAX {
             }
         }
 
-        void tryRemove(EntityType * entity) {
-            if (!isValid(entity)) {
-                const const_iterator it = find(entity);
-                if (it < entities.end() && entity == *it) {
-                    entities.erase(it);
-                }
-//                entities.erase(entity); // when using set
+        void remove(EntityType * entity) {
+            const const_iterator it = find(entity);
+            const bool isRightEntity = entity == *it;
+            if (isRightEntity) {
+                entities.erase(it);
             }
+//                entities.erase(entity); // when using set
         }
 
         template<bool add, typename T>
@@ -139,7 +138,7 @@ namespace PAX {
         }
 
         void onEntityRemoved(EntityRemovedEvent<EntityType> & e) {
-            tryRemove(e.entity);
+            remove(e.entity);
         }
 
         template<typename Prop>
@@ -149,7 +148,9 @@ namespace PAX {
 
         template<typename Prop>
         void onPropertyDetached(PropertyDetachedEvent<EntityType, Prop> & e) {
-            tryRemove(e.entity);
+            if (!isValid(e.entity)) {
+                remove(e.entity);
+            }
         }
 
         PAX_NODISCARD const std::vector<EntityType*> & getEntities() const {
