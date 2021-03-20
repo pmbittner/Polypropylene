@@ -40,4 +40,9 @@ namespace PAX {
     };
 }
 
+#if PAX_WITH_JSON
+#include "polypropylene/serialisation/json/JsonParser.h"
+PAX_DECLARE_JSONPARSER_FOR(VariableRegister)
+#endif
+
 #endif //POLYPROPYLENE_TYPES_H
