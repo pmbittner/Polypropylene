@@ -2,13 +2,12 @@
 // Created by Bittner on 20.12.2019.
 //
 
-#include "polypropylene/serialisation/json/JsonParser.h"
+#include "polypropylene/serialisation/json/JsonTypeConverter.h"
 #include "polypropylene/serialisation/json/nlohmann/Json.h"
 
 namespace PAX {
-    Path TryParser<nlohmann::json, Path>::tryParse(const nlohmann::json & j) {
-        return JsonToPath(j);
-    }
+    PAX_IMPLEMENT_JSON_CONVERT_TO(Path) { return JsonToPath(x); }
+    PAX_IMPLEMENT_JSON_CONVERT_FROM(Path) { return Path::toAbsolute(x); }
 
     namespace Json {
         bool assertPresence(const nlohmann::json & j, const std::string & childName, bool crashOnError) {

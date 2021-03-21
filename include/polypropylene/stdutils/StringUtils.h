@@ -11,10 +11,40 @@
 #include <cctype>
 #include <locale>
 
-#include "polypropylene/serialisation/TryParser.h"
+#include "polypropylene/serialisation/TypeConverter.h"
 #include "polypropylene/log/Errors.h"
 
+#define PAX_DECLARE_STRING_CONVERTER_FOR(type) PAX_DECLARE_TYPE_CONVERTER_FOR(::std::string, type)
+#define PAX_IMPLEMENT_STRING_CONVERT_TO(type) PAX_IMPLEMENT_CONVERT_TO(::std::string, type)
+#define PAX_IMPLEMENT_STRING_CONVERT_FROM(type) PAX_IMPLEMENT_CONVERT_FROM(::std::string, type)
+#define PAX_IMPLEMENT_STRING_CONVERT_FROM_WITH_OSTREAM(type) \
+    PAX_IMPLEMENT_CONVERT_FROM(::std::string, type) { \
+        std::stringstream s; \
+        s << x; \
+        return s.str(); \
+    }
+
+#define PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(type, ...) \
+    PAX_IMPLEMENT_STRING_CONVERT_TO(type) { return __VA_ARGS__; }
+
+#define PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(type, ...) \
+    PAX_IMPLEMENT_STRING_CONVERT_FROM(type) { return __VA_ARGS__; }
+
 namespace PAX {
+    template<class T>
+    class TypeConverter<std::string, T> {
+    public:
+        PAX_NODISCARD static T convertTo(std::string const & s) {
+            return T(s);
+        }
+
+        PAX_NODISCARD static std::string convertFrom(T const & t) {
+            std::stringstream s;
+            s << t;
+            return s.str();
+        }
+    };
+
     namespace String {
         void LowerCased(std::string & str);
         void UpperCased(std::string & str);
@@ -45,16 +75,21 @@ namespace PAX {
         void replace(std::string &string, const char &from, const char &to);
 
         template<typename T>
-        T tryParse(const std::string &str) {
+        T convertTo(std::string const &str) {
             if (str.empty()) {
                 PAX_THROW_RUNTIME_ERROR("String is empty!");
             }
 
-            return TryParser<std::string, T>::tryParse(str);
+            return TypeConverter<std::string, T>::convertTo(str);
+        }
+
+        template<typename F>
+        std::string convertFrom(F const & f) {
+            return TypeConverter<std::string, F>::convertFrom(f);
         }
 
         template<typename T>
-        std::string ToStringViaOstream(const T & t) {
+        std::string ToStringViaOstream(T const & t) {
             std::stringstream s;
             s << t;
             return s.str();
@@ -63,30 +98,32 @@ namespace PAX {
 
     /// Note: This macro cannot be used if 'type' is in a namespace (eg., MyApp::MyType) because it must not be
     ///       recognised as a preprocessor token.
-#define PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(type) \
+#define PAX_SPECIALIZE_STRINGCONVERTER_HEADER(type) \
             template<> \
-            class TryParser<std::string, type> { \
+            class TypeConverter<std::string, type> { \
             public: \
-                PAX_NODISCARD static type tryParse(const std::string & str); \
+                PAX_NODISCARD static type convertTo(const std::string & str); \
+                PAX_NODISCARD static std::string convertFrom(const type & str); \
             };
 
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(bool)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(char)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(short)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(unsigned short)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(int)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(unsigned int)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(long)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(unsigned long)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(long long)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(unsigned long long)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(float)
-    PAX_SPECIALIZE_STRINGTRYPARSE_HEADER(double)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(bool)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(char)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(short)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(unsigned short)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(int)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(unsigned int)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(long)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(unsigned long)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(long long)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(unsigned long long)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(float)
+    PAX_SPECIALIZE_STRINGCONVERTER_HEADER(double)
 
     template<>
-    class TryParser<std::string, Log::Level> {
+    class TypeConverter<std::string, Log::Level> {
     public:
-        PAX_NODISCARD static Log::Level tryParse(const std::string & str);
+        PAX_NODISCARD static Log::Level convertTo(const std::string & str);
+        PAX_NODISCARD static std::string convertFrom(const Log::Level & str);
     };
 }
 #endif //POLYPROPYLENE_STRINGUTILS_H

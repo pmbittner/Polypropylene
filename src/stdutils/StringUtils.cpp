@@ -85,8 +85,8 @@ namespace PAX {
         }
     }
 
-    bool TryParser<std::string, bool>::tryParse(const std::string & str) {
-        std::string strcopy = str;
+    PAX_IMPLEMENT_STRING_CONVERT_TO(bool) {
+        std::string strcopy = x;
         String::LowerCased(strcopy);
 
         return
@@ -97,52 +97,39 @@ namespace PAX {
                 || strcopy == "y";
     }
 
-    char TryParser<std::string, char>::tryParse(const std::string &str) {
-        return str[0];
+    PAX_IMPLEMENT_STRING_CONVERT_FROM(bool) {
+        if (x) {
+            return "true";
+        }
+        return "false";
     }
 
-    short TryParser<std::string, short>::tryParse(const std::string &str) {
-        return static_cast<short>(std::stoi(str));
-    }
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(char, x[0])
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(short, static_cast<short>(std::stoi(x)))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(unsigned short, static_cast<unsigned short>(std::stoul(x)))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(int, std::stoi(x))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(unsigned int, static_cast<unsigned int>(std::stoul(x)))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(long, std::stol(x))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(unsigned long, std::stoul(x))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(long long, std::stoll(x))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(unsigned long long, std::stoull(x))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(float, std::stof(x))
+    PAX_IMPLEMENT_STRING_CONVERT_TO_LAMBDA(double, std::stod(x))
 
-    unsigned short TryParser<std::string, unsigned short>::tryParse(const std::string &str) {
-        return static_cast<unsigned short>(std::stoul(str));
-    }
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(char, std::string(1, x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(short, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(unsigned short, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(int, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(unsigned int, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(long, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(unsigned long, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(long long, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(unsigned long long, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(float, std::to_string(x))
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_LAMBDA(double, std::to_string(x))
 
-    int TryParser<std::string, int>::tryParse(const std::string &str) {
-        return std::stoi(str);
-    }
-
-    unsigned int TryParser<std::string, unsigned int>::tryParse(const std::string &str) {
-        return static_cast<unsigned int>(std::stoul(str));
-    }
-
-    long TryParser<std::string, long>::tryParse(const std::string &str) {
-        return std::stol(str);
-    }
-
-    unsigned long TryParser<std::string, unsigned long>::tryParse(const std::string &str) {
-        return std::stoul(str);
-    }
-
-    long long TryParser<std::string, long long>::tryParse(const std::string &str) {
-        return std::stoll(str);
-    }
-
-    unsigned long long TryParser<std::string, unsigned long long>::tryParse(const std::string &str) {
-        return std::stoull(str);
-    }
-
-    float TryParser<std::string, float>::tryParse(const std::string &str) {
-        return std::stof(str);
-    }
-
-    double TryParser<std::string, double>::tryParse(const std::string &str) {
-        return std::stod(str);
-    }
-
-    Log::Level TryParser<std::string, Log::Level>::tryParse(const std::string & str) {
-        std::string lvl = String::LowerCase(str);
+    PAX_IMPLEMENT_STRING_CONVERT_TO(Log::Level) {
+        std::string lvl = String::LowerCase(x);
 
         if (lvl == "err" || lvl == "error" || lvl == "1") {
             return Log::Level::Error;
@@ -156,4 +143,6 @@ namespace PAX {
 
         return Log::Level::None;
     }
+
+    PAX_IMPLEMENT_STRING_CONVERT_FROM_WITH_OSTREAM(Log::Level)
 }

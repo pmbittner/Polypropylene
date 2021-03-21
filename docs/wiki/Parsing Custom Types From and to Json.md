@@ -1,18 +1,36 @@
-For parsing your own types, you have to specialise the `TryParser` class.
-This can be done with convenience macros.
+For converting your own types (from and to strings or json), you have to specialise the `TypeConverter` class.
+The [TypeConverter][typeconverter] is an interface for converting two types to each other.
+In Polypropylene it is used to parse and write [strings][stringutils] and [json objects][jsontypeconverter].
+
+To parse from and read to json objects you can either
+  - Implement the type converter for strings as it is the default fallback solution for reading and writing json objects
+  - Implement the type converter for json objects, which we will describe in the following:
+
+To implement a type converter, you can use the convenience macros for
+[any type conversion][typeconverter],
+[string conversion][stringutils],
+or [json conversion][jsontypeconverter].
+All macros are analogous so we show how to implement json conversion in the following.
 For example, if you want to parse `Chocolate`:
 
 ```C++
-#include <polypropylene/serialisation/json/JsonParser.h>
+#include <polypropylene/serialisation/json/JsonTypeConverter.h>
 
 // Put this into a header file.
-PAX_DECLARE_JSONPARSER_FOR(Chocolate)
+PAX_DECLARE_JSON_CONVERTER_FOR(Chocolate)
 
 // Put this into a source file.
-PAX_IMPLEMENT_JSONPARSER_FOR(Chocolate) {
-    // access the json object under the name 'json'
-    float cacao = json["cacao_percentage"];
+PAX_IMPLEMENT_JSON_CONVERT_TO(Chocolate) {
+    // access the nlohmann::json object under the name 'x'
+    float cacao = x["cacao_percentage"];
     return Chocolate(cacao);
+}
+
+PAX_IMPLEMENT_JSON_CONVERT_FROM(Chocolate) {
+    // access the Chocolate object under the name 'x'
+    nlohmann::json node;
+    node["cacao_percentage"] = x.getCacao();
+    return node;
 }
 ```
 <details><summary>
@@ -20,29 +38,36 @@ PAX_IMPLEMENT_JSONPARSER_FOR(Chocolate) {
 <p>
 
 ```C++
-#include <polypropylene/serialisation/json/JsonParser.h>
+#include <polypropylene/serialisation/json/JsonTypeConverter.h>
 
-// Expansion of PAX_DECLARE_JSONPARSER_FOR(Chocolate)
-namespace PAX {
-    template<>
-    class TryParser<nlohmann::json, Chocolate> {
+// Expansion of PAX_DECLARE_JSON_CONVERTER_FOR(Chocolate)
+template<>
+    class TypeConverter<nlohmann::json, Chocolate> {
     public:
-        PAX_NODISCARD static Chocolate tryParse(const nlohmann::json &);
-    };
-}
+        [[nodiscard]] static Chocolate convertTo(nlohmann::json const & j);
+        [[nodiscard]] static nlohmann::json convertFrom(Chocolate const & x);
+};
 
-// Expansion of PAX_IMPLEMENT_JSONPARSER_FOR(Chocolate)
-Chocolate PAX::TryParser<nlohmann::json, Chocolate>::tryParse(const nlohmann::json & json) {
+// Expansion of PAX_IMPLEMENT_JSON_CONVERT_TO(Chocolate)
+Chocolate PAX::TypeConverter<nlohmann::json, Chocolate>::convertTo(nlohmann::json const & x) {
     float cacao = j["cacaopercentage"];
     return Chocolate(cacao);
+}
+
+// Expansion of PAX_IMPLEMENT_JSON_CONVERT_FROM(Chocolate)
+nlohmann::json PAX::TypeConverter<nlohmann::json, Chocolate>::convertFrom(Chocolate const & x) {
+    nlohmann::json node;
+    node["cacao_percentage"] = x.getCacao();
+    return node;
 }
 ```
 </p>
 </details>
 
 Make sure to use these macros outside of any namespaces.
-You may want to declare the parser (`PAX_DECLARE_JSONPARSER_FOR`) in a header file and implement it (`PAX_IMPLEMENT_JSONPARSER_FOR`) in a source file.
-The macros are defined in [JsonParser.h](https://github.com/pmbittner/Polypropylene/blob/master/include/polypropylene/serialisation/json/JsonParser.h).
+You may want to declare the parser (`PAX_DECLARE_JSON_CONVERTER_FOR`) in a header file and implement it (`PAX_IMPLEMENT_JSON_CONVERT_TO` and `PAX_IMPLEMENT_JSON_CONVERT_FROM`) in a source file.
+The macros are defined in [JsonTypeConverter.h][jsontypeconverter] and
+refine macros from the more general `TypeConverter` type from [TypeConverter.h][typeconverter].
 
 Don't forget to include your parser wherever your type should be able to be parsed.
 For example, you could include it together with `Polypropylene.h` at the begin of your program.
@@ -51,15 +76,15 @@ You can use your parser directly or trough the general interface:
 
 ```C++
 // access your parser directly ...
-Chocolate choco1 = PAX::TryParser<nlohmann::json, Chocolate>::tryParse(json);
+Chocolate choco1 = PAX::TypeConverter<nlohmann::json, Chocolate>::convertTo(json);
 // ... or use general interface
-Chocolate choco2 = PAX::Json::tryParse<Chocolate>(json);
+Chocolate choco2 = PAX::Json::convertTo<Chocolate>(json);
 ```
 
 If your type (e.g., `Chocolate`) should be usable by the reflection system for creating prefabs from json files, you have to register a `IJsonFieldWriter` for your type in the `JsonFieldWriterRegister` you use for your prefabs ([see pizza example](https://github.com/PaulAtTUBS/Polypropylene/blob/master/examples/pizza/main.cpp)).
 `IJsonFieldWriters` can read and write `nlohmann::json` objects from and to [`Fields`](https://github.com/PaulAtTUBS/Polypropylene/blob/master/include/polypropylene/reflection/Field.h), which are used for prefab loading and writing.
 
-The default `JsonFieldWriter<T>` reuses the `TryParser` for parsing `nlohmann::json` objects.
+The default `JsonFieldWriter<T>` reuses the `TypeConverter` for parsing `nlohmann::json` objects.
 So to enable `Chocolate` serialisation for properties do the following:
 
 ```C++
@@ -70,4 +95,6 @@ JsonFieldWriter<Chocolate> chocoWriter;
 writerRegister.registerWriter(paxtypeid(Chocolate), &chocoWriter);
 ```
 
-For writing your own types back to json, `JsonFieldWriter<T>` uses the `<<` operator for writing to `ostreams` so far. If you have a better idea, please let me know.
+[typeconverter]: https://github.com/pmbittner/Polypropylene/blob/master/include/polypropylene/serialisation/TypeConverter.h
+[stringutils]: https://github.com/pmbittner/Polypropylene/blob/master/include/polypropylene/stdutils/StringUtils.h
+[jsontypeconverter]: https://github.com/pmbittner/Polypropylene/blob/master/include/polypropylene/serialisation/json/JsonTypeConverter.h

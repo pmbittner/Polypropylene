@@ -43,7 +43,7 @@ set(HEADERS_FOR_CLION
 
         serialisation/FieldStorage.h
         serialisation/ClassMetadataSerialiser.h
-        serialisation/TryParser.h
+        serialisation/TypeConverter.h
 
         reflection/ClassMetadata.h
         reflection/Field.h
@@ -86,12 +86,12 @@ set(SOURCE_FILES
 
 if (POLYPROPYLENE_WITH_JSON)
     set(HEADERS_FOR_CLION ${HEADERS_FOR_CLION}
-            serialisation/json/JsonDefaultParsers.h
+            serialisation/json/JsonStdContainerConverters.h
             serialisation/json/JsonFieldStorage.h
             serialisation/json/JsonFieldWriter.h
             serialisation/json/JsonFieldWriterRegister.h
             serialisation/json/JsonLoader.h
-            serialisation/json/JsonParser.h
+            serialisation/json/JsonTypeConverter.h
             serialisation/json/JsonUtil.h
 #            serialisation/json/nlohmann/JsonFwd.h
 
@@ -103,7 +103,7 @@ if (POLYPROPYLENE_WITH_JSON)
     set(SOURCE_FILES ${SOURCE_FILES}
             serialisation/json/JsonUtil.cpp
             serialisation/json/JsonLoader.cpp
-            serialisation/json/JsonParser.cpp
+            serialisation/json/JsonTypeConverter.cpp
             serialisation/json/JsonFieldStorage.cpp
             serialisation/json/JsonFieldWriterRegister.cpp)
 endif(POLYPROPYLENE_WITH_JSON)

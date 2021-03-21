@@ -2,12 +2,13 @@
 // Created by Bittner on 21/05/2019.
 //
 
-#ifndef POLYPROPYLENE_JSONPARSER_H
-#define POLYPROPYLENE_JSONPARSER_H
+#ifndef POLYPROPYLENE_JSONTYPECONVERTER_H
+#define POLYPROPYLENE_JSONTYPECONVERTER_H
 
 #ifdef PAX_WITH_JSON
 
 #include "JsonUtil.h"
+#include "nlohmann/Json.h"
 #include "polypropylene/stdutils/StringUtils.h"
 
 /**
@@ -16,44 +17,44 @@
  * https://github.com/pmbittner/Polypropylene/wiki/Parsing-Custom-Types-From-and-to-Json
  */
 
-#define PAX_DECLARE_JSONPARSER_FOR(type) \
-namespace PAX { \
-    template<> \
-    class TryParser<nlohmann::json, type> { \
-    public: \
-        PAX_NODISCARD static type tryParse(const nlohmann::json &); \
-    }; \
-}
-
-#define PAX_IMPLEMENT_JSONPARSER_FOR(type) \
-    type PAX::TryParser<nlohmann::json, type>::tryParse(const nlohmann::json & json)
-
+#define PAX_DECLARE_JSON_CONVERTER_FOR(type) PAX_DECLARE_TYPE_CONVERTER_FOR(::nlohmann::json, type)
+#define PAX_IMPLEMENT_JSON_CONVERT_TO(type) PAX_IMPLEMENT_CONVERT_TO(::nlohmann::json, type)
+#define PAX_IMPLEMENT_JSON_CONVERT_FROM(type) PAX_IMPLEMENT_CONVERT_FROM(::nlohmann::json, type)
+#define PAX_IMPLEMENT_JSON_CONVERT_FROM_WITH_OSTREAM(type) \
+    PAX_IMPLEMENT_CONVERT_FROM(::nlohmann::json, type) { \
+        std::stringstream s; \
+        s << x; \
+        return s.str(); \
+    }
 
 namespace PAX {
     /**
      * General interface for parsing json objects to custom types.
-     * This is done by specializing the more general TryParser<From, To> template class.
+     * This is done by specializing the more general TypeConverter<From, To> template class.
      * The default implementation reuses the string parser by interpreting the given json as a plain string.
      * @tparam T The type to which the json object should be parsed.
      */
     template<class T>
-    class TryParser<nlohmann::json, T> {
+    class TypeConverter<nlohmann::json, T> {
     public:
-        PAX_NODISCARD static T tryParse(const nlohmann::json & j) {
-            return ::PAX::String::tryParse<T>(JsonToString(j));
+        PAX_NODISCARD static T convertTo(nlohmann::json const & j) {
+            return TypeConverter<std::string, T>::convertTo(JsonToString(j));
         }
-    };
 
-    template<>
-    class TryParser<nlohmann::json, Path> {
-    public:
-        PAX_NODISCARD static Path tryParse(const nlohmann::json & j);
+        PAX_NODISCARD static nlohmann::json convertFrom(T const & x) {
+            return TypeConverter<std::string, T>::convertFrom(x);
+        }
     };
 
     namespace Json {
         template<typename T>
-        PAX_NODISCARD T tryParse(const nlohmann::json &j) {
-            return TryParser<nlohmann::json, T>::tryParse(j);
+        PAX_NODISCARD T convertTo(nlohmann::json const &j) {
+            return TypeConverter<nlohmann::json, T>::convertTo(j);
+        }
+
+        template<typename T>
+        PAX_NODISCARD nlohmann::json convertFrom(T const & x) {
+            return TypeConverter<nlohmann::json, T>::convertFrom(x);
         }
 
         /**
@@ -68,6 +69,8 @@ namespace PAX {
     }
 }
 
+PAX_DECLARE_JSON_CONVERTER_FOR(Path)
+
 #endif // PAX_WITH_JSON
 
-#endif //POLYPROPYLENE_JSONPARSER_H
+#endif //POLYPROPYLENE_JSONTYPECONVERTER_H

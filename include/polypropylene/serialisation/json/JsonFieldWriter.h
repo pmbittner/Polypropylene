@@ -10,7 +10,7 @@
 #include <sstream>
 
 #include "polypropylene/reflection/Field.h"
-#include "JsonParser.h"
+#include "JsonTypeConverter.h"
 
 // TODO: Avoid
 #include "nlohmann/Json.h"
@@ -46,7 +46,7 @@ namespace PAX {
             PAX_NODISCARD Field::WriteResult loadIntoField(const nlohmann::json &j, Field &field) const override {
                 // TODO: Make this a method of field?
                 if (field.type == paxtypeof(T)) {
-                    *static_cast<T *>(field.data) = std::move(TryParser<nlohmann::json, T>::tryParse(j));
+                    *static_cast<T *>(field.data) = std::move(TypeConverter<nlohmann::json, T>::convertTo(j));
                     return Field::WriteResult::Success;
                 }
 
@@ -60,7 +60,7 @@ namespace PAX {
                 if (field.type == paxtypeof(T) && j.is_array()) {
                     Vec* vec = static_cast<Vec *>(field.data);
                     for (const nlohmann::json & child : j) {
-                        vec->emplace_back(TryParser<nlohmann::json, T>::tryParse(child));
+                        vec->emplace_back(TypeConverter<nlohmann::json, T>::convertTo(child));
                     }
 
                     return Field::WriteResult::Success;
@@ -71,12 +71,8 @@ namespace PAX {
 
             PAX_NODISCARD bool loadIntoJson(const Field & field, nlohmann::json & j) const override {
                 if (field.type == paxtypeof(T)) {
-                    T* data = static_cast<T*>(field.data);
-                    std::stringstream stream;
-                    // TODO: Is this the best solution?
-                    //       Do we want to require << to be implemented?
-                    stream << *data;
-                    setJsonValue(j, field.name, stream.str());
+                    const T* data = static_cast<T*>(field.data);
+                    j.emplace(field.name, TypeConverter<nlohmann::json, T>::convertFrom(*data));
                     return true;
                 }
 
