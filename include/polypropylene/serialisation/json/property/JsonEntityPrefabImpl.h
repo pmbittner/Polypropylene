@@ -11,9 +11,7 @@
 
 namespace PAX::Json {
     template<typename EntityType>
-    void JsonEntityPrefab<EntityType>::initialize(JsonFieldWriterRegister & jsonFieldWriterRegister) {
-        GlobalWriters = &jsonFieldWriterRegister;
-
+    void JsonEntityPrefab<EntityType>::initialize() {
         ParseOrder = {
                 DefaultElements::Inherits,
                 DefaultElements::Properties
@@ -46,7 +44,7 @@ namespace PAX::Json {
 
         ElementParsers.registerParser(
                 DefaultElements::Properties,
-                [&jsonFieldWriterRegister](json &node, EntityType & e, const JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
+                [](json &node, EntityType & e, const JsonEntityPrefab<EntityType> &prefab, const VariableRegister & variableRegister) {
                     if (!node.is_array()) {
                         PAX_THROW_RUNTIME_ERROR("Expected array but was given " << std::endl << node.dump(2));
                     }
@@ -90,7 +88,7 @@ namespace PAX::Json {
                         // If there are any fields given, set them in the property.
                         json & fields = propertyNode[propTypeName];
                         if (!fields.empty()) {
-                            JsonFieldStorage storage(fields, jsonFieldWriterRegister);
+                            JsonFieldStorage storage(fields, JsonFieldWriterRegister::Instance());
                             serialiser.setStorage(&storage);
                             ClassMetadata metadata = property->getMetadata();
                             serialiser.writeToMetadata(metadata, options);

@@ -92,8 +92,6 @@ namespace PAX {
             using json = nlohmann::json;
             using PropertyType = typename EntityType::PropertyType;
 
-            static JsonFieldWriterRegister * GlobalWriters;
-
             std::vector<JsonEntityPrefab<EntityType>> parentPrefabs;
             json rootNode;
             Path path;
@@ -122,7 +120,7 @@ namespace PAX {
                     IPropertyFactory<EntityType> * factory = PropertyFactoryRegister<EntityType>::getFactoryFor(property->getClassType().type.id);
                     json propertyNode;
                     json & fields = propertyNode[factory->getPropertyName()];
-                    JsonFieldStorage storage(fields, *GlobalWriters);
+                    JsonFieldStorage storage(fields, JsonFieldWriterRegister::Instance());
                     serialiser.setStorage(&storage);
                     serialiser.readFromMetadata(property->getMetadata());
                     serialiser.setStorage(nullptr);
@@ -189,7 +187,7 @@ namespace PAX {
              * Has to be invoked once during program startup.
              * Memorizes the JsonFieldWriters you use.
              */
-            static void initialize(JsonFieldWriterRegister & jsonFieldWriterRegister);
+            static void initialize();
 
             void addMyContentTo(EntityType &e, const VariableRegister & variableRegister) override {
                 // Compose given variables with the predefined ones.
@@ -223,9 +221,6 @@ namespace PAX {
                 return path;
             }
         };
-
-        template<typename EntityType>
-        PAX_MAYBEUNUSED JsonFieldWriterRegister * JsonEntityPrefab<EntityType>::GlobalWriters = nullptr;
 
         template<typename EntityType>
         PAX_MAYBEUNUSED std::vector<std::string> JsonEntityPrefab<EntityType>::ParseOrder;

@@ -71,6 +71,8 @@ namespace PAX {
 
 PAX_DECLARE_JSON_CONVERTER_FOR(Path)
 
+#include <polypropylene/serialisation/json/JsonStdContainerConverters.h>
+
 #endif // PAX_WITH_JSON
 
 #endif //POLYPROPYLENE_JSONTYPECONVERTER_H

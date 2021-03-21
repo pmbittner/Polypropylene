@@ -52,9 +52,9 @@ int main(int argc, char** argv) {
 #ifdef PAX_WITH_JSON
     using namespace PAX::Json;
 
-    JsonFieldWriterRegister writerRegister; /// contains parsers from nlohmann::json to fields
+//    JsonFieldWriterRegister writerRegister; /// contains parsers from nlohmann::json to fields
     JsonEntityPrefabLoader<Pizza> prefabLoader; /// loads json files from disk to EntityPrefab<Pizza>
-    JsonEntityPrefab<Pizza>::initialize(writerRegister);
+    JsonEntityPrefab<Pizza>::initialize();
 #endif
 
     /// EXAMPLE

@@ -5,37 +5,23 @@
 #include "polypropylene/serialisation/json/JsonFieldWriterRegister.h"
 
 namespace PAX::Json {
-#define JSONREGISTER_REGISTERPRIMITIVE(type) \
-    { \
-        static JsonFieldWriter<type> writer; \
-        registerWriter(paxtypeid(type), &writer); \
+    JsonFieldWriterRegister::JsonFieldWriterRegister() = default;
+
+    JsonFieldWriterRegister& JsonFieldWriterRegister::Instance() {
+        static JsonFieldWriterRegister instance;
+        return instance;
     }
 
-#define JSONREGISTER_REGISTERPRIMITIVE_WITHUNSIGNED(type) \
-    JSONREGISTER_REGISTERPRIMITIVE(type) \
-    JSONREGISTER_REGISTERPRIMITIVE(unsigned type)
-
-    JsonFieldWriterRegister::JsonFieldWriterRegister() {
-        // register some defaults
-        JSONREGISTER_REGISTERPRIMITIVE(bool)
-        JSONREGISTER_REGISTERPRIMITIVE(char)
-        JSONREGISTER_REGISTERPRIMITIVE_WITHUNSIGNED(short)
-        JSONREGISTER_REGISTERPRIMITIVE_WITHUNSIGNED(int)
-        JSONREGISTER_REGISTERPRIMITIVE_WITHUNSIGNED(long)
-        JSONREGISTER_REGISTERPRIMITIVE_WITHUNSIGNED(long long)
-        JSONREGISTER_REGISTERPRIMITIVE(float)
-        JSONREGISTER_REGISTERPRIMITIVE(double)
-
-        // not really a primitive but works
-        JSONREGISTER_REGISTERPRIMITIVE(std::string)
-        JSONREGISTER_REGISTERPRIMITIVE(Path)
+    bool JsonFieldWriterRegister::hasWriterForType(const PAX::TypeId &type) const {
+        return writers.find(type) != writers.end();
     }
 
-#undef JSONREGISTER_REGISTERPRIMITIVE_WITHUNSIGNED
-#undef JSONREGISTER_REGISTERPRIMITIVE
-
-    void JsonFieldWriterRegister::registerWriter(const PAX::TypeId &type, const IJsonFieldWriter * writer) {
-        writers.insert({type, writer});
+    bool JsonFieldWriterRegister::registerWriter(const PAX::TypeId &type, const IJsonFieldWriter * writer) {
+        if (!hasWriterForType(type)) {
+            writers.insert({type, writer});
+            return true;
+        }
+        return false;
     }
 
     const IJsonFieldWriter * JsonFieldWriterRegister::getWriterFor(const PAX::TypeId &type) const {

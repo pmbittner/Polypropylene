@@ -15,16 +15,16 @@ namespace PAX {
         /**
          * Register for managing IJsonFieldWriters by types.
          * Each registered writer is assumed to be able to parse the type of data it is registered for.
-         * By default, parsers for all primitive types (bool, char, int, float, ...) are registered.
-         * Writers for arbitrary types can be registered manually.
          */
         class JsonFieldWriterRegister {
             TypeMap<const IJsonFieldWriter *> writers;
-
-        public:
             JsonFieldWriterRegister();
 
-            void registerWriter(const PAX::TypeId &type, const IJsonFieldWriter * parser);
+        public:
+            static JsonFieldWriterRegister& Instance();
+
+            PAX_NODISCARD bool hasWriterForType(const PAX::TypeId &type) const;
+            bool registerWriter(const PAX::TypeId &type, const IJsonFieldWriter * parser);
             PAX_NODISCARD const IJsonFieldWriter * getWriterFor(const PAX::TypeId &type) const;
         };
     }

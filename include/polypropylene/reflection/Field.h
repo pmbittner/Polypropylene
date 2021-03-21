@@ -43,7 +43,7 @@ namespace PAX {
 
         Type type;
         std::string name;
-        void * data;
+        void *data;
         FieldFlag flags;
 
         struct WriteResult {
@@ -59,7 +59,8 @@ namespace PAX {
             const std::string message;
 
             PAX_IMPLICIT WriteResult(Value val);
-            WriteResult(Value val, const std::string & message);
+
+            WriteResult(Value val, const std::string &message);
 
             /**
              * Converts a WriteResult::Value to string.
@@ -84,7 +85,7 @@ namespace PAX {
          * @param data A pointer to the field such that it can be read and written to.
          * @param flags Optional flags for further attribute specification.
          */
-        Field(const std::string & name, const Type & type, void * data, FieldFlag flags = NoFlag);
+        Field(const std::string &name, const Type &type, void *data, FieldFlag flags = NoFlag);
 
         /**
          * Checks if this field describes the same field as the other field by considering name and type equality.
@@ -92,39 +93,57 @@ namespace PAX {
          * @param other The field to which equality should be checked.
          * @return Returns true, if name, size, and type of the given field are equal to the respective values of this field.
          */
-        PAX_NODISCARD bool isEqualTo(const Field & other) const;
+        PAX_NODISCARD bool isEqualTo(const Field &other) const;
 
         /**
          * Writes the data pointed to by 'value' to this field.
          * Be careful and ensure that sizeof(*value) is the same as the size of this field!
          * @param value Pointer to data to read from.
          */
-        WriteResult setTo(const void * value);
+        WriteResult setTo(const void *value);
 
         /**
          * Sets the data of this field to the data of the given field.
          * @param field The field whose 'data' should be copied to this field.
          */
-        WriteResult setTo(const Field & field);
+        WriteResult setTo(const Field &field);
 
-        Field & addFlag(FieldFlag flag);
+        Field &addFlag(FieldFlag flag);
+    };
+}
+
+#ifdef PAX_WITH_JSON
+#include "polypropylene/serialisation/json/JsonFieldWriterRegister.h"
+#endif
+
+namespace PAX::Internal {
+#ifdef PAX_WITH_JSON
+    template<typename T>
+    bool registerJsonFieldWriterForType() {
+        static Json::JsonFieldWriter<T> writer;
+        return Json::JsonFieldWriterRegister::Instance().registerWriter(paxtypeid(T), &writer);
+    }
+#endif
+
+    template<typename T>
+    struct FieldCreator {
+        static Field createField(const std::string & name, void * data) {
+#ifdef PAX_WITH_JSON
+            static bool dummy = registerJsonFieldWriterForType<T>();
+#endif
+            return Field(name, paxtypeof(T), data, ::PAX::Field::NoFlag);
+        }
     };
 
-    namespace Internal {
-        template<typename T>
-        struct FieldCreator {
-            static Field createField(const std::string & name, void * data) {
-                return Field(name, paxtypeof(T), data, ::PAX::Field::NoFlag);
-            }
-        };
-
-        template<typename T>
-        struct FieldCreator<std::vector<T>> {
-            static Field createField(const std::string &name, void * data) {
-                return Field(name, paxtypeof(T), data, ::PAX::Field::IsVector);
-            }
-        };
-    }
+    template<typename T>
+    struct FieldCreator<std::vector<T>> {
+        static Field createField(const std::string &name, void * data) {
+#ifdef PAX_WITH_JSON
+            static bool dummy = registerJsonFieldWriterForType<T>();
+#endif
+            return Field(name, paxtypeof(T), data, ::PAX::Field::IsVector);
+        }
+    };
 }
 
 #endif //POLYPROPYLENE_FIELD_H
