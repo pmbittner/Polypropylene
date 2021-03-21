@@ -120,6 +120,7 @@ namespace PAX::Internal {
 #ifdef PAX_WITH_JSON
     template<typename T>
     bool registerJsonFieldWriterForType() {
+        // TODO: We need a way to statically determine here which subtype to instantiate.
         static Json::JsonFieldWriter<T> writer;
         return Json::JsonFieldWriterRegister::Instance().registerWriter(paxtypeid(T), &writer);
     }
