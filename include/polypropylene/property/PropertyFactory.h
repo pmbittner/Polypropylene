@@ -55,8 +55,6 @@ namespace PAX {
 
     template<class TEntityType>
     class PropertyFactoryRegister {
-        using MapType = std::unordered_map<std::string, IPropertyFactory<TEntityType> *>;
-
         // Use this method to save the map to avoid the Static Initialization Order Fiasko.
         static std::unordered_map<std::string, IPropertyFactory<TEntityType> *> & getNameMap() noexcept {
             static std::unordered_map<std::string, IPropertyFactory<TEntityType> *> map;
@@ -75,7 +73,7 @@ namespace PAX {
     public:
         virtual ~PropertyFactoryRegister() = default;
 
-        static IPropertyFactory<TEntityType> * getFactoryFor(const std::string & name) {
+        PAX_NODISCARD static IPropertyFactory<TEntityType> * getFactoryFor(const std::string & name) {
             const auto &map = getNameMap();
             const auto &it = map.find(name);
 
@@ -86,7 +84,7 @@ namespace PAX {
             }
         }
 
-        static IPropertyFactory<TEntityType> * getFactoryFor(const TypeId & type) {
+        PAX_NODISCARD static IPropertyFactory<TEntityType> * getFactoryFor(const TypeId & type) {
             const auto &map = getTypeMap();
             const auto &it = map.find(type);
 
@@ -95,6 +93,24 @@ namespace PAX {
             } else {
                 PAX_THROW_RUNTIME_ERROR("No factory is registered for the type \"" << type.name() << "\"!");
             }
+        }
+
+        /**
+         * Returns a map containing all registered IPropertyFactories, identified by their name.
+         * The factories in the map are the same as for getFactoriesByType() but the key is different.
+         * @return All registered IPropertyFactories indexed by the name of the type of property they produce.
+         */
+        PAX_NODISCARD static const std::unordered_map<std::string, IPropertyFactory<TEntityType> *> & getFactoriesByName() {
+            return getNameMap();
+        }
+
+        /**
+         * Returns a map containing all registered IPropertyFactories, identified by their type.
+         * The factories in the map are the same as for getFactoriesByName() but the key is different.
+         * @return All registered IPropertyFactories indexed by the type of property they produce.
+         */
+        PAX_NODISCARD static const UnorderedTypeMap<IPropertyFactory<TEntityType> *> & getFactoriesByType() {
+            return getTypeMap();
         }
 
         template<typename TPropertyType>
