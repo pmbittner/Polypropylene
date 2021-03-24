@@ -9,14 +9,19 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2c602e50b99464fbdd4caab644cd3d0)](https://www.codacy.com/manual/PaulAtTUBS/Polypropylene?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PaulAtTUBS/Polypropylene&amp;utm_campaign=Badge_Grade)
 <!--[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3539/badge)](https://bestpractices.coreinfrastructure.org/projects/3539)-->
 
-Polypropylene is a C++17 library for fine-granular separation of concerns on the level of objects.
+Polypropylene is an embedded domain-specific language (EDSL) for C++17 to model separation of concerns at any granularity, from single objects to large frameworks.
 It allows defining objects dynamically by composition of properties.
 Properties add state and functionality to objects similar to mixins but are composed during runtime.
+
 Polypropylene started as an [*Entity-Component System (ECS)*][gppcomp] but grew more general and flexible.
 An ECS is a design pattern mostly used in video game engineering where objects are required to change behaviour and shape frequently and arbitrarily.
 Thereby, an object (i.e., an *Entity*) is purely defined as a composition of individual components.
 We refer to *Components* as *Properties* to emphasize that Polypropylene is not limited to but can be used as an ECS.
+
 During development several issues arose that were not addressed by existing ECS' so far.
+Most prominently, I was missing an ECS which allows you to write the style you know: object-oriented and not data-oriented.
+To not lose benefits of a data-oriented design, Polypropylene abstracts memory management in a backend, while allowing to program in an object oriented fashion.
+
 Below you find a small excerpt on how to define entities and properties in Polypropylene:
 
 ```C++
