@@ -34,7 +34,10 @@
 template <class T>
 typename std::enable_if<std::is_base_of<::PAX::Polymorphic, T>::value, bool>::type
 pax_delete(T * t) {
-    return T::EntityType::GetAllocationService().template deleteAndFree<T>(t, t->getClassType().type.id);
+    if (t != nullptr) {
+        return T::EntityType::GetAllocationService().template deleteAndFree<T>(t, t->getClassType().type.id);
+    }
+    return false;
 }
 
 #endif //POLYPROPYLENE_CREATION_H
