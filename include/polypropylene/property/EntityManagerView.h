@@ -54,11 +54,11 @@ namespace PAX {
                 return entities.begin();
             }
 
-            size_t first = 0;
-            size_t last = entities.size() - 1;
+            int64_t first = 0;
+            int64_t last = entities.size() - 1;
             // inserted sorted by pointer to improve caching on iterating
             while (first < last) {
-                size_t mid = (first + last) / 2;
+                int64_t mid = (first + last) / 2;
                 EntityType * entityInMid = entities.at(mid);
                 if (entityInMid == entity) {
                     first = mid;
