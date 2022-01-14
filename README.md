@@ -17,6 +17,7 @@ Polypropylene started as an [*Entity-Component System (ECS)*][gppcomp] but grew 
 An ECS is a design pattern mostly used in video game engineering where objects are required to change behaviour and shape frequently and arbitrarily.
 Thereby, an object (i.e., an *Entity*) is purely defined as a composition of individual components.
 We refer to *Components* as *Properties* to emphasize that Polypropylene is not limited to but can be used as an ECS.
+You may find a detailed description of ECS in the [ecs-faq](https://github.com/SanderMertens/ecs-faq).
 
 During development several issues arose that were not addressed by existing ECS' so far.
 Most prominently, I was missing an ECS which allows you to write the style you know: object-oriented and not data-oriented.
@@ -321,9 +322,9 @@ Entity Component Systems:
 Dynamic Mixins:
 - [dynamix](https://github.com/iboB/dynamix) - A new take on polymorphism in C++ 
 - [libciabatta](https://github.com/atomgalaxy/libciabatta) - The C++ Mixin Support Library: Sandwich Mixins all the way 
-- [dyno](https://github.com/ldionne/dyno) - Runtime polymorphism done right 
+- [dyno](https://github.com/ldionne/dyno) - Runtime polymorphism done right
 
-Did I forget your library? Please open an issue or pull-request!
+More interesting projects can be found in the [ecs-faq](https://github.com/SanderMertens/ecs-faq). Did I forget your library? Please open an issue or pull-request!
 
 ## Are You Hungry For Pizza :pizza: Now?
 At least we are ... :yum:
