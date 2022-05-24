@@ -21,7 +21,7 @@ You may find a detailed description of ECS in the [ecs-faq](https://github.com/S
 
 During development several issues arose that were not addressed by existing ECS' so far.
 Most prominently, I was missing an ECS which allows you to write the style you know: object-oriented and not data-oriented.
-To not lose benefits of a data-oriented design, Polypropylene abstracts memory management in a backend, while allowing to program in an object oriented fashion.
+To not lose benefits of a data-oriented design, Polypropylene abstracts memory management in a backend, while allowing to program in an object-oriented fashion.
 
 Below you find a small excerpt on how to define entities and properties in Polypropylene:
 
@@ -43,6 +43,8 @@ class Cheese : public PAX::Property<Pizza> {
     PAX_PROPERTY_IS_MULTIPLE
     
     PAX_PROPERTY_DEPENDS_ON(TomatoSauce)
+    
+    virtual ~Cheese() = 0;
 };
 
 class Mozzarella : public Cheese {
@@ -51,18 +53,19 @@ class Mozzarella : public Cheese {
     PAX_PROPERTY_IS_SINGLE
 };
 
+void main() {
+    Pizza pizza;
+    pizza.add(new TomatoSauce()); // otherwise we cannot add cheese
+    pizza.add(new Mozzarella());
 
-Pizza pizza;
-pizza.add(new TomatoSauce()); // otherwise we cannot add cheese
-pizza.add(new Mozzarella());
-
-// no dynamic_casts here
-pizza.get<TomatoSauce>()->scoville = 3000; // put Tabasco in ;)
-Mozzarella * mozzarella = pizza.get<Mozzarella>();
-const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // There might be multiple cheese types apart from mozzarella, so we get a vector.
+    // no dynamic_casts here
+    pizza.get<TomatoSauce>()->scoville = 3000; // put Tabasco in ;)
+    Mozzarella * mozzarella = pizza.get<Mozzarella>();
+    const std::vector<Cheese*>& cheeses = pizza.get<Cheese>(); // There might be multiple cheese types apart from mozzarella, so we get a vector.
+}
 ```
 
-**Opposed to existing Entity-Component Systems and Dynamic Mixin Implementations**, Polypropylene offers the following
+Opposed to existing Entity-Component Systems and Dynamic Mixin Implementations, Polypropylene offers the following
 features:
 
 -   **Polymorphism Awareness**: Properties added to an entity are identified by each of their polymorphic types.
