@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <stdint.h>
 #include "polypropylene/definitions/Definitions.h"
 #include "polypropylene/reflection/Type.h"
 
