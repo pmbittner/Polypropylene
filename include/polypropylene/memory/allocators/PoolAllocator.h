@@ -5,9 +5,11 @@
 #ifndef POLYPROPYLENE_POOLALLOCATOR_H
 #define POLYPROPYLENE_POOLALLOCATOR_H
 
+#include <cstdint> // for int32_t
+#include <cstring>
+
 #include "../Allocator.h"
 #include <polypropylene/log/Errors.h>
-#include <cstring>
 
 namespace PAX {
     /**

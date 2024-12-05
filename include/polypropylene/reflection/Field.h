@@ -5,6 +5,7 @@
 #ifndef POLYPROPYLENE_FIELD_H
 #define POLYPROPYLENE_FIELD_H
 
+#include <cstdint> // for uint32_t
 #include <string>
 #include <vector>
 #include "polypropylene/definitions/Definitions.h"
