@@ -72,7 +72,7 @@ namespace PAX {
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const ::PAX::Log::Level & level) {
+std::ostream& ::PAX::operator<<(std::ostream& os, const ::PAX::Log::Level & level) {
     using namespace ::PAX;
     switch (level) {
         case Log::Level::None: {

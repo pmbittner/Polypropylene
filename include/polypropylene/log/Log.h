@@ -62,6 +62,8 @@ namespace PAX {
         PAX_NODISCARD std::ostream & stream_raw(Level level);
     };
 
+std::ostream& operator<<(std::ostream& os, const Log::Level & level);
+
 // What about __func__ ?
 #ifdef PAX_OS_WIN
 #define PAX_FUNCTION_NAME __FUNCTION__
@@ -94,7 +96,5 @@ namespace PAX {
     #define PAX_LOG_DEBUG(level, ... /* message */) do {} while(0)
 #endif
 }
-
-std::ostream& operator<<(std::ostream& os, const ::PAX::Log::Level & level);
 
 #endif //POLYPROPYLENE_LOG_H
