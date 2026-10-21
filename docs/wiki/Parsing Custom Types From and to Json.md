@@ -81,8 +81,8 @@ Chocolate choco1 = PAX::TypeConverter<nlohmann::json, Chocolate>::convertTo(json
 Chocolate choco2 = PAX::Json::convertTo<Chocolate>(json);
 ```
 
-If your type (e.g., `Chocolate`) should be usable by the reflection system for creating prefabs from json files, you have to register a `IJsonFieldWriter` for your type in the `JsonFieldWriterRegister` you use for your prefabs ([see pizza example](https://github.com/PaulAtTUBS/Polypropylene/blob/master/examples/pizza/main.cpp)).
-`IJsonFieldWriters` can read and write `nlohmann::json` objects from and to [`Fields`](https://github.com/PaulAtTUBS/Polypropylene/blob/master/include/polypropylene/reflection/Field.h), which are used for prefab loading and writing.
+If your type (e.g., `Chocolate`) should be usable by the reflection system for creating prefabs from json files, you have to register a `IJsonFieldWriter` for your type in the `JsonFieldWriterRegister` you use for your prefabs ([see pizza example](https://github.com/pmbittner/Polypropylene/blob/master/examples/pizza/main.cpp)).
+`IJsonFieldWriters` can read and write `nlohmann::json` objects from and to [`Fields`](https://github.com/pmbittner/Polypropylene/blob/master/include/polypropylene/reflection/Field.h), which are used for prefab loading and writing.
 
 The default `JsonFieldWriter<T>` reuses the `TypeConverter` for parsing `nlohmann::json` objects.
 So to enable `Chocolate` serialisation for properties do the following:

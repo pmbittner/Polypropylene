@@ -3,10 +3,10 @@
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
 [![Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Official documentation](https://img.shields.io/badge/Documentation-Read-green.svg)](https://github.com/PaulAtTUBS/Polypropylene/wiki)
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/context:cpp)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/PaulAtTUBS/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/PaulAtTUBS/Polypropylene/alerts/)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2c602e50b99464fbdd4caab644cd3d0)](https://www.codacy.com/manual/PaulAtTUBS/Polypropylene?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PaulAtTUBS/Polypropylene&amp;utm_campaign=Badge_Grade)
+[![Official documentation](https://img.shields.io/badge/Documentation-Read-green.svg)](https://github.com/pmbittner/Polypropylene/wiki)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/pmbittner/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pmbittner/Polypropylene/context:cpp)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/pmbittner/Polypropylene.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pmbittner/Polypropylene/alerts/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b2c602e50b99464fbdd4caab644cd3d0)](https://www.codacy.com/manual/pmbittner/Polypropylene?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pmbittner/Polypropylene&amp;utm_campaign=Badge_Grade)
 <!--[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3539/badge)](https://bestpractices.coreinfrastructure.org/projects/3539)-->
 
 Polypropylene is an embedded domain-specific language (EDSL) for C++17 to model separation of concerns at any granularity, from single objects to large frameworks.
@@ -269,11 +269,9 @@ Polypropylene further contains the following features:
 To obtain reflection information, we frequently use templates and macros.
 We made certain features, such as loading from json files, optional such that you do not have to compile code that you do not need.
 The following cmake options allow compile time customisation.
-By default, all options are activated (set to ON):
+By default, the json support is activated (see [Building](#building) for the other options):
 
--   `POLYPROPYLENE_WITH_JSON`: Includes the [nlohmann::json library][nlohmannjson] for loading and writing `EntityPrefabs` from and to json files.
--   `POLYPROPYLENE_WITH_EXAMPLES`: Specifies if examples should be built or not.
--   `POLYPROPYLENE_WITH_TESTS`: Specifies if tests should be built or not.
+-   `POLYPROPYLENE_WITH_JSON` (default `ON`): Includes the [nlohmann::json library][nlohmannjson] for loading and writing `EntityPrefabs` from and to json files.
 
 ## Code Examples
 
@@ -331,6 +329,57 @@ More interesting projects can be found in the [ecs-faq](https://github.com/Sande
 
 ## Are You Hungry For Pizza :pizza: Now?
 At least we are ... :yum:
+
+## Building
+
+Polypropylene needs a C++17 compiler and CMake 3.21 or newer.
+The unit tests additionally need [GoogleTest](https://github.com/google/googletest).
+There are no other dependencies: [nlohmann::json][nlohmannjson] is included in this repository.
+
+### With Nix (recommended)
+
+The repository is a [Nix flake](https://nixos.wiki/wiki/Flakes) with pinned dependencies, so the build is reproducible on Linux and macOS.
+Flakes have to be enabled once with `experimental-features = nix-command flakes` in `~/.config/nix/nix.conf`.
+
+```bash
+nix build          # builds the library, the examples, and runs the tests
+nix develop        # shell with all tools for working on Polypropylene (cmake, ninja, gtest, compiler)
+nix flake check    # builds and tests everything
+```
+
+To use Polypropylene in another flake, add it as an input and use `polypropylene.packages.${system}.default`
+(or `polypropylene.overlays.default`, which adds `pkgs.polypropylene`):
+
+```nix
+inputs.polypropylene.url = "github:pmbittner/Polypropylene";
+```
+
+### With CMake
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+ctest --test-dir build        # runs the unit tests
+cmake --install build --prefix /some/prefix
+```
+
+The options are:
+
+-   `POLYPROPYLENE_WITH_JSON` (default `ON`): see [above](#customisations-for-compile-time-minimisation).
+-   `POLYPROPYLENE_WITH_EXAMPLES`: Builds the examples. `ON` if Polypropylene is the top-level project, otherwise `OFF`.
+-   `POLYPROPYLENE_WITH_TESTS`: Builds the unit tests, which require the examples. Same default as the examples.
+
+### Using Polypropylene in your CMake project
+
+Either install it and use `find_package`, or include the sources with `add_subdirectory`.
+Both provide the same target:
+
+```cmake
+find_package(Polypropylene 1 CONFIG REQUIRED)   # or: add_subdirectory(path/to/Polypropylene)
+target_link_libraries(my_target PRIVATE Polypropylene::polypropylene)
+```
+
+The target brings the include directories, the C++17 requirement, and the compile definitions (`PAX_WITH_JSON`, `PAX_BUILD_TYPE_DEBUG`, `PAX_BUILD_TYPE_RELEASE`) that the headers depend on.
 
 [gppcomp]: http://gameprogrammingpatterns.com/component.html
 
