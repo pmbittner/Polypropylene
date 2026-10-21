@@ -7,20 +7,23 @@
 
 #include <polypropylene/definitions/CompilerDetection.h>
 
-#ifdef PAX_COMPILER_GCC
-#include <typeinfo>
-#else
+#ifdef PAX_COMPILER_MSVC
 #include <memory.h>
+#else
+#include <typeinfo>
 #endif
 
 namespace PAX {
     namespace Reflection {
-#if defined(PAX_COMPILER_MSVC) || defined(PAX_COMPILER_CLANG)
+#ifdef PAX_COMPILER_MSVC
         /**
          * This code is copied from https://blog.molecular-matters.com/2015/12/11/getting-the-type-of-a-template-argument-as-string-without-rtti/
          * at 2017 12 19
          *
          * Adapted to GCC
+         *
+         * Only used for MSVC: it relies on __FUNCTION__ being the qualified function name,
+         * which is not the case for clang (there it is just "GetTypeName").
          */
         namespace internal {
             static const unsigned int FRONT_SIZE = sizeof("PAX::Reflection::internal::GetTypeNameHelper<") - 1u;
@@ -41,7 +44,7 @@ namespace PAX {
 
         template<typename T>
         const char *GetTypeName() {
-#if defined(PAX_COMPILER_MSVC) || defined(PAX_COMPILER_CLANG)
+#ifdef PAX_COMPILER_MSVC
             return internal::GetTypeNameHelper<T>::GetTypeName();
 #else
             return typeid(T).name();

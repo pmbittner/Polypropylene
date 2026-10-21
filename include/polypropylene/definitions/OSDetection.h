@@ -8,7 +8,7 @@
 #if defined (__linux__) || defined(linux) || defined(LINUX)
 #define PAX_OS_LINUX 1
 
-#elif defined (__unix__) || defined(UNIX)
+#elif defined (__unix__) || defined(__APPLE__) || defined(UNIX)
 #define PAX_OS_UNIX 1
 
 #elif defined(WINDOWS) || defined(WIN32) ||  defined(_WIN32) || defined(__WIN32__)
