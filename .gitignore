@@ -9,3 +9,7 @@ __pycache__
 # Build
 cmake-build-*
 build
+
+# Nix
+result
+result-*

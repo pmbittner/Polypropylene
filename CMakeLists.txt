@@ -1,55 +1,63 @@
-cmake_minimum_required(VERSION 3.6)
-project(Polypropylene)
+cmake_minimum_required(VERSION 3.21)
+project(Polypropylene
+        VERSION 1.0.0
+        DESCRIPTION "Entity-property system for C++"
+        LANGUAGES CXX)
 
-### DEFINITIONS #########################################
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-include(cmake/Prepend.cmake)
-include(cmake/OptionInfo.cmake)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 ### OPTIONS #############################################
 
-option(POLYPROPYLENE_WITH_EXAMPLES "Build examples" ON)
+# Examples and tests are only built when Polypropylene is the top-level project.
+# When it is consumed as a dependency, they are off by default.
 option(POLYPROPYLENE_WITH_JSON "Enable entity prefab loading from json files" ON)
-option(POLYPROPYLENE_WITH_TESTS "Build unit tests; Requires POLYPROPYLENE_WITH_EXAMPLES=ON" ON)
-
-message("Building Polypropylene")
-message("  FOR C++${CMAKE_CXX_STANDARD}")
-printOptionInfo(POLYPROPYLENE_WITH_EXAMPLES Examples PAX_WITH_EXAMPLES)
-printOptionInfo(POLYPROPYLENE_WITH_JSON Json PAX_WITH_JSON)
-printOptionInfo(POLYPROPYLENE_WITH_TESTS Tests PAX_WITH_TESTS)
-
-### OPTION CONSTRAINTS #################################
+option(POLYPROPYLENE_WITH_EXAMPLES "Build examples" ${PROJECT_IS_TOP_LEVEL})
+option(POLYPROPYLENE_WITH_TESTS "Build unit tests; Requires POLYPROPYLENE_WITH_EXAMPLES=ON" ${PROJECT_IS_TOP_LEVEL})
 
 # Building tests also requires the examples
 if (POLYPROPYLENE_WITH_TESTS AND NOT POLYPROPYLENE_WITH_EXAMPLES)
     message(FATAL_ERROR "Building Tests (POLYPROPYLENE_WITH_TESTS) requires examples but POLYPROPYLENE_WITH_EXAMPLES is set to OFF.")
 endif()
 
-### FLAGS ###############################################
+message(STATUS "Polypropylene: json=${POLYPROPYLENE_WITH_JSON} examples=${POLYPROPYLENE_WITH_EXAMPLES} tests=${POLYPROPYLENE_WITH_TESTS}")
 
-if (${CMAKE_BUILD_TYPE} MATCHES Release)
-    add_definitions(-DPAX_BUILD_TYPE_RELEASE)
-    message("  AS Release")
-elseif(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    add_definitions(-DPAX_BUILD_TYPE_DEBUG)
-    message("  AS Debug")
-endif(${CMAKE_BUILD_TYPE} MATCHES Release)
+### LIBRARY #############################################
 
-### SOURCE FILES ########################################
-
-include_directories(include)
 add_subdirectory(src)
 
-### EXAMPLES ############################################
+### EXAMPLES AND TESTS ##################################
 
 if (POLYPROPYLENE_WITH_EXAMPLES)
     add_subdirectory(examples)
-endif(POLYPROPYLENE_WITH_EXAMPLES)
-
-### TEST ################################################
+endif()
 
 if (POLYPROPYLENE_WITH_TESTS)
+    enable_testing()
     add_subdirectory(test)
-endif(POLYPROPYLENE_WITH_TESTS)
+endif()
+
+### INSTALL #############################################
+
+install(TARGETS polypropylene
+        EXPORT PolypropyleneTargets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY include/polypropylene DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(EXPORT PolypropyleneTargets
+        NAMESPACE Polypropylene::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Polypropylene)
+
+configure_package_config_file(
+        cmake/PolypropyleneConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/PolypropyleneConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Polypropylene)
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/PolypropyleneConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion)
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/PolypropyleneConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/PolypropyleneConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Polypropylene)
